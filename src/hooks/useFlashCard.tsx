@@ -1,33 +1,42 @@
-import { useState, useCallback, useEffect, useRef } from "react";
-import { askGroqAI } from "../api/groqApi";
+import { useState, useRef } from "react";
+import { flashCardsApi, GenerateFlashCardResponse } from "../api";
 import { FlashCardData } from "../interfaces/interfaces";
 
 export const useFlashCard = () => {
-  // State and logic for flash card can be implemented here
   const flashCardRef = useRef<HTMLDivElement>(null);
   const [flashCardData, setFlashCardData] = useState<FlashCardData>({
     question: "",
     answer: "",
     options: [],
   });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [inputText, setInputText] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const hasFetched = useRef(false);
+  const handleFileChange = (file: File | null) => {
+    setSelectedFile(file);
+  };
 
-  const getFlashCardData = async () => {
-    if (hasFetched.current) return;
-    hasFetched.current = true;
+  const handleTextChange = (text: string) => {
+    setInputText(text);
+  };
+
+  const handleGenerateFlashCard = async () => {
+    setIsLoading(true);
+    setError(null);
 
     try {
-      const response = await askGroqAI(
-        "Genera una pregunta, respuesta, y 3 opciones (que seran las alternativas a elegir) para una tarjeta de estudio sobre el tema: Asignatura Biologia, funciones de las células..",
-        "Responde de forma breve, concisa, clara y detallada.",
-        '{question: "Tu pregunta aquí", answer: "Tu respuesta aquí", options: ["Opción 1", "Opción 2", "Opción 3"]}',
+      const data: GenerateFlashCardResponse = await flashCardsApi.generateFlashCard(
+        selectedFile ?? undefined,
+        inputText.trim() || undefined,
       );
-      console.log({ response });
-      const data = JSON.parse(response!);
       setFlashCardData(data);
-    } catch (error) {
-      console.error("Error fetching flash card data:", error);
+    } catch (error: any) {
+      console.error("Error generating flashcard:", error);
+      setError(error.response?.data?.error || "Error al generar la flashcard");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -38,13 +47,23 @@ export const useFlashCard = () => {
     }
   };
 
-  useEffect(() => {
-    getFlashCardData();
-  }, []);
+  const resetCard = () => {
+    if (flashCardRef.current) {
+      flashCardRef.current.classList.remove("flipped");
+    }
+  };
 
   return {
     flashCardData,
+    selectedFile,
+    inputText,
     flipCard,
+    resetCard,
     flashCardRef,
+    handleFileChange,
+    handleTextChange,
+    handleGenerateFlashCard,
+    isLoading,
+    error,
   };
 };

@@ -1,3 +1,38 @@
+.upload-container {
+  margin: 20px;
+  text-align: center;
+  width: 100%;
+  max-width: 640px;
+}
+
+.upload-container textarea,
+.upload-container input[type="file"] {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.field-label {
+  display: block;
+  margin-top: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+}
+
+.file-name {
+  margin-top: 0.5rem;
+  color: #555;
+}
+
+.upload-container input[type="file"] {
+  background: white;
+}
+
 .flash-card-container {
   perspective: 1000px;
 }
@@ -66,4 +101,111 @@
   line-height: 1.4;
   max-width: 100%;
   max-height: 100%;
+}
+
+/* New styles for the app layout */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  background-color: #007bff;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logout-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+.upload-container {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.upload-container p {
+  margin-top: 1rem;
+  color: #666;
+}
+
+.error-message {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+.flash-card-container {
+  perspective: 1000px;
+  margin: 2rem 0;
+}
+
+.options-container {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 400px;
+}
+
+.option-button {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.option-button:hover {
+  background-color: #218838;
+}
+
+/* Loading styles */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.2rem;
+  color: #666;
 }

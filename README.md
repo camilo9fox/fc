@@ -1,6 +1,76 @@
-# Getting Started with Create React App
+# Flashcard Generator App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React application that generates educational flashcards from PDF documents and text using Groq AI.
+
+## Features
+
+- **File Upload**: Upload PDF or TXT files to generate flashcards
+- **Text Input**: Directly input text to create flashcards
+- **AI-Powered**: Uses Groq AI to generate relevant questions and answers
+- **Size Limits**: 5MB maximum file size, content automatically truncated to ~12,000 characters
+
+## Technical Stack
+
+- **Frontend**: React with TypeScript
+- **Backend**: Node.js with Express
+- **AI Service**: Groq API
+- **File Processing**: pdf-parse for PDF text extraction
+- **Architecture**: SOLID principles with separated concerns
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm or yarn
+- Groq API key
+
+### Installation
+
+1. Clone the repository
+2. Install frontend dependencies:
+   ```bash
+   cd test
+   npm install
+   ```
+3. Install backend dependencies:
+   ```bash
+   cd ../backend
+   npm install
+   ```
+4. Create a `.env` file in the backend directory with your Groq API key:
+   ```
+   GROQ_API_KEY=your_api_key_here
+   ```
+
+### Running the Application
+
+1. Start the backend server:
+
+   ```bash
+   cd backend
+   npm start
+   ```
+
+2. Start the frontend:
+
+   ```bash
+   cd ../test
+   npm start
+   ```
+
+3. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## API Endpoints
+
+- `POST /api/generate-from-file`: Generate flashcards from uploaded file
+- `POST /api/generate-from-text`: Generate flashcards from text input
+
+## File Size Limits
+
+- Maximum file size: 5MB
+- Supported formats: PDF, TXT
+- Content is automatically truncated to ~12,000 characters to stay within API limits
 
 ## Available Scripts
 
@@ -44,10 +114,6 @@ You don't have to ever use `eject`. The curated feature set is suitable for smal
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
 ### Analyzing the Bundle Size
 
