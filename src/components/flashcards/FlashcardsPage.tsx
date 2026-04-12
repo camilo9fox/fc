@@ -10,11 +10,25 @@ import CategoryManager from "./CategoryManager";
 import "./FlashcardsPage.css";
 
 const menuItems = [
-  { id: "my", label: "Mis flashcards", path: "/flashcards" },
-  { id: "create", label: "Crear flashcards", path: "/flashcards/create" },
+  {
+    id: "my",
+    label: "Mis flashcards",
+    description: "Organiza y estudia por categoria",
+    icon: "01",
+    path: "/flashcards",
+  },
+  {
+    id: "create",
+    label: "Crear flashcards",
+    description: "Carga tarjetas manuales en borrador",
+    icon: "02",
+    path: "/flashcards/create",
+  },
   {
     id: "generate",
-    label: "Generar flashcards con IA",
+    label: "Generar con IA",
+    description: "Convierte texto o archivos en tarjetas",
+    icon: "03",
     path: "/flashcards/generate",
   },
 ];
@@ -187,6 +201,15 @@ const FlashcardsPage: React.FC = () => {
         />
       )}
 
+      <section className="flashcards-hero">
+        <p className="flashcards-kicker">Workspace de estudio</p>
+        <h1>Flashcards</h1>
+        <p>
+          Crea, genera y organiza tus tarjetas en un flujo rapido. Tu panel de
+          estudio 3D se mantiene igual.
+        </p>
+      </section>
+
       <div className="flashcards-menu">
         {menuItems.map((item) => (
           <button
@@ -194,7 +217,11 @@ const FlashcardsPage: React.FC = () => {
             className={`flashcards-menu-button ${activeItem?.id === item.id ? "active" : ""}`}
             onClick={() => handleMenuClick(item.path)}
           >
-            {item.label}
+            <span className="menu-item-icon">{item.icon}</span>
+            <span className="menu-item-content">
+              <span className="menu-item-label">{item.label}</span>
+              <span className="menu-item-description">{item.description}</span>
+            </span>
           </button>
         ))}
       </div>
