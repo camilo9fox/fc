@@ -1,17 +1,28 @@
 import React, { useState } from "react";
-import { flashCardsApi } from "../../api/flashcards";
+import { FlashcardGenerationJob, flashCardsApi } from "../../api/flashcards";
 import { useCategories } from "../../hooks/useCategories";
 
 interface GenerateFlashcardsFormProps {
-  onGenerated: (cards: Array<{ question: string; answer: string; options: string[]; source: "ai" | "manual"; categoryId?: string }>) => void;
+  onGenerated: (
+    cards: Array<{
+      question: string;
+      answer: string;
+      options: string[];
+      source: "ai" | "manual";
+      categoryId?: string;
+    }>,
+  ) => void;
 }
 
-const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({ onGenerated }) => {
+const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
+  onGenerated,
+}) => {
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [quantity, setQuantity] = useState(3);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [job, setJob] = useState<FlashcardGenerationJob | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const { categories } = useCategories();
@@ -28,9 +39,31 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({ onGener
     }
     setError(null);
     setIsLoading(true);
+    setJob(null);
 
     try {
-      const cards = await flashCardsApi.generateFlashCards(file || undefined, text || undefined, quantity);
+      const initialJob = await flashCardsApi.startGenerateFlashCardsJob(
+        file || undefined,
+        text || undefined,
+        quantity,
+      );
+      setJob(initialJob);
+
+      let currentJob = initialJob;
+      while (
+        currentJob.status !== "completed" &&
+        currentJob.status !== "failed"
+      ) {
+        await new Promise((resolve) => setTimeout(resolve, 1400));
+        currentJob = await flashCardsApi.getGenerationJob(initialJob.id);
+        setJob(currentJob);
+      }
+
+      if (currentJob.status === "failed") {
+        throw new Error(currentJob.error || "Error generando las flashcards.");
+      }
+
+      const cards = currentJob.result?.flashcards || [];
       const normalizedCards = cards.map((card) => ({
         ...card,
         source: "ai" as const,
@@ -40,8 +73,11 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({ onGener
       setText("");
       setFile(null);
       setSelectedCategoryId("");
+      setJob(null);
     } catch (err: any) {
-      setError(err?.response?.data?.message || "Error generando las flashcards.");
+      setError(
+        err?.response?.data?.message || "Error generando las flashcards.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -104,8 +140,29 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({ onGener
       </div>
 
       <button className="primary-button" type="submit" disabled={isLoading}>
-        {isLoading ? "Generando..." : "Generar flashcards"}
+        {isLoading ? "Procesando documento..." : "Generar flashcards"}
       </button>
+
+      {job && (
+        <div className="generation-job-status" aria-live="polite">
+          <div className="generation-job-status-header">
+            <strong>{job.progress.stage}</strong>
+            <span>{job.progress.percent}%</span>
+          </div>
+          <div className="generation-job-progress-track">
+            <div
+              className="generation-job-progress-fill"
+              style={{ width: `${job.progress.percent}%` }}
+            />
+          </div>
+          {job.progress.metadata?.completed && job.progress.metadata?.total && (
+            <p>
+              Secciones procesadas: {job.progress.metadata.completed} /{" "}
+              {job.progress.metadata.total}
+            </p>
+          )}
+        </div>
+      )}
 
       {error && <p className="field-error">{error}</p>}
     </form>

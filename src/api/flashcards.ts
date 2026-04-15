@@ -60,6 +60,37 @@ export interface GenerateFlashCardResponse {
   source?: "ai" | "manual";
 }
 
+export interface FlashcardGenerationJob {
+  id: string;
+  type: string;
+  status: "queued" | "processing" | "completed" | "failed";
+  progress: {
+    stage: string;
+    percent: number;
+    metadata?: {
+      completed?: number;
+      total?: number;
+      count?: number;
+      fileName?: string;
+      inputMode?: string;
+      recommendedAsync?: boolean;
+    };
+  };
+  metadata?: {
+    quantity?: number;
+    fileName?: string | null;
+    inputMode?: string;
+    recommendedAsync?: boolean;
+  };
+  result: null | {
+    flashcards: FlashCard[];
+  };
+  error: string | null;
+  createdAt: string;
+  updatedAt: string;
+  expiresAt: string;
+}
+
 export const flashCardsApi = {
   /**
    * Generate a flashcard from uploaded file or text
@@ -119,6 +150,44 @@ export const flashCardsApi = {
           "Content-Type": "multipart/form-data",
         },
       },
+    );
+    return response.data;
+  },
+
+  startGenerateFlashCardsJob: async (
+    file?: File,
+    text?: string,
+    quantity?: number,
+  ): Promise<FlashcardGenerationJob> => {
+    if (!file && !text) {
+      throw new Error(
+        "Se requiere un archivo o texto para generar la flashcard",
+      );
+    }
+
+    const formData = new FormData();
+    if (file) formData.append("file", file);
+    if (text) formData.append("text", text);
+    if (quantity) {
+      formData.append("quantity", quantity.toString());
+    }
+
+    const response = await apiClient.post(
+      "/flashcards/generate-flashcards-async",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
+
+    return response.data;
+  },
+
+  getGenerationJob: async (jobId: string): Promise<FlashcardGenerationJob> => {
+    const response = await apiClient.get(
+      `/flashcards/generation-jobs/${jobId}`,
     );
     return response.data;
   },
@@ -219,7 +288,7 @@ export const flashCardsApi = {
    */
   updateCategory: async (
     id: string,
-    data: Partial<CreateCategoryRequest>
+    data: Partial<CreateCategoryRequest>,
   ): Promise<Category> => {
     const response = await apiClient.put(`/categories/${id}`, data);
     return response.data;
