@@ -4,6 +4,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
 import FlashcardsPage from './components/flashcards/FlashcardsPage';
+import LandingPage from './components/landing/LandingPage';
+import DashboardLayout from './components/layout/DashboardLayout';
 import './App.css';
 
 // Protected Route component
@@ -24,6 +26,10 @@ const AppRoutes: React.FC = () => {
   return (
     <Routes>
       <Route
+        path="/"
+        element={user ? <Navigate to="/flashcards" /> : <LandingPage />}
+      />
+      <Route
         path="/login"
         element={user ? <Navigate to="/flashcards" /> : <Login />}
       />
@@ -32,18 +38,16 @@ const AppRoutes: React.FC = () => {
         element={user ? <Navigate to="/flashcards" /> : <Signup />}
       />
       <Route
-        path="/"
-        element={<Navigate to="/flashcards" />}
-      />
-      <Route
         path="/flashcards/*"
         element={
           <ProtectedRoute>
-            <FlashcardsPage />
+            <DashboardLayout>
+              <FlashcardsPage />
+            </DashboardLayout>
           </ProtectedRoute>
         }
       />
-      <Route path="*" element={<Navigate to="/flashcards" />} />
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 };

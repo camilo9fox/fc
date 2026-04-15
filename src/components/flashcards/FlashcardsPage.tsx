@@ -160,34 +160,140 @@ const FlashcardsPage: React.FC = () => {
       case "create":
         return (
           <section className="flashcards-section">
-            <h2>Crear flashcard manual</h2>
-            <p>
-              Agrega una flashcard con pregunta, respuesta y pistas. Se guardará
-              en el borrador hasta que pulses{" "}
-              <strong>Guardar flashcards</strong>.
-            </p>
+            <div className="section-heading">
+              <h2>Crear flashcard manual</h2>
+              <p>
+                Agrega una flashcard con pregunta, respuesta y pistas. Se
+                guardará en el borrador hasta que pulses{" "}
+                <strong>Guardar flashcards</strong>.
+              </p>
+            </div>
             <CreateFlashcardForm onCreated={handleAddManual} />
           </section>
         );
       case "generate":
         return (
           <section className="flashcards-section">
-            <h2>Generar flashcards con IA</h2>
-            <p>Usa texto o un archivo para generar flashcards automáticas.</p>
+            <div className="section-heading">
+              <h2>Generar flashcards con IA</h2>
+              <p>
+                Sube un PDF o pega texto y la IA creará tarjetas de estudio
+                automáticamente.
+              </p>
+            </div>
             <GenerateFlashcardsForm onGenerated={handleAddGenerated} />
           </section>
         );
-      case "my":
+      case "my": {
+        const nonEmptyCategories = Object.values(groupedFlashcards).filter(
+          (cards) => cards.length > 0,
+        ).length;
         return (
-          <section className="flashcards-section">
-            <h2>Bienvenido a tus flashcards</h2>
-            <p>
-              Organiza tus flashcards por categorías. Crea categorías primero y
-              luego asigna flashcards a ellas.
-            </p>
-            <CategoryManager />
-          </section>
+          <>
+            {/* Stats cards */}
+            <div className="fc-stats-row">
+              <div className="fc-stat-card">
+                <div className="fc-stat-icon purple">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                    <line x1="8" y1="21" x2="16" y2="21" />
+                    <line x1="12" y1="17" x2="12" y2="21" />
+                  </svg>
+                </div>
+                <div className="fc-stat-body">
+                  <p className="fc-stat-value">
+                    {loading ? "—" : savedFlashcards.length}
+                  </p>
+                  <p className="fc-stat-label">Flashcards guardadas</p>
+                </div>
+              </div>
+              <div className="fc-stat-card">
+                <div className="fc-stat-icon pink">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                  </svg>
+                </div>
+                <div className="fc-stat-body">
+                  <p className="fc-stat-value">
+                    {loading ? "—" : nonEmptyCategories}
+                  </p>
+                  <p className="fc-stat-label">Categorías activas</p>
+                </div>
+              </div>
+              <div className="fc-stat-card">
+                <div className="fc-stat-icon orange">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                </div>
+                <div className="fc-stat-body">
+                  <p className="fc-stat-value">{draftFlashcards.length}</p>
+                  <p className="fc-stat-label">En borrador</p>
+                </div>
+              </div>
+              <div className="fc-stat-card">
+                <div className="fc-stat-icon teal">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                  </svg>
+                </div>
+                <div className="fc-stat-body">
+                  <p className="fc-stat-value">IA</p>
+                  <p className="fc-stat-label">Generación activa</p>
+                </div>
+              </div>
+            </div>
+
+            <section className="flashcards-section">
+              <div className="section-heading">
+                <h2>Gestionar categorías</h2>
+                <p>
+                  Crea categorías para organizar tus flashcards y estudiarlas
+                  por grupo.
+                </p>
+              </div>
+              <CategoryManager />
+            </section>
+          </>
         );
+      }
     }
   };
 
@@ -201,41 +307,20 @@ const FlashcardsPage: React.FC = () => {
         />
       )}
 
-      <section className="flashcards-hero">
-        <p className="flashcards-kicker">Workspace de estudio</p>
-        <h1>Flashcards</h1>
-        <p>
-          Crea, genera y organiza tus tarjetas en un flujo rapido. Tu panel de
-          estudio 3D se mantiene igual.
-        </p>
-      </section>
-
-      <div className="flashcards-menu">
-        {menuItems.map((item) => (
-          <button
-            key={item.id}
-            className={`flashcards-menu-button ${activeItem?.id === item.id ? "active" : ""}`}
-            onClick={() => handleMenuClick(item.path)}
-          >
-            <span className="menu-item-icon">{item.icon}</span>
-            <span className="menu-item-content">
-              <span className="menu-item-label">{item.label}</span>
-              <span className="menu-item-description">{item.description}</span>
-            </span>
-          </button>
-        ))}
-      </div>
-
       <div className="flashcards-content">
         {renderActiveSection()}
 
         <section className="flashcards-section">
           <div className="draft-header">
             <div>
-              <h2>Draft de flashcards</h2>
+              <h2>Borrador</h2>
               <p>
-                Las flashcards generadas o creadas manualmente se guardan aquí
-                hasta que pulses <strong>Guardar flashcards</strong>.
+                Flashcards pendientes de guardar.{" "}
+                {draftFlashcards.length > 0 && (
+                  <span className="draft-count-badge">
+                    {draftFlashcards.length}
+                  </span>
+                )}
               </p>
             </div>
             <div className="draft-actions">
@@ -289,10 +374,7 @@ const FlashcardsPage: React.FC = () => {
           <div className="saved-header">
             <div>
               <h2>Flashcards guardadas</h2>
-              <p>
-                Estudia tus tarjetas guardadas, ve categoría por categoría y
-                elimina las que ya no necesites.
-              </p>
+              <p>Estudia por categoría o lanza todas a la vez.</p>
             </div>
             <button
               className="primary-button"
