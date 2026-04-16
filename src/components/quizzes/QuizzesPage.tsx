@@ -144,6 +144,158 @@ const QuizStudySession: React.FC<QuizStudyProps> = ({ quiz, onClose }) => {
   );
 };
 
+// ─── Draft Quiz Study Session ──────────────────────────────────────────────────
+
+interface DraftQuizStudyProps {
+  draft: DraftQuizState;
+  onClose: () => void;
+}
+
+const DraftQuizStudySession: React.FC<DraftQuizStudyProps> = ({
+  draft,
+  onClose,
+}) => {
+  const questions = draft.questions;
+  const [index, setIndex] = useState(0);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [score, setScore] = useState(0);
+  const [finished, setFinished] = useState(false);
+
+  const current = questions[index];
+
+  const handleAnswer = (option: string) => {
+    if (selected !== null) return;
+    setSelected(option);
+    if (option === current.correct_answer) setScore((s) => s + 1);
+  };
+
+  const handleNext = () => {
+    if (index + 1 >= questions.length) {
+      setFinished(true);
+    } else {
+      setIndex((i) => i + 1);
+      setSelected(null);
+    }
+  };
+
+  const handleRestart = () => {
+    setIndex(0);
+    setSelected(null);
+    setScore(0);
+    setFinished(false);
+  };
+
+  if (finished) {
+    const pct = Math.round((score / questions.length) * 100);
+    const emoji = pct >= 80 ? "🏆" : pct >= 50 ? "💪" : "📚";
+    const ringColor = pct >= 70 ? "#10b981" : pct >= 40 ? "#f59e0b" : "#ef4444";
+    return (
+      <div className="dqs-result">
+        <div className="dqs-result-card">
+          <div className="dqs-result-emoji">{emoji}</div>
+          <div
+            className="dqs-score-ring"
+            style={
+              {
+                "--dqs-ring-color": ringColor,
+                "--dqs-pct": `${pct}%`,
+                background: "rgba(255,255,255,0.04)",
+              } as React.CSSProperties
+            }
+          >
+            <span className="dqs-score-pct">{pct}%</span>
+            <span className="dqs-score-sub">aciertos</span>
+          </div>
+          <h2 className="dqs-result-title">{draft.title}</h2>
+          <p className="dqs-result-detail">
+            {score} de {questions.length} preguntas correctas
+          </p>
+          <div className="dqs-result-actions">
+            <button className="dqs-btn-primary" onClick={handleRestart}>
+              Intentar de nuevo
+            </button>
+            <button className="dqs-btn-secondary" onClick={onClose}>
+              Volver al borrador
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="dqs-overlay">
+      <header className="dqs-header">
+        <div className="dqs-header-left">
+          <span className="dqs-draft-label">Borrador</span>
+          <h2 className="dqs-title">{draft.title}</h2>
+        </div>
+        <div className="dqs-header-right">
+          <span className="dqs-counter">
+            {index + 1} / {questions.length}
+          </span>
+          <button
+            className="dqs-close-btn"
+            onClick={onClose}
+            aria-label="Cerrar"
+          >
+            ✕
+          </button>
+        </div>
+      </header>
+
+      <div className="dqs-progress-bar">
+        <div
+          className="dqs-progress-fill"
+          style={{ width: `${((index + 1) / questions.length) * 100}%` }}
+        />
+      </div>
+
+      <div className="dqs-body">
+        <div className="dqs-card" key={index}>
+          <p className="dqs-question-num">Pregunta {index + 1}</p>
+          <p className="dqs-question-text">{current.question}</p>
+
+          <div className="dqs-options">
+            {current.options.map((opt) => {
+              let cls = "dqs-option";
+              if (selected !== null) {
+                if (opt === current.correct_answer) cls += " correct";
+                else if (opt === selected) cls += " wrong";
+                else cls += " dimmed";
+              }
+              return (
+                <button
+                  key={opt}
+                  className={cls}
+                  onClick={() => handleAnswer(opt)}
+                  disabled={selected !== null}
+                >
+                  {opt}
+                </button>
+              );
+            })}
+          </div>
+
+          {selected !== null && current.explanation && (
+            <div className="dqs-explanation">
+              <strong>Explicación:</strong> {current.explanation}
+            </div>
+          )}
+
+          {selected !== null && (
+            <button className="dqs-next-btn" onClick={handleNext}>
+              {index + 1 >= questions.length
+                ? "Ver resultado →"
+                : "Siguiente →"}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // ─── Tipos de borrador ─────────────────────────────────────────────────────────
 
 interface DraftQuizState {
@@ -575,6 +727,7 @@ const QuizzesPage: React.FC = () => {
   const [loadingDetail, setLoadingDetail] = useState<string | null>(null);
   const [draftQuiz, setDraftQuiz] = useState<DraftQuizState | null>(null);
   const [savingDraft, setSavingDraft] = useState(false);
+  const [studyingDraft, setStudyingDraft] = useState(false);
   const { categories, loading: catsLoading } = useCategories();
   const hasCategories = catsLoading || categories.length > 0;
 
@@ -665,6 +818,15 @@ const QuizzesPage: React.FC = () => {
     );
   }
 
+  if (studyingDraft && draftQuiz) {
+    return (
+      <DraftQuizStudySession
+        draft={draftQuiz}
+        onClose={() => setStudyingDraft(false)}
+      />
+    );
+  }
+
   if (showCreate) {
     return (
       <div className="qz-page">
@@ -736,6 +898,13 @@ const QuizzesPage: React.FC = () => {
                 onClick={() => setDraftQuiz(null)}
               >
                 Descartar
+              </button>
+              <button
+                className="qz-btn-study-draft"
+                onClick={() => setStudyingDraft(true)}
+                disabled={draftQuiz.questions.length === 0}
+              >
+                Estudiar borrador →
               </button>
               <button
                 className="qz-btn-primary"
