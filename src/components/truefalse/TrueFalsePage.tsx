@@ -20,13 +20,33 @@ interface DraftTFState {
 
 // ─── Study Session ─────────────────────────────────────────────────────────────
 
-interface TFStudyProps {
-  set: TrueFalseSet;
+/** Convierte un TrueFalseSet guardado en DraftTFState para reutilizar DraftTFStudySession */
+const setToDraft = (set: TrueFalseSet): DraftTFState => ({
+  title: set.title,
+  categoryId: set.category?.id || "",
+  description: set.description ?? undefined,
+  questions: (set.questions || []).map((q, i) => ({
+    statement: q.statement,
+    is_true: q.is_true,
+    explanation: q.explanation ?? null,
+    order_index: i,
+  })),
+});
+
+interface DraftTFStudyProps {
+  draft: DraftTFState;
   onClose: () => void;
+  badge?: string;
+  returnLabel?: string;
 }
 
-const TFStudySession: React.FC<TFStudyProps> = ({ set, onClose }) => {
-  const questions = set.questions || [];
+const DraftTFStudySession: React.FC<DraftTFStudyProps> = ({
+  draft,
+  onClose,
+  badge = "Borrador",
+  returnLabel = "Volver al borrador",
+}) => {
+  const questions = draft.questions;
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<boolean | null>(null);
   const [score, setScore] = useState(0);
@@ -58,25 +78,34 @@ const TFStudySession: React.FC<TFStudyProps> = ({ set, onClose }) => {
 
   if (finished) {
     const pct = Math.round((score / questions.length) * 100);
+    const emoji = pct >= 80 ? "🏆" : pct >= 50 ? "💪" : "📚";
+    const ringColor = pct >= 70 ? "#10b981" : pct >= 40 ? "#f59e0b" : "#ef4444";
     return (
-      <div className="tf-overlay">
-        <div className="tf-result-card">
+      <div className="dtf-result">
+        <div className="dtf-result-card">
+          <div className="dtf-result-emoji">{emoji}</div>
           <div
-            className={`tf-score-circle ${pct >= 70 ? "good" : pct >= 40 ? "mid" : "low"}`}
+            className="dtf-score-ring"
+            style={
+              {
+                "--dtf-ring-color": ringColor,
+                "--dtf-pct": `${pct}%`,
+              } as React.CSSProperties
+            }
           >
-            <span className="tf-score-pct">{pct}%</span>
-            <span className="tf-score-label">Aciertos</span>
+            <span className="dtf-score-pct">{pct}%</span>
+            <span className="dtf-score-sub">aciertos</span>
           </div>
-          <h2 className="tf-result-title">{set.title}</h2>
-          <p className="tf-result-sub">
+          <h2 className="dtf-result-title">{draft.title}</h2>
+          <p className="dtf-result-detail">
             {score} de {questions.length} respuestas correctas
           </p>
-          <div className="tf-result-actions">
-            <button className="tf-btn-primary" onClick={handleRestart}>
+          <div className="dtf-result-actions">
+            <button className="dtf-btn-primary" onClick={handleRestart}>
               Intentar de nuevo
             </button>
-            <button className="tf-btn-secondary" onClick={onClose}>
-              Volver al listado
+            <button className="dtf-btn-secondary" onClick={onClose}>
+              {returnLabel}
             </button>
           </div>
         </div>
@@ -88,15 +117,18 @@ const TFStudySession: React.FC<TFStudyProps> = ({ set, onClose }) => {
   const showFeedback = selected !== null;
 
   return (
-    <div className="tf-overlay">
-      <header className="tf-study-header">
-        <h2 className="tf-study-title">{set.title}</h2>
-        <div className="tf-study-meta">
-          <span className="tf-counter">
+    <div className="dtf-overlay">
+      <header className="dtf-header">
+        <div className="dtf-header-left">
+          {badge && <span className="dtf-draft-label">{badge}</span>}
+          <h2 className="dtf-title">{draft.title}</h2>
+        </div>
+        <div className="dtf-header-right">
+          <span className="dtf-counter">
             {index + 1} / {questions.length}
           </span>
           <button
-            className="tf-close-btn"
+            className="dtf-close-btn"
             onClick={onClose}
             aria-label="Cerrar"
           >
@@ -105,27 +137,28 @@ const TFStudySession: React.FC<TFStudyProps> = ({ set, onClose }) => {
         </div>
       </header>
 
-      <div className="tf-progress-track">
+      <div className="dtf-progress-bar">
         <div
-          className="tf-progress-fill"
+          className="dtf-progress-fill"
           style={{ width: `${((index + 1) / questions.length) * 100}%` }}
         />
       </div>
 
-      <div className="tf-study-body">
-        <div className="tf-statement-card">
-          <p className="tf-statement-text">{current.statement}</p>
+      <div className="dtf-body">
+        <div className="dtf-card" key={index}>
+          <p className="dtf-question-num">Enunciado {index + 1}</p>
+          <p className="dtf-statement-text">{current.statement}</p>
 
           {!showFeedback && (
-            <div className="tf-answer-row">
+            <div className="dtf-answer-row">
               <button
-                className="tf-btn-true"
+                className="dtf-btn-true"
                 onClick={() => handleAnswer(true)}
               >
                 ✓ Verdadero
               </button>
               <button
-                className="tf-btn-false"
+                className="dtf-btn-false"
                 onClick={() => handleAnswer(false)}
               >
                 ✗ Falso
@@ -135,8 +168,10 @@ const TFStudySession: React.FC<TFStudyProps> = ({ set, onClose }) => {
 
           {showFeedback && (
             <>
-              <div className={`tf-feedback ${isCorrect ? "correct" : "wrong"}`}>
-                <span className="tf-feedback-icon">
+              <div
+                className={`dtf-feedback ${isCorrect ? "correct" : "wrong"}`}
+              >
+                <span className="dtf-feedback-icon">
                   {isCorrect ? "✓" : "✗"}
                 </span>
                 <span>
@@ -147,17 +182,14 @@ const TFStudySession: React.FC<TFStudyProps> = ({ set, onClose }) => {
               </div>
 
               {current.explanation && (
-                <div className="tf-explanation">
+                <div className="dtf-explanation">
                   <strong>Explicación:</strong> {current.explanation}
                 </div>
               )}
 
-              <button
-                className="tf-btn-primary tf-next-btn"
-                onClick={handleNext}
-              >
+              <button className="dtf-next-btn" onClick={handleNext}>
                 {index + 1 >= questions.length
-                  ? "Ver resultado"
+                  ? "Ver resultado →"
                   : "Siguiente →"}
               </button>
             </>
@@ -557,6 +589,7 @@ const TrueFalsePage: React.FC = () => {
   const [loadingDetail, setLoadingDetail] = useState<string | null>(null);
   const [draftSet, setDraftSet] = useState<DraftTFState | null>(null);
   const [savingDraft, setSavingDraft] = useState(false);
+  const [studyingDraft, setStudyingDraft] = useState(false);
   const { categories, loading: catsLoading } = useCategories();
   const hasCategories = catsLoading || categories.length > 0;
 
@@ -639,7 +672,23 @@ const TrueFalsePage: React.FC = () => {
   };
 
   if (studySet) {
-    return <TFStudySession set={studySet} onClose={() => setStudySet(null)} />;
+    return (
+      <DraftTFStudySession
+        draft={setToDraft(studySet)}
+        onClose={() => setStudySet(null)}
+        badge={studySet.category?.title}
+        returnLabel="Volver al listado"
+      />
+    );
+  }
+
+  if (studyingDraft && draftSet) {
+    return (
+      <DraftTFStudySession
+        draft={draftSet}
+        onClose={() => setStudyingDraft(false)}
+      />
+    );
   }
 
   if (showCreate) {
@@ -713,6 +762,13 @@ const TrueFalsePage: React.FC = () => {
                 onClick={() => setDraftSet(null)}
               >
                 Descartar
+              </button>
+              <button
+                className="tf-btn-study-draft"
+                onClick={() => setStudyingDraft(true)}
+                disabled={draftSet.questions.length === 0}
+              >
+                Estudiar borrador →
               </button>
               <button
                 className="tf-btn-primary"

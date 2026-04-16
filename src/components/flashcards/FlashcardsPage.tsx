@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { flashCardsApi, FlashCard } from "../../api/flashcards";
 import { useCategories } from "../../hooks/useCategories";
-import FlashcardPreview from "./FlashcardPreview";
 import StudySession from "./StudySession";
 import GenerateFlashcardsForm from "./GenerateFlashcardsForm";
 import CreateFlashcardForm from "./CreateFlashcardForm";
@@ -19,6 +18,97 @@ type DraftFlashcard = {
     title: string;
     description?: string;
   };
+};
+
+// ─── Compact inline card row ───────────────────────────────────────────────────
+interface CardRowProps {
+  question: string;
+  answer: string;
+  source?: string;
+  onDelete?: () => void;
+}
+
+const CardRow: React.FC<CardRowProps> = ({
+  question,
+  answer,
+  source,
+  onDelete,
+}) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className={`fc-row ${open ? "open" : ""}`}>
+      <button className="fc-row-toggle" onClick={() => setOpen((v) => !v)}>
+        <span className="fc-row-chevron">{open ? "▾" : "▸"}</span>
+        <span className="fc-row-question">{question}</span>
+        {source && <span className={`fc-row-badge ${source}`}>{source}</span>}
+      </button>
+      {open && (
+        <div className="fc-row-answer">
+          <p>{answer}</p>
+          {onDelete && (
+            <button className="fc-row-delete" onClick={onDelete}>
+              ✕ Eliminar
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ─── Category accordion ────────────────────────────────────────────────────────
+interface CategoryAccordionProps {
+  title: string;
+  cards: any[];
+  onStudy: () => void;
+  onDelete?: (id: string) => void;
+  isDraft?: boolean;
+}
+
+const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
+  title,
+  cards,
+  onStudy,
+  onDelete,
+  isDraft,
+}) => {
+  const [expanded, setExpanded] = useState(true);
+  return (
+    <div className="fc-accordion">
+      <div
+        className="fc-accordion-header"
+        onClick={() => setExpanded((v) => !v)}
+      >
+        <div className="fc-accordion-left">
+          <span className="fc-accordion-chevron">{expanded ? "▾" : "▸"}</span>
+          <span className="fc-accordion-title">{title}</span>
+          <span className="fc-accordion-count">{cards.length}</span>
+        </div>
+        <button
+          className="fc-accordion-study"
+          onClick={(e) => {
+            e.stopPropagation();
+            onStudy();
+          }}
+        >
+          Estudiar →
+        </button>
+      </div>
+      {expanded && (
+        <div className="fc-accordion-body">
+          {cards.map((card, i) => (
+            <CardRow
+              key={card.id ?? `${card.question}-${i}`}
+              question={card.question}
+              answer={card.answer}
+              source={card.source}
+              onDelete={onDelete ? () => onDelete(card.id) : undefined}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
 };
 
 const FlashcardsPage: React.FC = () => {
@@ -252,11 +342,16 @@ const FlashcardsPage: React.FC = () => {
               </button>
             </div>
           </div>
-          <div className="flashcards-list">
+          <div
+            className="fc-accordion-body"
+            style={{ borderTop: "1px solid #e2e8f0" }}
+          >
             {draftFlashcards.map((card, index) => (
-              <FlashcardPreview
+              <CardRow
                 key={`${card.question}-${index}`}
-                flashcard={card}
+                question={card.question}
+                answer={card.answer}
+                source={card.source}
                 onDelete={() => handleRemoveDraft(index)}
               />
             ))}
@@ -282,22 +377,11 @@ const FlashcardsPage: React.FC = () => {
         </div>
       ) : savedFlashcards.length > 0 ? (
         <>
-          <div
-            className="qz-page-header"
-            style={{ marginTop: 12, marginBottom: 16 }}
-          >
-            <div>
-              <h2
-                style={{
-                  fontSize: "1.15rem",
-                  fontWeight: 600,
-                  color: "#e2e8f0",
-                  margin: 0,
-                }}
-              >
-                Flashcards guardadas
-              </h2>
-            </div>
+          <div className="fc-list-header">
+            <span className="fc-list-count">
+              {savedFlashcards.length} flashcard
+              {savedFlashcards.length !== 1 ? "s" : ""} guardadas
+            </span>
             <button
               className="qz-btn-study"
               onClick={() =>
@@ -310,31 +394,18 @@ const FlashcardsPage: React.FC = () => {
               Estudiar todas →
             </button>
           </div>
-          <div className="categories-container">
+          <div className="fc-accordions">
             {Object.entries(groupedFlashcards).map(([categoryTitle, cards]) =>
               cards.length === 0 ? null : (
-                <div key={categoryTitle} className="category-section">
-                  <div className="category-title-row">
-                    <h3 className="category-title">{categoryTitle}</h3>
-                    <button
-                      className="qz-btn-study"
-                      onClick={() =>
-                        handleStartStudy(cards, `Estudio: ${categoryTitle}`)
-                      }
-                    >
-                      Estudiar categoría →
-                    </button>
-                  </div>
-                  <div className="flashcards-list">
-                    {cards.map((card, index) => (
-                      <FlashcardPreview
-                        key={`${card.question}-${index}`}
-                        flashcard={card}
-                        onDelete={() => handleDeleteSavedCard(card.id)}
-                      />
-                    ))}
-                  </div>
-                </div>
+                <CategoryAccordion
+                  key={categoryTitle}
+                  title={categoryTitle}
+                  cards={cards}
+                  onStudy={() =>
+                    handleStartStudy(cards, `Estudio: ${categoryTitle}`)
+                  }
+                  onDelete={handleDeleteSavedCard}
+                />
               ),
             )}
           </div>

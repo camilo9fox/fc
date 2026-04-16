@@ -538,3 +538,189 @@
 .fc-page { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
 .fc-cancel-btn { margin-top: 16px; }
 .fc-draft-section { margin-bottom: 28px; }
+
+/* --- Compact Flashcard Layout ------------------------------------------------- */
+.fc-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.fc-list-count {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.fc-accordions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Category accordion */
+.fc-accordion {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.fc-accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.fc-accordion-header:hover {
+  background: #f8fafc;
+}
+
+.fc-accordion-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.fc-accordion-chevron {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  flex-shrink: 0;
+  width: 14px;
+}
+
+.fc-accordion-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fc-accordion-count {
+  font-size: 0.72rem;
+  background: rgba(37,99,235,0.08);
+  color: #2563eb;
+  padding: 1px 7px;
+  border-radius: 20px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.fc-accordion-study {
+  background: none;
+  border: 1px solid #e2e8f0;
+  color: #2563eb;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+.fc-accordion-study:hover {
+  background: rgba(37,99,235,0.06);
+  border-color: #2563eb;
+}
+
+.fc-accordion-body {
+  border-top: 1px solid #f1f5f9;
+}
+
+/* Card row */
+.fc-row {
+  border-bottom: 1px solid #f1f5f9;
+}
+.fc-row:last-child {
+  border-bottom: none;
+}
+
+.fc-row-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.fc-row-toggle:hover {
+  background: #f8fafc;
+}
+.fc-row.open .fc-row-toggle {
+  background: #f8fafc;
+}
+
+.fc-row-chevron {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  flex-shrink: 0;
+  width: 12px;
+}
+
+.fc-row-question {
+  font-size: 0.875rem;
+  color: #1e293b;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.fc-row-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.fc-row-badge.ai {
+  background: rgba(124,58,237,0.1);
+  color: #7c3aed;
+}
+.fc-row-badge.manual {
+  background: rgba(37,99,235,0.1);
+  color: #1d4ed8;
+}
+
+.fc-row-answer {
+  padding: 10px 16px 12px 38px;
+  background: #f8fafc;
+  border-top: 1px solid #f1f5f9;
+  animation: fcFadeIn 0.15s ease;
+}
+
+@keyframes fcFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fc-row-answer p {
+  font-size: 0.875rem;
+  color: #334155;
+  line-height: 1.55;
+  margin: 0 0 8px;
+}
+
+.fc-row-delete {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+}
+.fc-row-delete:hover {
+  color: #dc2626;
+}

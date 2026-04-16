@@ -13,147 +13,41 @@ import "./QuizzesPage.css";
 
 // ─── Study Session ─────────────────────────────────────────────────────────────
 
-interface QuizStudyProps {
-  quiz: Quiz;
-  onClose: () => void;
+interface DraftQuizState {
+  title: string;
+  categoryId: string;
+  description?: string;
+  questions: DraftQuizQuestion[];
 }
 
-const QuizStudySession: React.FC<QuizStudyProps> = ({ quiz, onClose }) => {
-  const questions = quiz.questions || [];
-  const [index, setIndex] = useState(0);
-  const [selected, setSelected] = useState<string | null>(null);
-  const [score, setScore] = useState(0);
-  const [finished, setFinished] = useState(false);
-
-  const current = questions[index];
-
-  const handleAnswer = (option: string) => {
-    if (selected !== null) return;
-    setSelected(option);
-    if (option === current.correct_answer) setScore((s) => s + 1);
-  };
-
-  const handleNext = () => {
-    if (index + 1 >= questions.length) {
-      setFinished(true);
-    } else {
-      setIndex((i) => i + 1);
-      setSelected(null);
-    }
-  };
-
-  const handleRestart = () => {
-    setIndex(0);
-    setSelected(null);
-    setScore(0);
-    setFinished(false);
-  };
-
-  if (finished) {
-    const pct = Math.round((score / questions.length) * 100);
-    return (
-      <div className="qz-overlay">
-        <div className="qz-result-card">
-          <div
-            className={`qz-score-circle ${pct >= 70 ? "good" : pct >= 40 ? "mid" : "low"}`}
-          >
-            <span className="qz-score-pct">{pct}%</span>
-            <span className="qz-score-label">Aciertos</span>
-          </div>
-          <h2 className="qz-result-title">{quiz.title}</h2>
-          <p className="qz-result-sub">
-            {score} de {questions.length} preguntas correctas
-          </p>
-          <div className="qz-result-actions">
-            <button className="qz-btn-primary" onClick={handleRestart}>
-              Intentar de nuevo
-            </button>
-            <button className="qz-btn-secondary" onClick={onClose}>
-              Volver al listado
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="qz-overlay">
-      <header className="qz-study-header">
-        <h2 className="qz-study-title">{quiz.title}</h2>
-        <div className="qz-study-meta">
-          <span className="qz-counter">
-            {index + 1} / {questions.length}
-          </span>
-          <button
-            className="qz-close-btn"
-            onClick={onClose}
-            aria-label="Cerrar"
-          >
-            ✕
-          </button>
-        </div>
-      </header>
-
-      <div className="qz-progress-track">
-        <div
-          className="qz-progress-fill"
-          style={{ width: `${((index + 1) / questions.length) * 100}%` }}
-        />
-      </div>
-
-      <div className="qz-study-body">
-        <div className="qz-question-card">
-          <p className="qz-question-text">{current.question}</p>
-
-          <div className="qz-options-grid">
-            {current.options.map((opt) => {
-              let cls = "qz-option";
-              if (selected !== null) {
-                if (opt === current.correct_answer) cls += " correct";
-                else if (opt === selected) cls += " wrong";
-                else cls += " dimmed";
-              }
-              return (
-                <button
-                  key={opt}
-                  className={cls}
-                  onClick={() => handleAnswer(opt)}
-                  disabled={selected !== null}
-                >
-                  {opt}
-                </button>
-              );
-            })}
-          </div>
-
-          {selected !== null && current.explanation && (
-            <div className="qz-explanation">
-              <strong>Explicación:</strong> {current.explanation}
-            </div>
-          )}
-
-          {selected !== null && (
-            <button className="qz-btn-primary qz-next-btn" onClick={handleNext}>
-              {index + 1 >= questions.length ? "Ver resultado" : "Siguiente →"}
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
+/** Convierte un Quiz guardado en DraftQuizState para reutilizar DraftQuizStudySession */
+const quizToDraft = (quiz: Quiz): DraftQuizState => ({
+  title: quiz.title,
+  categoryId: quiz.category?.id || "",
+  description: quiz.description ?? undefined,
+  questions: (quiz.questions || []).map((q, i) => ({
+    question: q.question,
+    options: q.options,
+    correct_answer: q.correct_answer,
+    explanation: q.explanation ?? null,
+    order_index: i,
+  })),
+});
 
 // ─── Draft Quiz Study Session ──────────────────────────────────────────────────
 
 interface DraftQuizStudyProps {
   draft: DraftQuizState;
   onClose: () => void;
+  badge?: string;
+  returnLabel?: string;
 }
 
 const DraftQuizStudySession: React.FC<DraftQuizStudyProps> = ({
   draft,
   onClose,
+  badge = "Borrador",
+  returnLabel = "Volver al borrador",
 }) => {
   const questions = draft.questions;
   const [index, setIndex] = useState(0);
@@ -215,7 +109,7 @@ const DraftQuizStudySession: React.FC<DraftQuizStudyProps> = ({
               Intentar de nuevo
             </button>
             <button className="dqs-btn-secondary" onClick={onClose}>
-              Volver al borrador
+              {returnLabel}
             </button>
           </div>
         </div>
@@ -227,7 +121,7 @@ const DraftQuizStudySession: React.FC<DraftQuizStudyProps> = ({
     <div className="dqs-overlay">
       <header className="dqs-header">
         <div className="dqs-header-left">
-          <span className="dqs-draft-label">Borrador</span>
+          {badge && <span className="dqs-draft-label">{badge}</span>}
           <h2 className="dqs-title">{draft.title}</h2>
         </div>
         <div className="dqs-header-right">
@@ -295,15 +189,6 @@ const DraftQuizStudySession: React.FC<DraftQuizStudyProps> = ({
     </div>
   );
 };
-
-// ─── Tipos de borrador ─────────────────────────────────────────────────────────
-
-interface DraftQuizState {
-  title: string;
-  categoryId: string;
-  description?: string;
-  questions: DraftQuizQuestion[];
-}
 
 // ─── Generate Form (IA) ────────────────────────────────────────────────────────
 
@@ -814,7 +699,12 @@ const QuizzesPage: React.FC = () => {
 
   if (studyQuiz) {
     return (
-      <QuizStudySession quiz={studyQuiz} onClose={() => setStudyQuiz(null)} />
+      <DraftQuizStudySession
+        draft={quizToDraft(studyQuiz)}
+        onClose={() => setStudyQuiz(null)}
+        badge={studyQuiz.category?.title}
+        returnLabel="Volver al listado"
+      />
     );
   }
 
