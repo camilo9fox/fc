@@ -23,6 +23,7 @@ const StudySession: React.FC<StudySessionProps> = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [animating, setAnimating] = useState(false);
   const [flipped, setFlipped] = useState(false);
+  const [snapping, setSnapping] = useState(false);
 
   const goNext = useCallback(() => {
     if (animating || total <= 1) return;
@@ -42,10 +43,14 @@ const StudySession: React.FC<StudySessionProps> = ({
     (e: React.TransitionEvent<HTMLDivElement>) => {
       if (e.propertyName !== "transform") return;
       const stepsForward = Math.round(-ringAngle / ANGLE_STEP);
+      setSnapping(true);
       setCurrentIndex((i) => (((i + stepsForward) % total) + total) % total);
       setRingAngle(0);
       requestAnimationFrame(() =>
-        requestAnimationFrame(() => setAnimating(false)),
+        requestAnimationFrame(() => {
+          setSnapping(false);
+          setAnimating(false);
+        }),
       );
     },
     [ringAngle, total],
@@ -91,6 +96,7 @@ const StudySession: React.FC<StudySessionProps> = ({
             transition: animating
               ? `transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94)`
               : "none",
+            opacity: snapping ? 0 : 1,
           }}
           onTransitionEnd={handleRingTransitionEnd}
         >
