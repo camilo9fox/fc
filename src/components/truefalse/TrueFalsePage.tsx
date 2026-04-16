@@ -1,13 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useCategories } from "../../hooks/useCategories";
+import NoCategoryBanner from "../layout/NoCategoryBanner";
 import {
   trueFalseApi,
   TrueFalseSet,
   TrueFalseQuestion,
   CreateTrueFalseSetRequest,
   CreateTrueFalseQuestionRequest,
+  DraftTrueFalseQuestion,
 } from "../../api/trueFalse";
 import "./TrueFalsePage.css";
+
+interface DraftTFState {
+  title: string;
+  categoryId: string;
+  description?: string;
+  questions: DraftTrueFalseQuestion[];
+}
 
 // ─── Study Session ─────────────────────────────────────────────────────────────
 
@@ -162,12 +171,12 @@ const TFStudySession: React.FC<TFStudyProps> = ({ set, onClose }) => {
 // ─── Generate Form (IA) ────────────────────────────────────────────────────────
 
 interface GenerateTFFormProps {
-  onCreated: (set: TrueFalseSet) => void;
+  onDrafted: (draft: DraftTFState) => void;
   onCancel: () => void;
 }
 
 const GenerateTFForm: React.FC<GenerateTFFormProps> = ({
-  onCreated,
+  onDrafted,
   onCancel,
 }) => {
   const { categories } = useCategories();
@@ -202,8 +211,12 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({
       if (file) formData.append("file", file);
       if (text.trim()) formData.append("text", text.trim());
 
-      const created = await trueFalseApi.generate(formData);
-      onCreated(created);
+      const result = await trueFalseApi.generate(formData);
+      onDrafted({
+        title: title.trim(),
+        categoryId,
+        questions: result.questions,
+      });
     } catch (err: any) {
       setError(
         err?.response?.data?.error ||
@@ -332,11 +345,11 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({
 // ─── Create Form ───────────────────────────────────────────────────────────────
 
 interface CreateTFFormProps {
-  onCreated: (set: TrueFalseSet) => void;
+  onDrafted: (draft: DraftTFState) => void;
   onCancel: () => void;
 }
 
-const CreateTFForm: React.FC<CreateTFFormProps> = ({ onCreated, onCancel }) => {
+const CreateTFForm: React.FC<CreateTFFormProps> = ({ onDrafted, onCancel }) => {
   const { categories } = useCategories();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -387,24 +400,20 @@ const CreateTFForm: React.FC<CreateTFFormProps> = ({ onCreated, onCancel }) => {
 
     setSaving(true);
     try {
-      const payload: CreateTrueFalseSetRequest = {
-        title: title.trim(),
-        category_id: categoryId,
-        description: description.trim() || undefined,
-        questions: questions.map((q, i) => ({
+      const draftQuestions: DraftTrueFalseQuestion[] = questions.map(
+        (q, i) => ({
           statement: q.statement.trim(),
           is_true: q.is_true,
-          explanation: q.explanation?.trim() || undefined,
+          explanation: q.explanation?.trim() || null,
           order_index: i,
-        })),
-      };
-      const created = await trueFalseApi.create(payload);
-      onCreated(created);
-    } catch (err: any) {
-      setError(
-        err?.response?.data?.error ||
-          "Error al crear el set de verdadero/falso.",
+        }),
       );
+      onDrafted({
+        title: title.trim(),
+        categoryId,
+        description: description.trim() || undefined,
+        questions: draftQuestions,
+      });
     } finally {
       setSaving(false);
     }
@@ -529,7 +538,7 @@ const CreateTFForm: React.FC<CreateTFFormProps> = ({ onCreated, onCancel }) => {
           Cancelar
         </button>
         <button type="submit" className="tf-btn-primary" disabled={saving}>
-          {saving ? "Guardando..." : "Crear set"}
+          {saving ? "Preparando..." : "Añadir al borrador"}
         </button>
       </div>
     </form>
@@ -546,6 +555,10 @@ const TrueFalsePage: React.FC = () => {
   const [createMode, setCreateMode] = useState<"manual" | "ai">("manual");
   const [studySet, setStudySet] = useState<TrueFalseSet | null>(null);
   const [loadingDetail, setLoadingDetail] = useState<string | null>(null);
+  const [draftSet, setDraftSet] = useState<DraftTFState | null>(null);
+  const [savingDraft, setSavingDraft] = useState(false);
+  const { categories, loading: catsLoading } = useCategories();
+  const hasCategories = catsLoading || categories.length > 0;
 
   useEffect(() => {
     const load = async () => {
@@ -561,9 +574,42 @@ const TrueFalsePage: React.FC = () => {
     load();
   }, []);
 
-  const handleCreated = (set: TrueFalseSet) => {
-    setSets((prev) => [set, ...prev]);
+  const handleDrafted = (draft: DraftTFState) => {
+    setDraftSet(draft);
     setShowCreate(false);
+  };
+
+  const handleSaveDraft = async () => {
+    if (!draftSet) return;
+    setSavingDraft(true);
+    try {
+      const payload: CreateTrueFalseSetRequest = {
+        title: draftSet.title,
+        category_id: draftSet.categoryId,
+        description: draftSet.description,
+        questions: draftSet.questions.map((q) => ({
+          statement: q.statement,
+          is_true: q.is_true,
+          explanation: q.explanation ?? undefined,
+          order_index: q.order_index,
+        })),
+      };
+      const saved = await trueFalseApi.create(payload);
+      setSets((prev) => [saved, ...prev]);
+      setDraftSet(null);
+    } catch (err: any) {
+      setError(err?.response?.data?.error || "Error al guardar el set.");
+    } finally {
+      setSavingDraft(false);
+    }
+  };
+
+  const handleRemoveDraftQuestion = (index: number) => {
+    setDraftSet((prev) =>
+      prev
+        ? { ...prev, questions: prev.questions.filter((_, i) => i !== index) }
+        : null,
+    );
   };
 
   const handleStudy = async (set: TrueFalseSet) => {
@@ -616,12 +662,12 @@ const TrueFalsePage: React.FC = () => {
 
         {createMode === "manual" ? (
           <CreateTFForm
-            onCreated={handleCreated}
+            onDrafted={handleDrafted}
             onCancel={() => setShowCreate(false)}
           />
         ) : (
           <GenerateTFForm
-            onCreated={handleCreated}
+            onDrafted={handleDrafted}
             onCancel={() => setShowCreate(false)}
           />
         )}
@@ -638,12 +684,66 @@ const TrueFalsePage: React.FC = () => {
             Crea y practica sets de enunciados verdadero/falso
           </p>
         </div>
-        <button className="tf-btn-primary" onClick={() => setShowCreate(true)}>
+        <button
+          className="tf-btn-primary"
+          onClick={() => setShowCreate(true)}
+          disabled={!hasCategories}
+        >
           + Nuevo set
         </button>
       </div>
 
       {error && <p className="tf-error">{error}</p>}
+
+      {!hasCategories && <NoCategoryBanner feature="sets de V/F" />}
+
+      {draftSet && (
+        <section className="tf-draft-panel">
+          <div className="tf-draft-header">
+            <div>
+              <h2 className="tf-draft-title">Borrador: {draftSet.title}</h2>
+              <span className="tf-draft-badge">
+                {draftSet.questions.length} enunciado
+                {draftSet.questions.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+            <div className="tf-draft-actions">
+              <button
+                className="tf-btn-secondary"
+                onClick={() => setDraftSet(null)}
+              >
+                Descartar
+              </button>
+              <button
+                className="tf-btn-primary"
+                onClick={handleSaveDraft}
+                disabled={savingDraft || draftSet.questions.length === 0}
+              >
+                {savingDraft ? "Guardando..." : "Guardar set"}
+              </button>
+            </div>
+          </div>
+          <div className="tf-draft-questions">
+            {draftSet.questions.map((q, i) => (
+              <div key={i} className="tf-draft-question">
+                <span className="tf-draft-q-badge">
+                  {q.is_true ? "V" : "F"}
+                </span>
+                <span className="tf-draft-q-text">
+                  {i + 1}. {q.statement}
+                </span>
+                <button
+                  className="tf-draft-q-remove"
+                  onClick={() => handleRemoveDraftQuestion(i)}
+                  aria-label="Eliminar enunciado"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {loading ? (
         <div className="tf-loading">Cargando sets...</div>
@@ -655,6 +755,7 @@ const TrueFalsePage: React.FC = () => {
           <button
             className="tf-btn-primary"
             onClick={() => setShowCreate(true)}
+            disabled={!hasCategories}
           >
             Crear set
           </button>

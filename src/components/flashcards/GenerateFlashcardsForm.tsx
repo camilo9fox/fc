@@ -11,10 +11,12 @@ interface GenerateFlashcardsFormProps {
       categoryId?: string;
     }>,
   ) => void;
+  onCancel: () => void;
 }
 
 const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
   onGenerated,
+  onCancel,
 }) => {
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -34,6 +36,11 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
     e.preventDefault();
     if (!file && !text.trim()) {
       setError("Debes ingresar texto o seleccionar un archivo.");
+      return;
+    }
+
+    if (!selectedCategoryId) {
+      setError("Debes seleccionar un tema de estudio.");
       return;
     }
     setError(null);
@@ -83,68 +90,102 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
   };
 
   return (
-    <form className="flashcard-form" onSubmit={handleSubmit}>
-      <div className="form-row">
-        <label htmlFor="generateText">Texto para generar flashcards</label>
+    <form className="qz-form" onSubmit={handleSubmit}>
+      <div className="qz-form-header">
+        <h2>Generar flashcards con IA</h2>
+        <button type="button" className="qz-close-btn" onClick={onCancel}>
+          ✕
+        </button>
+      </div>
+
+      <div className="qz-form-meta">
+        <div className="qz-field">
+          <label htmlFor="generateCategory">Tema de estudio</label>
+          <select
+            id="generateCategory"
+            value={selectedCategoryId}
+            onChange={(e) => setSelectedCategoryId(e.target.value)}
+            disabled={isLoading}
+            required
+          >
+            <option value="">Selecciona un tema</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.title}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="qz-field">
+          <label htmlFor="generateQuantity">
+            Cantidad de flashcards (1 – 10)
+          </label>
+          <input
+            id="generateQuantity"
+            type="number"
+            min={1}
+            max={10}
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
+            disabled={isLoading}
+          />
+        </div>
+      </div>
+
+      <div className="qz-field">
+        <label htmlFor="generateText">Texto de estudio</label>
         <textarea
           id="generateText"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          rows={5}
-          placeholder="Escribe un texto, resumen o pregunta para generar flashcards..."
+          rows={6}
+          placeholder="Pega aquí el contenido del que quieres generar flashcards..."
           disabled={isLoading}
         />
       </div>
 
-      <div className="form-row">
-        <label htmlFor="generateFile">Archivo PDF/TXT</label>
-        <input
-          id="generateFile"
-          type="file"
-          accept=".txt,.pdf"
-          onChange={handleFileChange}
-          disabled={isLoading}
-        />
-        {file && <span className="selected-file">Archivo: {file.name}</span>}
+      <div className="qz-field">
+        <label>O sube un archivo (PDF / TXT)</label>
+        <div className="qz-file-row">
+          <label
+            className="qz-btn-secondary qz-file-btn"
+            style={{ cursor: "pointer" }}
+          >
+            {file ? `📄 ${file.name}` : "Seleccionar archivo"}
+            <input
+              id="generateFile"
+              type="file"
+              accept=".txt,.pdf"
+              onChange={handleFileChange}
+              disabled={isLoading}
+              style={{ display: "none" }}
+            />
+          </label>
+          {file && (
+            <button
+              type="button"
+              className="qz-remove-btn"
+              onClick={() => setFile(null)}
+              disabled={isLoading}
+            >
+              Quitar
+            </button>
+          )}
+        </div>
       </div>
 
-      <div className="form-row compact-row">
-        <label htmlFor="generateQuantity">Cantidad de flashcards</label>
-        <input
-          id="generateQuantity"
-          type="number"
-          min={1}
-          max={10}
-          value={quantity}
-          onChange={(e) => setQuantity(Number(e.target.value))}
-          disabled={isLoading}
-        />
-      </div>
-
-      <div className="form-row">
-        <label htmlFor="generateCategory">Categoría (opcional)</label>
-        <select
-          id="generateCategory"
-          value={selectedCategoryId}
-          onChange={(e) => setSelectedCategoryId(e.target.value)}
-          disabled={isLoading}
-        >
-          <option value="">Sin categoría</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.title}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <button className="primary-button" type="submit" disabled={isLoading}>
-        {isLoading ? "Procesando documento..." : "Generar flashcards"}
-      </button>
+      {error && <p className="qz-error">{error}</p>}
 
       {job && (
-        <div className="generation-job-status" aria-live="polite">
-          <div className="generation-job-status-header">
+        <div className="qz-generating-msg" aria-live="polite">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: 6,
+            }}
+          >
             <strong>{job.progress.stage}</strong>
             <span>{job.progress.percent}%</span>
           </div>
@@ -155,7 +196,7 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
             />
           </div>
           {job.progress.metadata?.completed && job.progress.metadata?.total && (
-            <p>
+            <p style={{ marginTop: 6, fontSize: "0.85rem" }}>
               Secciones procesadas: {job.progress.metadata.completed} /{" "}
               {job.progress.metadata.total}
             </p>
@@ -163,7 +204,19 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
         </div>
       )}
 
-      {error && <p className="field-error">{error}</p>}
+      <div className="qz-form-actions">
+        <button
+          type="button"
+          className="qz-btn-secondary"
+          onClick={onCancel}
+          disabled={isLoading}
+        >
+          Cancelar
+        </button>
+        <button className="qz-btn-primary" type="submit" disabled={isLoading}>
+          {isLoading ? "Procesando documento..." : "Generar flashcards"}
+        </button>
+      </div>
     </form>
   );
 };

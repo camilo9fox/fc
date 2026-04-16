@@ -533,3 +533,8 @@
     align-items: flex-start;
   }
 }
+
+/* --- New page layout (matching Quiz/TF style) ------------------------------ */
+.fc-page { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+.fc-cancel-btn { margin-top: 16px; }
+.fc-draft-section { margin-bottom: 28px; }

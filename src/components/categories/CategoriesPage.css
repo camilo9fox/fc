@@ -1,0 +1,639 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Temas de estudio — ts-* design system
+   Palette: #631D76 (purple) · #EE4266 (pink) · #f0eaf5 (bg) · #2E2532 (dark)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Page wrapper ─────────────────────────────────────────────────────────── */
+.ts-page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 1020px;
+  margin: 0 auto;
+  animation: tsFadeIn 0.3s ease;
+}
+
+@keyframes tsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Hero ─────────────────────────────────────────────────────────────────── */
+.ts-hero {
+  background: linear-gradient(135deg, #4a1260 0%, #2e0a42 100%);
+  border-radius: 18px;
+  padding: 36px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ts-hero::before {
+  content: "";
+  position: absolute;
+  top: -40px;
+  right: 100px;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(
+    circle,
+    rgba(238, 66, 102, 0.18) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.ts-hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ts-hero-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #ee4266;
+  border: 1px solid rgba(238, 66, 102, 0.45);
+  border-radius: 20px;
+  padding: 3px 10px;
+  width: fit-content;
+}
+
+.ts-hero-title {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.ts-hero-sub {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 440px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.ts-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 6px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #631d76, #ee4266);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.88rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: fit-content;
+  transition:
+    opacity 0.2s,
+    transform 0.15s;
+}
+
+.ts-hero-cta:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.ts-hero-illo {
+  opacity: 0.18;
+  flex-shrink: 0;
+}
+
+/* ─── Cómo funciona ────────────────────────────────────────────────────────── */
+.ts-how {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #e9e0f0;
+  border-radius: 14px;
+  padding: 20px 28px;
+  flex-wrap: wrap;
+}
+
+.ts-how-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 160px;
+}
+
+.ts-how-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #631d76, #ee4266);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ts-how-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ts-how-info strong {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #2e2532;
+}
+
+.ts-how-info span {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.ts-how-arrow {
+  font-size: 1.1rem;
+  color: #c8b8d4;
+  font-weight: 300;
+  flex-shrink: 0;
+}
+
+/* ─── Alert ────────────────────────────────────────────────────────────────── */
+.ts-alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fff0f3;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.87rem;
+  color: #dc2626;
+}
+
+.ts-alert button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #dc2626;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 2px;
+  flex-shrink: 0;
+}
+
+/* ─── Loading ──────────────────────────────────────────────────────────────── */
+.ts-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 40px;
+  justify-content: center;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.ts-spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid #e9e0f0;
+  border-top-color: #631d76;
+  border-radius: 50%;
+  animation: tsSpin 0.75s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes tsSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─── Empty state ──────────────────────────────────────────────────────────── */
+.ts-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 56px 24px;
+  text-align: center;
+}
+
+.ts-empty-illo {
+  opacity: 0.5;
+  margin-bottom: 4px;
+}
+
+.ts-empty-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #2e2532;
+  margin: 0;
+}
+
+.ts-empty-sub {
+  font-size: 0.87rem;
+  color: #64748b;
+  max-width: 320px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ─── Section label ────────────────────────────────────────────────────────── */
+.ts-section-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+/* ─── Grid ─────────────────────────────────────────────────────────────────── */
+.ts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+  gap: 18px;
+}
+
+/* ─── Theme Card ───────────────────────────────────────────────────────────── */
+.ts-card {
+  background: #fff;
+  border: 1px solid #e9e0f0;
+  border-radius: 14px;
+  display: flex;
+  overflow: hidden;
+  transition:
+    box-shadow 0.2s,
+    transform 0.15s;
+}
+
+.ts-card:hover {
+  box-shadow: 0 6px 22px rgba(99, 29, 118, 0.12);
+  transform: translateY(-2px);
+}
+
+.ts-card-accent {
+  width: 5px;
+  background: linear-gradient(180deg, #631d76 0%, #ee4266 100%);
+  flex-shrink: 0;
+}
+
+.ts-card-body {
+  flex: 1;
+  padding: 18px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ts-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.ts-card-icon {
+  background: #f5eefa;
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ts-card-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.ts-card-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px 6px;
+  border-radius: 7px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.ts-card-btn:hover {
+  background: #f1f5f9;
+  color: #2e2532;
+}
+
+.ts-card-btn-del:hover {
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
+}
+
+.ts-card-title {
+  font-size: 0.97rem;
+  font-weight: 700;
+  color: #2e2532;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.ts-card-desc {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ts-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.ts-tag {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #631d76;
+  background: #f5eefa;
+  border-radius: 20px;
+  padding: 2px 9px;
+}
+
+/* ─── Add card button ──────────────────────────────────────────────────────── */
+.ts-card-add {
+  border: 2px dashed #d8c8e8;
+  background: none;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #a07aba;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 28px;
+  transition:
+    border-color 0.2s,
+    color 0.2s,
+    background 0.2s;
+  min-height: 130px;
+}
+
+.ts-card-add:hover {
+  border-color: #631d76;
+  color: #631d76;
+  background: #faf6fd;
+}
+
+/* ─── Modal backdrop & box ─────────────────────────────────────────────────── */
+.ts-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.48);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+  animation: tsFadeIn 0.2s ease;
+}
+
+.ts-modal {
+  background: #fff;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  animation: tsSlideUp 0.25s ease;
+}
+
+@keyframes tsSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ts-modal-header {
+  background: linear-gradient(135deg, #631d76, #4a1260);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ts-modal-icon {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ts-modal-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  flex: 1;
+}
+
+.ts-modal-close {
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.ts-modal-close:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+.ts-modal-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ts-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #f0eaf5;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ─── Form fields ──────────────────────────────────────────────────────────── */
+.ts-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ts-label {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: #2e2532;
+}
+
+.ts-optional {
+  font-weight: 400;
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.ts-input,
+.ts-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 13px;
+  font-size: 0.9rem;
+  color: #2e2532;
+  background: #fafafa;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.ts-input:focus,
+.ts-textarea:focus {
+  outline: none;
+  border-color: #631d76;
+  box-shadow: 0 0 0 3px rgba(99, 29, 118, 0.1);
+  background: #fff;
+}
+
+.ts-field-error {
+  font-size: 0.82rem;
+  color: #dc2626;
+  margin: 0;
+}
+
+/* ─── Buttons ──────────────────────────────────────────────────────────────── */
+.ts-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #631d76, #ee4266);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.88rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    opacity 0.2s,
+    transform 0.15s;
+}
+
+.ts-btn-primary:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.ts-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ts-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: #fff;
+  color: #2e2532;
+  font-weight: 500;
+  font-size: 0.88rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.ts-btn-secondary:hover:not(:disabled) {
+  background: #f8f4fc;
+  border-color: #c8b8d4;
+}
+
+.ts-btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ─── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .ts-hero {
+    padding: 26px 22px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ts-hero-illo {
+    display: none;
+  }
+
+  .ts-how {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ts-how-arrow {
+    transform: rotate(90deg);
+    align-self: center;
+  }
+
+  .ts-grid {
+    grid-template-columns: 1fr;
+  }
+}

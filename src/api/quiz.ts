@@ -39,6 +39,19 @@ export interface CreateQuizQuestionRequest {
   order_index?: number;
 }
 
+/** Question returned by the AI generate endpoint (not yet saved) */
+export interface DraftQuizQuestion {
+  question: string;
+  options: string[];
+  correct_answer: string;
+  explanation: string | null;
+  order_index: number;
+}
+
+export interface GenerateQuizResponse {
+  questions: DraftQuizQuestion[];
+}
+
 export interface CreateQuizRequest {
   title: string;
   category_id: string;
@@ -110,8 +123,8 @@ export const quizApi = {
     await apiClient.delete(`/quizzes/${quizId}/questions/${questionId}`);
   },
 
-  /** Generate a quiz from a document or text using AI */
-  generate: async (formData: FormData): Promise<Quiz> => {
+  /** Generate quiz questions from a document or text using AI (returns draft, not saved) */
+  generate: async (formData: FormData): Promise<GenerateQuizResponse> => {
     const response = await apiClient.post("/quizzes/generate", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });

@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
 import FlashcardsPage from './components/flashcards/FlashcardsPage';
+import CategoriesPage from './components/categories/CategoriesPage';
 import QuizzesPage from './components/quizzes/QuizzesPage';
 import TrueFalsePage from './components/truefalse/TrueFalsePage';
 import LandingPage from './components/landing/LandingPage';
@@ -40,7 +41,7 @@ const AppRoutes: React.FC = () => {
         element={user ? <Navigate to="/flashcards" /> : <Signup />}
       />
       <Route
-        path="/flashcards/*"
+        path="/flashcards"
         element={
           <ProtectedRoute>
             <DashboardLayout>
@@ -65,6 +66,16 @@ const AppRoutes: React.FC = () => {
           <ProtectedRoute>
             <DashboardLayout>
               <TrueFalsePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/categories"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <CategoriesPage />
             </DashboardLayout>
           </ProtectedRoute>
         }

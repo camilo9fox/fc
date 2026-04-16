@@ -36,6 +36,18 @@ export interface CreateTrueFalseQuestionRequest {
   order_index?: number;
 }
 
+/** Statement returned by the AI generate endpoint (not yet saved) */
+export interface DraftTrueFalseQuestion {
+  statement: string;
+  is_true: boolean;
+  explanation: string | null;
+  order_index: number;
+}
+
+export interface GenerateTrueFalseResponse {
+  questions: DraftTrueFalseQuestion[];
+}
+
 export interface CreateTrueFalseSetRequest {
   title: string;
   category_id: string;
@@ -107,8 +119,8 @@ export const trueFalseApi = {
     await apiClient.delete(`/true-false/${setId}/questions/${questionId}`);
   },
 
-  /** Generate a true/false set from a document or text using AI */
-  generate: async (formData: FormData): Promise<TrueFalseSet> => {
+  /** Generate true/false statements from a document or text using AI (returns draft, not saved) */
+  generate: async (formData: FormData): Promise<GenerateTrueFalseResponse> => {
     const response = await apiClient.post("/true-false/generate", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });

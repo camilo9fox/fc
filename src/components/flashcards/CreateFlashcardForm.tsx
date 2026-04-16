@@ -8,10 +8,12 @@ interface CreateFlashcardFormProps {
     source: "manual";
     categoryId?: string;
   }) => void;
+  onCancel: () => void;
 }
 
 const CreateFlashcardForm: React.FC<CreateFlashcardFormProps> = ({
   onCreated,
+  onCancel,
 }) => {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -25,6 +27,11 @@ const CreateFlashcardForm: React.FC<CreateFlashcardFormProps> = ({
 
     if (!question.trim() || !answer.trim()) {
       setError("Pregunta y respuesta son obligatorias.");
+      return;
+    }
+
+    if (!selectedCategoryId) {
+      setError("Debes seleccionar un tema de estudio.");
       return;
     }
 
@@ -42,50 +49,65 @@ const CreateFlashcardForm: React.FC<CreateFlashcardFormProps> = ({
   };
 
   return (
-    <form className="flashcard-form" onSubmit={handleSubmit}>
-      <div className="form-row">
-        <label htmlFor="manualQuestion">Pregunta</label>
-        <input
-          id="manualQuestion"
-          type="text"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Escribe la pregunta aquí"
-        />
+    <form className="qz-form" onSubmit={handleSubmit}>
+      <div className="qz-form-header">
+        <h2>Nueva flashcard</h2>
+        <button type="button" className="qz-close-btn" onClick={onCancel}>
+          ✕
+        </button>
       </div>
 
-      <div className="form-row">
-        <label htmlFor="manualAnswer">Respuesta</label>
-        <textarea
-          id="manualAnswer"
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
-          rows={4}
-          placeholder="Escribe la respuesta aquí"
-        />
+      <div className="qz-form-meta">
+        <div className="qz-field">
+          <label htmlFor="manualQuestion">Pregunta</label>
+          <input
+            id="manualQuestion"
+            type="text"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            placeholder="Escribe la pregunta aquí"
+          />
+        </div>
+
+        <div className="qz-field">
+          <label htmlFor="manualAnswer">Respuesta</label>
+          <textarea
+            id="manualAnswer"
+            value={answer}
+            onChange={(e) => setAnswer(e.target.value)}
+            rows={4}
+            placeholder="Escribe la respuesta aquí"
+          />
+        </div>
+
+        <div className="qz-field">
+          <label htmlFor="manualCategory">Tema de estudio</label>
+          <select
+            id="manualCategory"
+            value={selectedCategoryId}
+            onChange={(e) => setSelectedCategoryId(e.target.value)}
+            required
+          >
+            <option value="">Selecciona un tema</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.title}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      <div className="form-row">
-        <label htmlFor="manualCategory">Categoría (opcional)</label>
-        <select
-          id="manualCategory"
-          value={selectedCategoryId}
-          onChange={(e) => setSelectedCategoryId(e.target.value)}
-        >
-          <option value="">Sin categoría</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.title}
-            </option>
-          ))}
-        </select>
+      {error && <p className="qz-error">{error}</p>}
+
+      <div className="qz-form-actions">
+        <button type="button" className="qz-btn-secondary" onClick={onCancel}>
+          Cancelar
+        </button>
+        <button type="submit" className="qz-btn-primary">
+          Agregar a borrador
+        </button>
       </div>
-
-      <button className="primary-button" type="submit">
-        Agregar a borrador
-      </button>
-
-      {error && <p className="field-error">{error}</p>}
     </form>
   );
 };

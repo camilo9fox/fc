@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import { useCategories } from "../../hooks/useCategories";
+import NoCategoryBanner from "../layout/NoCategoryBanner";
 import {
   quizApi,
   Quiz,
   QuizQuestion,
   CreateQuizRequest,
   CreateQuizQuestionRequest,
+  DraftQuizQuestion,
 } from "../../api/quiz";
 import "./QuizzesPage.css";
 
@@ -143,15 +144,24 @@ const QuizStudySession: React.FC<QuizStudyProps> = ({ quiz, onClose }) => {
   );
 };
 
+// ─── Tipos de borrador ─────────────────────────────────────────────────────────
+
+interface DraftQuizState {
+  title: string;
+  categoryId: string;
+  description?: string;
+  questions: DraftQuizQuestion[];
+}
+
 // ─── Generate Form (IA) ────────────────────────────────────────────────────────
 
 interface GenerateQuizFormProps {
-  onCreated: (quiz: Quiz) => void;
+  onDrafted: (draft: DraftQuizState) => void;
   onCancel: () => void;
 }
 
 const GenerateQuizForm: React.FC<GenerateQuizFormProps> = ({
-  onCreated,
+  onDrafted,
   onCancel,
 }) => {
   const { categories } = useCategories();
@@ -186,8 +196,12 @@ const GenerateQuizForm: React.FC<GenerateQuizFormProps> = ({
       if (file) formData.append("file", file);
       if (text.trim()) formData.append("text", text.trim());
 
-      const created = await quizApi.generate(formData);
-      onCreated(created);
+      const result = await quizApi.generate(formData);
+      onDrafted({
+        title: title.trim(),
+        categoryId,
+        questions: result.questions,
+      });
     } catch (err: any) {
       setError(
         err?.response?.data?.error || "Error al generar el cuestionario.",
@@ -315,12 +329,12 @@ const GenerateQuizForm: React.FC<GenerateQuizFormProps> = ({
 // ─── Create Form ───────────────────────────────────────────────────────────────
 
 interface CreateQuizFormProps {
-  onCreated: (quiz: Quiz) => void;
+  onDrafted: (draft: DraftQuizState) => void;
   onCancel: () => void;
 }
 
 const CreateQuizForm: React.FC<CreateQuizFormProps> = ({
-  onCreated,
+  onDrafted,
   onCancel,
 }) => {
   const { categories } = useCategories();
@@ -402,20 +416,19 @@ const CreateQuizForm: React.FC<CreateQuizFormProps> = ({
 
     setSaving(true);
     try {
-      const payload: CreateQuizRequest = {
+      const draftQuestions: DraftQuizQuestion[] = questions.map((q, i) => ({
+        question: q.question.trim(),
+        options: q.options.filter((o) => o.trim()),
+        correct_answer: q.correct_answer.trim(),
+        explanation: q.explanation?.trim() || null,
+        order_index: i,
+      }));
+      onDrafted({
         title: title.trim(),
-        category_id: categoryId,
+        categoryId,
         description: description.trim() || undefined,
-        questions: questions.map((q, i) => ({
-          question: q.question.trim(),
-          options: q.options.filter((o) => o.trim()),
-          correct_answer: q.correct_answer.trim(),
-          explanation: q.explanation?.trim() || undefined,
-          order_index: i,
-        })),
-      };
-      const created = await quizApi.create(payload);
-      onCreated(created);
+        questions: draftQuestions,
+      });
     } catch (err: any) {
       setError(err?.response?.data?.error || "Error al crear el cuestionario.");
     } finally {
@@ -543,7 +556,7 @@ const CreateQuizForm: React.FC<CreateQuizFormProps> = ({
           Cancelar
         </button>
         <button type="submit" className="qz-btn-primary" disabled={saving}>
-          {saving ? "Guardando..." : "Crear cuestionario"}
+          {saving ? "Preparando..." : "Añadir al borrador"}
         </button>
       </div>
     </form>
@@ -560,6 +573,10 @@ const QuizzesPage: React.FC = () => {
   const [createMode, setCreateMode] = useState<"manual" | "ai">("manual");
   const [studyQuiz, setStudyQuiz] = useState<Quiz | null>(null);
   const [loadingDetail, setLoadingDetail] = useState<string | null>(null);
+  const [draftQuiz, setDraftQuiz] = useState<DraftQuizState | null>(null);
+  const [savingDraft, setSavingDraft] = useState(false);
+  const { categories, loading: catsLoading } = useCategories();
+  const hasCategories = catsLoading || categories.length > 0;
 
   useEffect(() => {
     const load = async () => {
@@ -575,9 +592,45 @@ const QuizzesPage: React.FC = () => {
     load();
   }, []);
 
-  const handleCreated = (quiz: Quiz) => {
-    setQuizzes((prev) => [quiz, ...prev]);
+  const handleDrafted = (draft: DraftQuizState) => {
+    setDraftQuiz(draft);
     setShowCreate(false);
+  };
+
+  const handleSaveDraft = async () => {
+    if (!draftQuiz) return;
+    setSavingDraft(true);
+    try {
+      const payload: CreateQuizRequest = {
+        title: draftQuiz.title,
+        category_id: draftQuiz.categoryId,
+        description: draftQuiz.description,
+        questions: draftQuiz.questions.map((q) => ({
+          question: q.question,
+          options: q.options,
+          correct_answer: q.correct_answer,
+          explanation: q.explanation ?? undefined,
+          order_index: q.order_index,
+        })),
+      };
+      const saved = await quizApi.create(payload);
+      setQuizzes((prev) => [saved, ...prev]);
+      setDraftQuiz(null);
+    } catch (err: any) {
+      setError(
+        err?.response?.data?.error || "Error al guardar el cuestionario.",
+      );
+    } finally {
+      setSavingDraft(false);
+    }
+  };
+
+  const handleRemoveDraftQuestion = (index: number) => {
+    setDraftQuiz((prev) =>
+      prev
+        ? { ...prev, questions: prev.questions.filter((_, i) => i !== index) }
+        : null,
+    );
   };
 
   const handleStudy = async (quiz: Quiz) => {
@@ -632,12 +685,12 @@ const QuizzesPage: React.FC = () => {
 
         {createMode === "manual" ? (
           <CreateQuizForm
-            onCreated={handleCreated}
+            onDrafted={handleDrafted}
             onCancel={() => setShowCreate(false)}
           />
         ) : (
           <GenerateQuizForm
-            onCreated={handleCreated}
+            onDrafted={handleDrafted}
             onCancel={() => setShowCreate(false)}
           />
         )}
@@ -654,12 +707,63 @@ const QuizzesPage: React.FC = () => {
             Crea y practica cuestionarios de múltiple opción
           </p>
         </div>
-        <button className="qz-btn-primary" onClick={() => setShowCreate(true)}>
+        <button
+          className="qz-btn-primary"
+          onClick={() => setShowCreate(true)}
+          disabled={!hasCategories}
+        >
           + Nuevo cuestionario
         </button>
       </div>
 
       {error && <p className="qz-error">{error}</p>}
+
+      {!hasCategories && <NoCategoryBanner feature="cuestionarios" />}
+
+      {draftQuiz && (
+        <section className="qz-draft-panel">
+          <div className="qz-draft-header">
+            <div>
+              <h2 className="qz-draft-title">Borrador: {draftQuiz.title}</h2>
+              <span className="qz-draft-badge">
+                {draftQuiz.questions.length} pregunta
+                {draftQuiz.questions.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+            <div className="qz-draft-actions">
+              <button
+                className="qz-btn-secondary"
+                onClick={() => setDraftQuiz(null)}
+              >
+                Descartar
+              </button>
+              <button
+                className="qz-btn-primary"
+                onClick={handleSaveDraft}
+                disabled={savingDraft || draftQuiz.questions.length === 0}
+              >
+                {savingDraft ? "Guardando..." : "Guardar cuestionario"}
+              </button>
+            </div>
+          </div>
+          <div className="qz-draft-questions">
+            {draftQuiz.questions.map((q, i) => (
+              <div key={i} className="qz-draft-question">
+                <span className="qz-draft-q-text">
+                  {i + 1}. {q.question}
+                </span>
+                <button
+                  className="qz-draft-q-remove"
+                  onClick={() => handleRemoveDraftQuestion(i)}
+                  aria-label="Eliminar pregunta"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {loading ? (
         <div className="qz-loading">Cargando cuestionarios...</div>
@@ -671,6 +775,7 @@ const QuizzesPage: React.FC = () => {
           <button
             className="qz-btn-primary"
             onClick={() => setShowCreate(true)}
+            disabled={!hasCategories}
           >
             Crear cuestionario
           </button>
