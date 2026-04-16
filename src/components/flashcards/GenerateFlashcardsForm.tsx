@@ -7,7 +7,6 @@ interface GenerateFlashcardsFormProps {
     cards: Array<{
       question: string;
       answer: string;
-      options: string[];
       source: "ai" | "manual";
       categoryId?: string;
     }>,

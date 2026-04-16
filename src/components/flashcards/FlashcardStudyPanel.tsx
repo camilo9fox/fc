@@ -89,17 +89,6 @@ const FlashcardStudyPanel: React.FC<FlashcardStudyPanelProps> = ({
               </p>
             </div>
 
-            {currentCard.options?.length > 0 && (
-              <div className="study-card-section">
-                <h3>Opciones</h3>
-                <ul className="options-list">
-                  {currentCard.options.map((option, index) => (
-                    <li key={index}>{option}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
             <div className="study-panel-actions">
               <button
                 className="primary-button"

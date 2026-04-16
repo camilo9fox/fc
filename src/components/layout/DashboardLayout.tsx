@@ -86,16 +86,10 @@ const navSections: NavSection[] = [
           </svg>
         ),
       },
-    ],
-  },
-  {
-    label: "Próximamente",
-    items: [
       {
         id: "quizzes",
         label: "Cuestionarios",
         path: "/quizzes",
-        disabled: true,
         icon: (
           <svg
             width="17"
@@ -116,7 +110,6 @@ const navSections: NavSection[] = [
         id: "truefalse",
         label: "Verdadero o Falso",
         path: "/truefalse",
-        disabled: true,
         icon: (
           <svg
             width="17"
@@ -133,6 +126,11 @@ const navSections: NavSection[] = [
           </svg>
         ),
       },
+    ],
+  },
+  {
+    label: "Próximamente",
+    items: [
       {
         id: "games",
         label: "Juegos de estudio",
@@ -173,6 +171,14 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
   "/flashcards/generate": {
     title: "Generar con IA",
     subtitle: "Convierte documentos en tarjetas",
+  },
+  "/quizzes": {
+    title: "Cuestionarios",
+    subtitle: "Practica con preguntas de múltiple opción",
+  },
+  "/truefalse": {
+    title: "Verdadero o Falso",
+    subtitle: "Practica con enunciados verdadero/falso",
   },
 };
 

@@ -36,7 +36,6 @@ const menuItems = [
 type DraftFlashcard = {
   question: string;
   answer: string;
-  options: string[];
   source: "ai" | "manual";
   categoryId?: string;
   category?: {
@@ -107,11 +106,27 @@ const FlashcardsPage: React.FC = () => {
 
   const handleSaveDrafts = async () => {
     if (!draftFlashcards.length) return;
+
+    const withoutCategory = draftFlashcards.filter((c) => !c.categoryId);
+    if (withoutCategory.length > 0) {
+      setError(
+        "Todas las flashcards deben tener una categoría antes de guardar.",
+      );
+      return;
+    }
+
     setSaving(true);
     setError(null);
 
     try {
-      const result = await flashCardsApi.saveFlashCards(draftFlashcards);
+      const result = await flashCardsApi.saveFlashCards(
+        draftFlashcards as Array<{
+          question: string;
+          answer: string;
+          source?: "ai" | "manual";
+          categoryId: string;
+        }>,
+      );
       setSavedFlashcards((prev) => [...result.flashcards, ...prev]);
       setDraftFlashcards([]);
     } catch (err: any) {

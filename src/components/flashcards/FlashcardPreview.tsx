@@ -6,7 +6,6 @@ interface FlashcardPreviewProps {
     id?: string;
     question: string;
     answer: string;
-    options?: string[];
     source?: string;
     category?: {
       id: string;
@@ -54,17 +53,6 @@ const FlashcardPreview: React.FC<FlashcardPreviewProps> = ({
         <p className="hidden-answer">
           Haz clic en el botón para ver la respuesta.
         </p>
-      )}
-
-      {flashcard.options && flashcard.options.length > 0 && (
-        <div className="flashcard-options">
-          <strong>Opciones:</strong>
-          <ul>
-            {flashcard.options.map((option, index) => (
-              <li key={index}>{option}</li>
-            ))}
-          </ul>
-        </div>
       )}
 
       {onDelete && (

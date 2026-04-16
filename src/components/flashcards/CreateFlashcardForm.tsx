@@ -2,13 +2,19 @@ import React, { useState } from "react";
 import { useCategories } from "../../hooks/useCategories";
 
 interface CreateFlashcardFormProps {
-  onCreated: (card: { question: string; answer: string; options: string[]; source: "manual"; categoryId?: string }) => void;
+  onCreated: (card: {
+    question: string;
+    answer: string;
+    source: "manual";
+    categoryId?: string;
+  }) => void;
 }
 
-const CreateFlashcardForm: React.FC<CreateFlashcardFormProps> = ({ onCreated }) => {
+const CreateFlashcardForm: React.FC<CreateFlashcardFormProps> = ({
+  onCreated,
+}) => {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
-  const [optionsText, setOptionsText] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
 
@@ -22,22 +28,15 @@ const CreateFlashcardForm: React.FC<CreateFlashcardFormProps> = ({ onCreated }) 
       return;
     }
 
-    const options = optionsText
-      .split("\n")
-      .map((line) => line.trim())
-      .filter(Boolean);
-
     const card = {
       question: question.trim(),
       answer: answer.trim(),
-      options,
       source: "manual" as const,
       categoryId: selectedCategoryId || undefined,
     };
     onCreated(card);
     setQuestion("");
     setAnswer("");
-    setOptionsText("");
     setSelectedCategoryId("");
     setError(null);
   };
@@ -63,17 +62,6 @@ const CreateFlashcardForm: React.FC<CreateFlashcardFormProps> = ({ onCreated }) 
           onChange={(e) => setAnswer(e.target.value)}
           rows={4}
           placeholder="Escribe la respuesta aquí"
-        />
-      </div>
-
-      <div className="form-row">
-        <label htmlFor="manualOptions">Opciones (una por línea, opcional)</label>
-        <textarea
-          id="manualOptions"
-          value={optionsText}
-          onChange={(e) => setOptionsText(e.target.value)}
-          rows={4}
-          placeholder="Describe algunas opciones clave o pistas..."
         />
       </div>
 

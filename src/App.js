@@ -4,6 +4,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
 import FlashcardsPage from './components/flashcards/FlashcardsPage';
+import QuizzesPage from './components/quizzes/QuizzesPage';
+import TrueFalsePage from './components/truefalse/TrueFalsePage';
 import LandingPage from './components/landing/LandingPage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import './App.css';
@@ -43,6 +45,26 @@ const AppRoutes: React.FC = () => {
           <ProtectedRoute>
             <DashboardLayout>
               <FlashcardsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/quizzes/*"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <QuizzesPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/truefalse/*"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <TrueFalsePage />
             </DashboardLayout>
           </ProtectedRoute>
         }

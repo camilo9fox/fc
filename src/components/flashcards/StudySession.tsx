@@ -12,7 +12,11 @@ const RING_SLOTS = 7;
 const ANGLE_STEP = 360 / RING_SLOTS;
 const RADIUS = 400;
 
-const StudySession: React.FC<StudySessionProps> = ({ cards, title, onClose }) => {
+const StudySession: React.FC<StudySessionProps> = ({
+  cards,
+  title,
+  onClose,
+}) => {
   const total = cards.length;
 
   const [ringAngle, setRingAngle] = useState(0);
@@ -38,9 +42,11 @@ const StudySession: React.FC<StudySessionProps> = ({ cards, title, onClose }) =>
     (e: React.TransitionEvent<HTMLDivElement>) => {
       if (e.propertyName !== "transform") return;
       const stepsForward = Math.round(-ringAngle / ANGLE_STEP);
-      setCurrentIndex((i) => ((i + stepsForward) % total + total) % total);
+      setCurrentIndex((i) => (((i + stepsForward) % total) + total) % total);
       setRingAngle(0);
-      requestAnimationFrame(() => requestAnimationFrame(() => setAnimating(false)));
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => setAnimating(false)),
+      );
     },
     [ringAngle, total],
   );
@@ -62,8 +68,12 @@ const StudySession: React.FC<StudySessionProps> = ({ cards, title, onClose }) =>
     <div className="ss-overlay" role="dialog" aria-modal="true">
       <header className="ss-header">
         <h2 className="ss-title">{title}</h2>
-        <span className="ss-counter">{currentIndex + 1} / {total}</span>
-        <button className="ss-close" onClick={onClose} aria-label="Cerrar">✕</button>
+        <span className="ss-counter">
+          {currentIndex + 1} / {total}
+        </span>
+        <button className="ss-close" onClick={onClose} aria-label="Cerrar">
+          ✕
+        </button>
       </header>
 
       <div className="ss-progress-track">
@@ -78,7 +88,9 @@ const StudySession: React.FC<StudySessionProps> = ({ cards, title, onClose }) =>
           className="ss-ring"
           style={{
             transform: `rotateY(${ringAngle}deg)`,
-            transition: animating ? `transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94)` : "none",
+            transition: animating
+              ? `transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94)`
+              : "none",
           }}
           onTransitionEnd={handleRingTransitionEnd}
         >
@@ -87,12 +99,17 @@ const StudySession: React.FC<StudySessionProps> = ({ cards, title, onClose }) =>
             const card = cards[(currentIndex + slot) % total];
             const isActive = slot === 0;
 
-            const normalizedAngle = ((slotAngle + ringAngle) % 360 + 360) % 360;
-            const viewAngle = normalizedAngle > 180 ? normalizedAngle - 360 : normalizedAngle;
+            const normalizedAngle =
+              (((slotAngle + ringAngle) % 360) + 360) % 360;
+            const viewAngle =
+              normalizedAngle > 180 ? normalizedAngle - 360 : normalizedAngle;
             const absAngle = Math.abs(viewAngle);
 
-            const opacity = absAngle > 130 ? 0 : Math.max(0.25, 1 - absAngle / 130);
-            const scale = isActive ? 1 : Math.max(0.72, 1 - (absAngle / 180) * 0.28);
+            const opacity =
+              absAngle > 130 ? 0 : Math.max(0.25, 1 - absAngle / 130);
+            const scale = isActive
+              ? 1
+              : Math.max(0.72, 1 - (absAngle / 180) * 0.28);
             const zIndex = isActive ? 10 : Math.round(50 - absAngle);
             const isHidden = absAngle >= 135;
 
@@ -109,7 +126,9 @@ const StudySession: React.FC<StudySessionProps> = ({ cards, title, onClose }) =>
                 }}
                 onClick={isActive ? () => setFlipped((f) => !f) : undefined}
               >
-                <div className={`ss-card${isActive && flipped ? " ss-card--flipped" : ""}`}>
+                <div
+                  className={`ss-card${isActive && flipped ? " ss-card--flipped" : ""}`}
+                >
                   <div className="ss-face ss-face--front">
                     <span className="ss-tag ss-tag--q">Pregunta</span>
                     <p className="ss-text">{card.question}</p>
@@ -117,25 +136,15 @@ const StudySession: React.FC<StudySessionProps> = ({ cards, title, onClose }) =>
                       <span className="ss-chip">{card.category.title}</span>
                     )}
                     {isActive && (
-                      <span className="ss-hint">Haz clic para ver la respuesta</span>
+                      <span className="ss-hint">
+                        Haz clic para ver la respuesta
+                      </span>
                     )}
                   </div>
 
                   <div className="ss-face ss-face--back">
                     <span className="ss-tag ss-tag--a">Respuesta</span>
                     <p className="ss-text">{card.answer}</p>
-                    {card.options && card.options.length > 0 && (
-                      <ul className="ss-options">
-                        {card.options.map((opt, i) => (
-                          <li
-                            key={i}
-                            className={opt === card.answer ? "ss-opt ss-opt--correct" : "ss-opt"}
-                          >
-                            {opt}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
                   </div>
                 </div>
               </div>
@@ -146,17 +155,29 @@ const StudySession: React.FC<StudySessionProps> = ({ cards, title, onClose }) =>
 
       <footer className="ss-footer">
         <div className="ss-controls">
-          <button className="ss-nav-btn" onClick={goPrev} disabled={total <= 1} aria-label="Anterior">
+          <button
+            className="ss-nav-btn"
+            onClick={goPrev}
+            disabled={total <= 1}
+            aria-label="Anterior"
+          >
             &#8592;
           </button>
           <button className="ss-flip-btn" onClick={() => setFlipped((f) => !f)}>
             {flipped ? "Ver pregunta" : "Ver respuesta"}
           </button>
-          <button className="ss-nav-btn" onClick={goNext} disabled={total <= 1} aria-label="Siguiente">
+          <button
+            className="ss-nav-btn"
+            onClick={goNext}
+            disabled={total <= 1}
+            aria-label="Siguiente"
+          >
             &#8594;
           </button>
         </div>
-        <p className="ss-kbd-hint">← → navegar &nbsp;·&nbsp; Espacio voltear &nbsp;·&nbsp; Esc salir</p>
+        <p className="ss-kbd-hint">
+          ← → navegar &nbsp;·&nbsp; Espacio voltear &nbsp;·&nbsp; Esc salir
+        </p>
       </footer>
     </div>
   );

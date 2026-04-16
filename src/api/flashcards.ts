@@ -4,9 +4,8 @@ export interface FlashCard {
   id: string;
   question: string;
   answer: string;
-  options: string[];
   source: "ai" | "manual";
-  category_id?: string;
+  category_id: string;
   category?: {
     id: string;
     title: string;
@@ -33,8 +32,7 @@ export interface CreateCategoryRequest {
 export interface CreateManualFlashCardRequest {
   question: string;
   answer: string;
-  options: string[];
-  categoryId?: string;
+  categoryId: string;
 }
 
 export interface FlashCardsResponse {
@@ -56,7 +54,6 @@ export interface CategoriesResponse {
 export interface GenerateFlashCardResponse {
   question: string;
   answer: string;
-  options: string[];
   source?: "ai" | "manual";
 }
 
@@ -218,9 +215,8 @@ export const flashCardsApi = {
     flashcards: Array<{
       question: string;
       answer: string;
-      options: string[];
       source?: "ai" | "manual";
-      categoryId?: string;
+      categoryId: string;
     }>,
   ): Promise<{ flashcards: FlashCard[]; message: string }> => {
     const response = await apiClient.post("/flashcards/save", { flashcards });

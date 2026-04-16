@@ -95,16 +95,6 @@ const FlashCard: React.FC = () => {
             </div>
           </div>
         )}
-
-        {flashCardData.options.length > 0 && (
-          <div className="options-container">
-            {flashCardData.options.map((option, index) => (
-              <button key={index} className="option-button" onClick={resetCard}>
-                {option}
-              </button>
-            ))}
-          </div>
-        )}
       </main>
     </div>
   );

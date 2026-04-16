@@ -7,7 +7,6 @@ export const useFlashCard = () => {
   const [flashCardData, setFlashCardData] = useState<FlashCardData>({
     question: "",
     answer: "",
-    options: [],
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [inputText, setInputText] = useState("");
@@ -27,10 +26,11 @@ export const useFlashCard = () => {
     setError(null);
 
     try {
-      const data: GenerateFlashCardResponse = await flashCardsApi.generateFlashCard(
-        selectedFile ?? undefined,
-        inputText.trim() || undefined,
-      );
+      const data: GenerateFlashCardResponse =
+        await flashCardsApi.generateFlashCard(
+          selectedFile ?? undefined,
+          inputText.trim() || undefined,
+        );
       setFlashCardData(data);
     } catch (error: any) {
       console.error("Error generating flashcard:", error);
