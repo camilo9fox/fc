@@ -1,583 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { useCategories } from "../../hooks/useCategories";
 import NoCategoryBanner from "../layout/NoCategoryBanner";
 import {
   trueFalseApi,
   TrueFalseSet,
-  TrueFalseQuestion,
   CreateTrueFalseSetRequest,
-  CreateTrueFalseQuestionRequest,
-  DraftTrueFalseQuestion,
 } from "../../api/trueFalse";
+import { DraftTFState, setToDraft } from "../../types/trueFalse.types";
+import DraftTFStudySession from "./DraftTFStudySession";
+import GenerateTFForm from "./GenerateTFForm";
+import CreateTFForm from "./CreateTFForm";
 import "./TrueFalsePage.css";
-
-interface DraftTFState {
-  title: string;
-  categoryId: string;
-  description?: string;
-  questions: DraftTrueFalseQuestion[];
-}
-
-// ─── Study Session ─────────────────────────────────────────────────────────────
-
-/** Convierte un TrueFalseSet guardado en DraftTFState para reutilizar DraftTFStudySession */
-const setToDraft = (set: TrueFalseSet): DraftTFState => ({
-  title: set.title,
-  categoryId: set.category?.id || "",
-  description: set.description ?? undefined,
-  questions: (set.questions || []).map((q, i) => ({
-    statement: q.statement,
-    is_true: q.is_true,
-    explanation: q.explanation ?? null,
-    order_index: i,
-  })),
-});
-
-interface DraftTFStudyProps {
-  draft: DraftTFState;
-  onClose: () => void;
-  badge?: string;
-  returnLabel?: string;
-}
-
-const DraftTFStudySession: React.FC<DraftTFStudyProps> = ({
-  draft,
-  onClose,
-  badge = "Borrador",
-  returnLabel = "Volver al borrador",
-}) => {
-  const questions = draft.questions;
-  const [index, setIndex] = useState(0);
-  const [selected, setSelected] = useState<boolean | null>(null);
-  const [score, setScore] = useState(0);
-  const [finished, setFinished] = useState(false);
-
-  const current = questions[index];
-
-  const handleAnswer = (answer: boolean) => {
-    if (selected !== null) return;
-    setSelected(answer);
-    if (answer === current.is_true) setScore((s) => s + 1);
-  };
-
-  const handleNext = () => {
-    if (index + 1 >= questions.length) {
-      setFinished(true);
-    } else {
-      setIndex((i) => i + 1);
-      setSelected(null);
-    }
-  };
-
-  const handleRestart = () => {
-    setIndex(0);
-    setSelected(null);
-    setScore(0);
-    setFinished(false);
-  };
-
-  if (finished) {
-    const pct = Math.round((score / questions.length) * 100);
-    const emoji = pct >= 80 ? "🏆" : pct >= 50 ? "💪" : "📚";
-    const ringColor = pct >= 70 ? "#10b981" : pct >= 40 ? "#f59e0b" : "#ef4444";
-    return (
-      <div className="dtf-result">
-        <div className="dtf-result-card">
-          <div className="dtf-result-emoji">{emoji}</div>
-          <div
-            className="dtf-score-ring"
-            style={
-              {
-                "--dtf-ring-color": ringColor,
-                "--dtf-pct": `${pct}%`,
-              } as React.CSSProperties
-            }
-          >
-            <span className="dtf-score-pct">{pct}%</span>
-            <span className="dtf-score-sub">aciertos</span>
-          </div>
-          <h2 className="dtf-result-title">{draft.title}</h2>
-          <p className="dtf-result-detail">
-            {score} de {questions.length} respuestas correctas
-          </p>
-          <div className="dtf-result-actions">
-            <button className="dtf-btn-primary" onClick={handleRestart}>
-              Intentar de nuevo
-            </button>
-            <button className="dtf-btn-secondary" onClick={onClose}>
-              {returnLabel}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const isCorrect = selected !== null && selected === current.is_true;
-  const showFeedback = selected !== null;
-
-  return (
-    <div className="dtf-overlay">
-      <header className="dtf-header">
-        <div className="dtf-header-left">
-          {badge && <span className="dtf-draft-label">{badge}</span>}
-          <h2 className="dtf-title">{draft.title}</h2>
-        </div>
-        <div className="dtf-header-right">
-          <span className="dtf-counter">
-            {index + 1} / {questions.length}
-          </span>
-          <button
-            className="dtf-close-btn"
-            onClick={onClose}
-            aria-label="Cerrar"
-          >
-            ✕
-          </button>
-        </div>
-      </header>
-
-      <div className="dtf-progress-bar">
-        <div
-          className="dtf-progress-fill"
-          style={{ width: `${((index + 1) / questions.length) * 100}%` }}
-        />
-      </div>
-
-      <div className="dtf-body">
-        <div className="dtf-card" key={index}>
-          <p className="dtf-question-num">Enunciado {index + 1}</p>
-          <p className="dtf-statement-text">{current.statement}</p>
-
-          {!showFeedback && (
-            <div className="dtf-answer-row">
-              <button
-                className="dtf-btn-true"
-                onClick={() => handleAnswer(true)}
-              >
-                ✓ Verdadero
-              </button>
-              <button
-                className="dtf-btn-false"
-                onClick={() => handleAnswer(false)}
-              >
-                ✗ Falso
-              </button>
-            </div>
-          )}
-
-          {showFeedback && (
-            <>
-              <div
-                className={`dtf-feedback ${isCorrect ? "correct" : "wrong"}`}
-              >
-                <span className="dtf-feedback-icon">
-                  {isCorrect ? "✓" : "✗"}
-                </span>
-                <span>
-                  {isCorrect
-                    ? "¡Correcto!"
-                    : `Incorrecto — era ${current.is_true ? "Verdadero" : "Falso"}`}
-                </span>
-              </div>
-
-              {current.explanation && (
-                <div className="dtf-explanation">
-                  <strong>Explicación:</strong> {current.explanation}
-                </div>
-              )}
-
-              <button className="dtf-next-btn" onClick={handleNext}>
-                {index + 1 >= questions.length
-                  ? "Ver resultado →"
-                  : "Siguiente →"}
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// ─── Generate Form (IA) ────────────────────────────────────────────────────────
-
-interface GenerateTFFormProps {
-  onDrafted: (draft: DraftTFState) => void;
-  onCancel: () => void;
-}
-
-const GenerateTFForm: React.FC<GenerateTFFormProps> = ({
-  onDrafted,
-  onCancel,
-}) => {
-  const { categories } = useCategories();
-  const [title, setTitle] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [quantity, setQuantity] = useState(10);
-  const [text, setText] = useState("");
-  const [file, setFile] = useState<File | null>(null);
-  const [generating, setGenerating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(e.target.files?.[0] ?? null);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
-    if (!title.trim()) return setError("El título es obligatorio.");
-    if (!categoryId) return setError("Debes seleccionar una categoría.");
-    if (!file && !text.trim())
-      return setError("Proporciona un archivo o texto de estudio.");
-
-    setGenerating(true);
-    try {
-      const formData = new FormData();
-      formData.append("title", title.trim());
-      formData.append("categoryId", categoryId);
-      formData.append("quantity", String(quantity));
-      if (file) formData.append("file", file);
-      if (text.trim()) formData.append("text", text.trim());
-
-      const result = await trueFalseApi.generate(formData);
-      onDrafted({
-        title: title.trim(),
-        categoryId,
-        questions: result.questions,
-      });
-    } catch (err: any) {
-      setError(
-        err?.response?.data?.error ||
-          "Error al generar el set de verdadero/falso.",
-      );
-    } finally {
-      setGenerating(false);
-    }
-  };
-
-  return (
-    <form className="tf-form" onSubmit={handleSubmit}>
-      <div className="tf-form-header">
-        <h2>Generar set V/F con IA</h2>
-        <button type="button" className="tf-close-btn" onClick={onCancel}>
-          ✕
-        </button>
-      </div>
-
-      <div className="tf-form-meta">
-        <div className="tf-field">
-          <label>Título</label>
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Ej: Anatomía — Aparato Digestivo"
-          />
-        </div>
-        <div className="tf-field">
-          <label>Categoría</label>
-          <select
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
-          >
-            <option value="">Selecciona una categoría</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.title}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="tf-field">
-          <label>Número de enunciados (1 – 30)</label>
-          <input
-            type="number"
-            min={1}
-            max={30}
-            value={quantity}
-            onChange={(e) =>
-              setQuantity(
-                Math.min(30, Math.max(1, parseInt(e.target.value) || 10)),
-              )
-            }
-          />
-        </div>
-      </div>
-
-      <div className="tf-field">
-        <label>Texto de estudio</label>
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          rows={6}
-          placeholder="Pega aquí el contenido del que quieres generar enunciados..."
-        />
-      </div>
-
-      <div className="tf-field">
-        <label>O sube un archivo (PDF / TXT)</label>
-        <div className="tf-file-row">
-          <button
-            type="button"
-            className="tf-btn-secondary tf-file-btn"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            {file ? `📄 ${file.name}` : "Seleccionar archivo"}
-          </button>
-          {file && (
-            <button
-              type="button"
-              className="tf-remove-btn"
-              onClick={() => {
-                setFile(null);
-                if (fileInputRef.current) fileInputRef.current.value = "";
-              }}
-            >
-              Quitar
-            </button>
-          )}
-        </div>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".pdf,.txt"
-          style={{ display: "none" }}
-          onChange={handleFileChange}
-        />
-      </div>
-
-      {error && <p className="tf-error">{error}</p>}
-
-      {generating && (
-        <p className="tf-generating-msg">
-          ✨ Generando {quantity} enunciados con IA…
-        </p>
-      )}
-
-      <div className="tf-form-actions">
-        <button
-          type="button"
-          className="tf-btn-secondary"
-          onClick={onCancel}
-          disabled={generating}
-        >
-          Cancelar
-        </button>
-        <button type="submit" className="tf-btn-primary" disabled={generating}>
-          {generating ? "Generando..." : "Generar set"}
-        </button>
-      </div>
-    </form>
-  );
-};
-
-// ─── Create Form ───────────────────────────────────────────────────────────────
-
-interface CreateTFFormProps {
-  onDrafted: (draft: DraftTFState) => void;
-  onCancel: () => void;
-}
-
-const CreateTFForm: React.FC<CreateTFFormProps> = ({ onDrafted, onCancel }) => {
-  const { categories } = useCategories();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [questions, setQuestions] = useState<CreateTrueFalseQuestionRequest[]>([
-    { statement: "", is_true: true, explanation: "" },
-  ]);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const updateQuestion = (
-    qi: number,
-    field: keyof CreateTrueFalseQuestionRequest,
-    value: any,
-  ) => {
-    setQuestions((prev) => {
-      const next = [...prev];
-      next[qi] = { ...next[qi], [field]: value };
-      return next;
-    });
-  };
-
-  const addQuestion = () => {
-    setQuestions((prev) => [
-      ...prev,
-      { statement: "", is_true: true, explanation: "" },
-    ]);
-  };
-
-  const removeQuestion = (qi: number) => {
-    setQuestions((prev) => prev.filter((_, i) => i !== qi));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
-    if (!title.trim()) return setError("El título es obligatorio.");
-    if (!categoryId) return setError("Debes seleccionar una categoría.");
-    if (questions.length === 0)
-      return setError("Agrega al menos un enunciado.");
-
-    for (let i = 0; i < questions.length; i++) {
-      if (!questions[i].statement.trim()) {
-        return setError(`Enunciado ${i + 1}: el texto es obligatorio.`);
-      }
-    }
-
-    setSaving(true);
-    try {
-      const draftQuestions: DraftTrueFalseQuestion[] = questions.map(
-        (q, i) => ({
-          statement: q.statement.trim(),
-          is_true: q.is_true,
-          explanation: q.explanation?.trim() || null,
-          order_index: i,
-        }),
-      );
-      onDrafted({
-        title: title.trim(),
-        categoryId,
-        description: description.trim() || undefined,
-        questions: draftQuestions,
-      });
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  return (
-    <form className="tf-form" onSubmit={handleSubmit}>
-      <div className="tf-form-header">
-        <h2>Nuevo set — Verdadero o Falso</h2>
-        <button type="button" className="tf-close-btn" onClick={onCancel}>
-          ✕
-        </button>
-      </div>
-
-      <div className="tf-form-meta">
-        <div className="tf-field">
-          <label>Título</label>
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Ej: Anatomía — Aparato Digestivo"
-          />
-        </div>
-        <div className="tf-field">
-          <label>Descripción (opcional)</label>
-          <input
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Breve descripción del set"
-          />
-        </div>
-        <div className="tf-field">
-          <label>Categoría</label>
-          <select
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
-          >
-            <option value="">Selecciona una categoría</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.title}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div className="tf-questions-list">
-        {questions.map((q, qi) => (
-          <div key={qi} className="tf-question-block">
-            <div className="tf-question-block-header">
-              <span className="tf-q-number">Enunciado {qi + 1}</span>
-              {questions.length > 1 && (
-                <button
-                  type="button"
-                  className="tf-remove-btn"
-                  onClick={() => removeQuestion(qi)}
-                >
-                  Eliminar
-                </button>
-              )}
-            </div>
-
-            <div className="tf-field">
-              <label>Texto del enunciado</label>
-              <textarea
-                value={q.statement}
-                onChange={(e) =>
-                  updateQuestion(qi, "statement", e.target.value)
-                }
-                rows={2}
-                placeholder="La fotosíntesis ocurre en las mitocondrias."
-              />
-            </div>
-
-            <div className="tf-truth-toggle">
-              <span className="tf-truth-label">¿Es verdadero?</span>
-              <div className="tf-toggle-group">
-                <button
-                  type="button"
-                  className={`tf-toggle-btn ${q.is_true ? "active-true" : ""}`}
-                  onClick={() => updateQuestion(qi, "is_true", true)}
-                >
-                  ✓ Verdadero
-                </button>
-                <button
-                  type="button"
-                  className={`tf-toggle-btn ${!q.is_true ? "active-false" : ""}`}
-                  onClick={() => updateQuestion(qi, "is_true", false)}
-                >
-                  ✗ Falso
-                </button>
-              </div>
-            </div>
-
-            <div className="tf-field">
-              <label>Explicación (opcional)</label>
-              <input
-                value={q.explanation || ""}
-                onChange={(e) =>
-                  updateQuestion(qi, "explanation", e.target.value)
-                }
-                placeholder="¿Por qué es verdadero o falso?"
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <button
-        type="button"
-        className="tf-btn-add-question"
-        onClick={addQuestion}
-      >
-        + Agregar enunciado
-      </button>
-
-      {error && <p className="tf-error">{error}</p>}
-
-      <div className="tf-form-actions">
-        <button type="button" className="tf-btn-secondary" onClick={onCancel}>
-          Cancelar
-        </button>
-        <button type="submit" className="tf-btn-primary" disabled={saving}>
-          {saving ? "Preparando..." : "Añadir al borrador"}
-        </button>
-      </div>
-    </form>
-  );
-};
-
-// ─── Main Page ─────────────────────────────────────────────────────────────────
 
 const TrueFalsePage: React.FC = () => {
   const [sets, setSets] = useState<TrueFalseSet[]>([]);
@@ -662,7 +95,7 @@ const TrueFalsePage: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("¿Eliminar este set?")) return;
+    if (!window.confirm("Â¿Eliminar este set?")) return;
     try {
       await trueFalseApi.delete(id);
       setSets((prev) => prev.filter((s) => s.id !== id));
@@ -699,13 +132,13 @@ const TrueFalsePage: React.FC = () => {
             className={`tf-mode-btn ${createMode === "manual" ? "active" : ""}`}
             onClick={() => setCreateMode("manual")}
           >
-            ✏️ Manual
+            âœï¸ Manual
           </button>
           <button
             className={`tf-mode-btn ${createMode === "ai" ? "active" : ""}`}
             onClick={() => setCreateMode("ai")}
           >
-            ✨ Generar con IA
+            âœ¨ Generar con IA
           </button>
         </div>
 
@@ -768,7 +201,7 @@ const TrueFalsePage: React.FC = () => {
                 onClick={() => setStudyingDraft(true)}
                 disabled={draftSet.questions.length === 0}
               >
-                Estudiar borrador →
+                Estudiar borrador â†’
               </button>
               <button
                 className="tf-btn-primary"
@@ -793,7 +226,7 @@ const TrueFalsePage: React.FC = () => {
                   onClick={() => handleRemoveDraftQuestion(i)}
                   aria-label="Eliminar enunciado"
                 >
-                  ✕
+                  âœ•
                 </button>
               </div>
             ))}
@@ -805,8 +238,8 @@ const TrueFalsePage: React.FC = () => {
         <div className="tf-loading">Cargando sets...</div>
       ) : sets.length === 0 ? (
         <div className="tf-empty">
-          <div className="tf-empty-icon">☑️</div>
-          <h3>Aún no tienes sets de Verdadero o Falso</h3>
+          <div className="tf-empty-icon">â˜‘ï¸</div>
+          <h3>AÃºn no tienes sets de Verdadero o Falso</h3>
           <p>Crea tu primer set de enunciados</p>
           <button
             className="tf-btn-primary"
@@ -829,7 +262,7 @@ const TrueFalsePage: React.FC = () => {
                   onClick={() => handleDelete(set.id)}
                   aria-label="Eliminar"
                 >
-                  ✕
+                  âœ•
                 </button>
               </div>
               <h3 className="tf-card-title">{set.title}</h3>
@@ -845,7 +278,7 @@ const TrueFalsePage: React.FC = () => {
                   onClick={() => handleStudy(set)}
                   disabled={loadingDetail === set.id}
                 >
-                  {loadingDetail === set.id ? "Cargando..." : "Estudiar →"}
+                  {loadingDetail === set.id ? "Cargando..." : "Estudiar â†’"}
                 </button>
               </div>
             </div>

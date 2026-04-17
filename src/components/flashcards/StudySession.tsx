@@ -1,5 +1,12 @@
 ﻿import React, { useCallback, useEffect, useState } from "react";
 import { FlashCard } from "../../api/flashcards";
+import {
+  RING_SLOTS,
+  RING_RADIUS_PX,
+  RING_FADE_ANGLE,
+  RING_HIDE_ANGLE,
+  RING_SCALE_DAMPING,
+} from "../../constants";
 import "./StudySession.css";
 
 interface StudySessionProps {
@@ -8,9 +15,7 @@ interface StudySessionProps {
   onClose: () => void;
 }
 
-const RING_SLOTS = 7;
 const ANGLE_STEP = 360 / RING_SLOTS;
-const RADIUS = 400;
 
 const StudySession: React.FC<StudySessionProps> = ({
   cards,
@@ -115,19 +120,21 @@ const StudySession: React.FC<StudySessionProps> = ({
             const absAngle = Math.abs(viewAngle);
 
             const opacity =
-              absAngle > 130 ? 0 : Math.max(0.25, 1 - absAngle / 130);
+              absAngle > RING_FADE_ANGLE
+                ? 0
+                : Math.max(0.25, 1 - absAngle / RING_FADE_ANGLE);
             const scale = isActive
               ? 1
-              : Math.max(0.72, 1 - (absAngle / 180) * 0.28);
+              : Math.max(0.72, 1 - (absAngle / 180) * RING_SCALE_DAMPING);
             const zIndex = isActive ? 10 : Math.round(50 - absAngle);
-            const isHidden = absAngle >= 135;
+            const isHidden = absAngle >= RING_HIDE_ANGLE;
 
             return (
               <div
                 key={slot}
                 className={`ss-slot${isActive ? " ss-slot--active" : ""}`}
                 style={{
-                  transform: `rotateY(${slotAngle}deg) translateZ(${RADIUS}px) scale(${scale})`,
+                  transform: `rotateY(${slotAngle}deg) translateZ(${RING_RADIUS_PX}px) scale(${scale})`,
                   opacity,
                   zIndex,
                   visibility: isHidden ? "hidden" : "visible",

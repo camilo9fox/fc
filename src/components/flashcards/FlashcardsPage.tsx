@@ -1,10 +1,12 @@
-import React, { useEffect, useMemo, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { flashCardsApi, FlashCard } from "../../api/flashcards";
 import { useCategories } from "../../hooks/useCategories";
 import StudySession from "./StudySession";
 import GenerateFlashcardsForm from "./GenerateFlashcardsForm";
 import CreateFlashcardForm from "./CreateFlashcardForm";
+import CardRow from "./CardRow";
+import CategoryAccordion from "./CategoryAccordion";
 import NoCategoryBanner from "../layout/NoCategoryBanner";
 import "./FlashcardsPage.css";
 
@@ -18,97 +20,6 @@ type DraftFlashcard = {
     title: string;
     description?: string;
   };
-};
-
-// ─── Compact inline card row ───────────────────────────────────────────────────
-interface CardRowProps {
-  question: string;
-  answer: string;
-  source?: string;
-  onDelete?: () => void;
-}
-
-const CardRow: React.FC<CardRowProps> = ({
-  question,
-  answer,
-  source,
-  onDelete,
-}) => {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className={`fc-row ${open ? "open" : ""}`}>
-      <button className="fc-row-toggle" onClick={() => setOpen((v) => !v)}>
-        <span className="fc-row-chevron">{open ? "▾" : "▸"}</span>
-        <span className="fc-row-question">{question}</span>
-        {source && <span className={`fc-row-badge ${source}`}>{source}</span>}
-      </button>
-      {open && (
-        <div className="fc-row-answer">
-          <p>{answer}</p>
-          {onDelete && (
-            <button className="fc-row-delete" onClick={onDelete}>
-              ✕ Eliminar
-            </button>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
-
-// ─── Category accordion ────────────────────────────────────────────────────────
-interface CategoryAccordionProps {
-  title: string;
-  cards: any[];
-  onStudy: () => void;
-  onDelete?: (id: string) => void;
-  isDraft?: boolean;
-}
-
-const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
-  title,
-  cards,
-  onStudy,
-  onDelete,
-  isDraft,
-}) => {
-  const [expanded, setExpanded] = useState(true);
-  return (
-    <div className="fc-accordion">
-      <div
-        className="fc-accordion-header"
-        onClick={() => setExpanded((v) => !v)}
-      >
-        <div className="fc-accordion-left">
-          <span className="fc-accordion-chevron">{expanded ? "▾" : "▸"}</span>
-          <span className="fc-accordion-title">{title}</span>
-          <span className="fc-accordion-count">{cards.length}</span>
-        </div>
-        <button
-          className="fc-accordion-study"
-          onClick={(e) => {
-            e.stopPropagation();
-            onStudy();
-          }}
-        >
-          Estudiar →
-        </button>
-      </div>
-      {expanded && (
-        <div className="fc-accordion-body">
-          {cards.map((card, i) => (
-            <CardRow
-              key={card.id ?? `${card.question}-${i}`}
-              question={card.question}
-              answer={card.answer}
-              source={card.source}
-              onDelete={onDelete ? () => onDelete(card.id) : undefined}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
 };
 
 const FlashcardsPage: React.FC = () => {
@@ -126,18 +37,13 @@ const FlashcardsPage: React.FC = () => {
   const [showCreate, setShowCreate] = useState(false);
   const [createMode, setCreateMode] = useState<"manual" | "ai">("manual");
 
-  // Group flashcards by category
   const groupedFlashcards = useMemo(() => {
-    const grouped: { [key: string]: any[] } = { "Sin categoría": [] };
-
+    const grouped: { [key: string]: any[] } = { "Sin categorÃ­a": [] };
     savedFlashcards.forEach((card) => {
-      const categoryTitle = card.category?.title || "Sin categoría";
-      if (!grouped[categoryTitle]) {
-        grouped[categoryTitle] = [];
-      }
+      const categoryTitle = card.category?.title || "Sin categorÃ­a";
+      if (!grouped[categoryTitle]) grouped[categoryTitle] = [];
       grouped[categoryTitle].push(card);
     });
-
     return grouped;
   }, [savedFlashcards]);
 
@@ -158,24 +64,20 @@ const FlashcardsPage: React.FC = () => {
         setLoading(false);
       }
     };
-
     loadSaved();
   }, [token]);
 
   const handleSaveDrafts = async () => {
     if (!draftFlashcards.length) return;
-
     const withoutCategory = draftFlashcards.filter((c) => !c.categoryId);
     if (withoutCategory.length > 0) {
       setError(
-        "Todas las flashcards deben tener una categoría antes de guardar.",
+        "Todas las flashcards deben tener una categorÃ­a antes de guardar.",
       );
       return;
     }
-
     setSaving(true);
     setError(null);
-
     try {
       const result = await flashCardsApi.saveFlashCards(
         draftFlashcards as Array<{
@@ -246,13 +148,13 @@ const FlashcardsPage: React.FC = () => {
             className={`qz-mode-btn ${createMode === "manual" ? "active" : ""}`}
             onClick={() => setCreateMode("manual")}
           >
-            ✏️ Manual
+            âœï¸ Manual
           </button>
           <button
             className={`qz-mode-btn ${createMode === "ai" ? "active" : ""}`}
             onClick={() => setCreateMode("ai")}
           >
-            ✨ Generar con IA
+            âœ¨ Generar con IA
           </button>
         </div>
 
@@ -297,7 +199,7 @@ const FlashcardsPage: React.FC = () => {
 
       {!hasCategories && <NoCategoryBanner feature="flashcards" />}
 
-      {/* Sección borrador */}
+      {/* SecciÃ³n borrador */}
       {draftFlashcards.length > 0 && (
         <section className="qz-draft-panel">
           <div className="qz-draft-header">
@@ -338,7 +240,7 @@ const FlashcardsPage: React.FC = () => {
                   )
                 }
               >
-                Estudiar borrador →
+                Estudiar borrador â†’
               </button>
             </div>
           </div>
@@ -359,13 +261,13 @@ const FlashcardsPage: React.FC = () => {
         </section>
       )}
 
-      {/* Sección guardadas */}
+      {/* SecciÃ³n guardadas */}
       {loading ? (
         <div className="qz-loading">Cargando tus flashcards...</div>
       ) : savedFlashcards.length === 0 && draftFlashcards.length === 0 ? (
         <div className="qz-empty">
-          <div className="qz-empty-icon">🃏</div>
-          <h3>Aún no tienes flashcards guardadas</h3>
+          <div className="qz-empty-icon">ðŸƒ</div>
+          <h3>AÃºn no tienes flashcards guardadas</h3>
           <p>Crea tu primera flashcard manual o con IA</p>
           <button
             className="qz-btn-primary"
@@ -385,30 +287,28 @@ const FlashcardsPage: React.FC = () => {
             <button
               className="qz-btn-study"
               onClick={() =>
-                handleStartStudy(
-                  savedFlashcards,
-                  "Estudio de flashcards guardadas",
-                )
+                handleStartStudy(savedFlashcards, "Todas las flashcards")
               }
             >
-              Estudiar todas →
+              Estudiar todas â†’
             </button>
           </div>
-          <div className="fc-accordions">
-            {Object.entries(groupedFlashcards).map(([categoryTitle, cards]) =>
-              cards.length === 0 ? null : (
-                <CategoryAccordion
-                  key={categoryTitle}
-                  title={categoryTitle}
-                  cards={cards}
-                  onStudy={() =>
-                    handleStartStudy(cards, `Estudio: ${categoryTitle}`)
-                  }
-                  onDelete={handleDeleteSavedCard}
-                />
-              ),
-            )}
-          </div>
+          {Object.entries(groupedFlashcards).map(([categoryTitle, cards]) =>
+            cards.length > 0 ? (
+              <CategoryAccordion
+                key={categoryTitle}
+                title={categoryTitle}
+                cards={cards}
+                onStudy={() =>
+                  handleStartStudy(
+                    cards as FlashCard[],
+                    `CategorÃ­a: ${categoryTitle}`,
+                  )
+                }
+                onDelete={handleDeleteSavedCard}
+              />
+            ) : null,
+          )}
         </>
       ) : null}
     </div>

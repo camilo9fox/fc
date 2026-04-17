@@ -1,9 +1,8 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { flashCardsApi, GenerateFlashCardResponse } from "../api";
 import { FlashCardData } from "../interfaces/interfaces";
 
 export const useFlashCard = () => {
-  const flashCardRef = useRef<HTMLDivElement>(null);
   const [flashCardData, setFlashCardData] = useState<FlashCardData>({
     question: "",
     answer: "",
@@ -40,26 +39,10 @@ export const useFlashCard = () => {
     }
   };
 
-  const flipCard = () => {
-    if (flashCardRef.current) {
-      flashCardRef.current.classList.add("flipped");
-      console.log("Card flipped");
-    }
-  };
-
-  const resetCard = () => {
-    if (flashCardRef.current) {
-      flashCardRef.current.classList.remove("flipped");
-    }
-  };
-
   return {
     flashCardData,
     selectedFile,
     inputText,
-    flipCard,
-    resetCard,
-    flashCardRef,
     handleFileChange,
     handleTextChange,
     handleGenerateFlashCard,

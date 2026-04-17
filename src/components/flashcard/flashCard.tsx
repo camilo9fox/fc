@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import "./flashCard.css";
 import { useFlashCard } from "../../hooks/useFlashCard";
 import { useAuth } from "../../contexts/AuthContext";
@@ -8,15 +8,21 @@ const FlashCard: React.FC = () => {
     flashCardData,
     selectedFile,
     inputText,
-    flipCard,
-    resetCard,
-    flashCardRef,
     handleFileChange,
     handleTextChange,
     handleGenerateFlashCard,
     isLoading,
     error,
   } = useFlashCard();
+  const flashCardRef = useRef<HTMLDivElement>(null);
+  const [flipped, setFlipped] = useState(false);
+
+  const flipCard = () => {
+    setFlipped((f) => !f);
+    if (flashCardRef.current) {
+      flashCardRef.current.classList.toggle("flipped");
+    }
+  };
   const { user, logout } = useAuth();
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

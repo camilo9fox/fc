@@ -1,6 +1,11 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import axios from 'axios';
-import { authApi, AuthResponse } from '../api';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { authApi, AuthResponse } from "../api";
 
 interface User {
   id: string;
@@ -23,7 +28,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -37,19 +42,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Configure axios to include token in requests
-  useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    } else {
-      delete axios.defaults.headers.common['Authorization'];
-    }
-  }, [token]);
-
   // Check for stored token on app start and restore user profile
   useEffect(() => {
     const restoreAuth = async () => {
-      const storedToken = localStorage.getItem('authToken');
+      const storedToken = localStorage.getItem("authToken");
       if (storedToken) {
         setToken(storedToken);
 
@@ -57,10 +53,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           const response = await authApi.getProfile();
           setUser(response.user);
         } catch (error: any) {
-          console.error('Error restoring auth profile:', error);
+          console.error("Error restoring auth profile:", error);
           setUser(null);
           setToken(null);
-          localStorage.removeItem('authToken');
+          localStorage.removeItem("authToken");
         }
       }
       setIsLoading(false);
@@ -74,15 +70,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response: AuthResponse = await authApi.signin({ email, password });
       setUser(response.user);
       setToken(response.token);
-      localStorage.setItem('authToken', response.token);
+      localStorage.setItem("authToken", response.token);
     } catch (error: any) {
       // If it's a 401, clear any stale auth state
       if (error.response?.status === 401) {
         setUser(null);
         setToken(null);
-        localStorage.removeItem('authToken');
+        localStorage.removeItem("authToken");
       }
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       throw error;
     }
   };
@@ -96,9 +92,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
       setUser(response.user);
       setToken(response.token);
-      localStorage.setItem('authToken', response.token);
+      localStorage.setItem("authToken", response.token);
     } catch (error) {
-      console.error('Signup error:', error);
+      console.error("Signup error:", error);
       throw error;
     }
   };
@@ -106,7 +102,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem('authToken');
+    localStorage.removeItem("authToken");
   };
 
   const value: AuthContextType = {
@@ -118,9 +114,5 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isLoading,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { FlashcardGenerationJob, flashCardsApi } from "../../api/flashcards";
 import { useCategories } from "../../hooks/useCategories";
+import {
+  ALLOWED_UPLOAD_FORMATS,
+  MAX_FLASHCARDS_GENERATED,
+} from "../../constants";
 
 interface GenerateFlashcardsFormProps {
   onGenerated: (
@@ -125,7 +129,7 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
             id="generateQuantity"
             type="number"
             min={1}
-            max={10}
+            max={MAX_FLASHCARDS_GENERATED}
             value={quantity}
             onChange={(e) => setQuantity(Number(e.target.value))}
             disabled={isLoading}
@@ -156,7 +160,7 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
             <input
               id="generateFile"
               type="file"
-              accept=".txt,.pdf"
+              accept={ALLOWED_UPLOAD_FORMATS}
               onChange={handleFileChange}
               disabled={isLoading}
               style={{ display: "none" }}
