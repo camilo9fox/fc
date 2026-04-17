@@ -30,15 +30,15 @@ const AppRoutes: React.FC = () => {
     <Routes>
       <Route
         path="/"
-        element={user ? <Navigate to="/flashcards" /> : <LandingPage />}
+        element={user ? <Navigate to="/categories" /> : <LandingPage />}        
       />
       <Route
         path="/login"
-        element={user ? <Navigate to="/flashcards" /> : <Login />}
+        element={user ? <Navigate to="/categories" /> : <Login />}
       />
       <Route
         path="/signup"
-        element={user ? <Navigate to="/flashcards" /> : <Signup />}
+        element={user ? <Navigate to="/categories" /> : <Signup />}
       />
       <Route
         path="/flashcards"

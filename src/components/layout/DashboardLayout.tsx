@@ -180,7 +180,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    navigate("/categories");
   };
 
   const userInitials = user?.email
@@ -307,7 +307,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </div>
           </div>
           <div className="ds-topbar-right">
-            <Link to="/" className="ds-topbar-home-btn" title="Ir al inicio">
+            <Link
+              to="/categories"
+              className="ds-topbar-home-btn"
+              title="Ir al inicio"
+            >
               <svg
                 width="16"
                 height="16"
