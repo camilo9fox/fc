@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { X } from "lucide-react";
 import { useCategories } from "../../hooks/useCategories";
 import { CreateQuizQuestionRequest, DraftQuizQuestion } from "../../api/quiz";
 import { DraftQuizState } from "../../types/quiz.types";
@@ -117,7 +118,7 @@ const CreateQuizForm: React.FC<CreateQuizFormProps> = ({
       <div className="qz-form-header">
         <h2>Nuevo cuestionario</h2>
         <button type="button" className="qz-close-btn" onClick={onCancel}>
-          ✕
+          <X size={16} />
         </button>
       </div>
 

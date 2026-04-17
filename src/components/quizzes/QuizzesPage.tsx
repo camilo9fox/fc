@@ -1,4 +1,5 @@
 ﻿import React, { useEffect, useState } from "react";
+import { FileText, Pencil, Sparkles, X } from "lucide-react";
 import { useCategories } from "../../hooks/useCategories";
 import NoCategoryBanner from "../layout/NoCategoryBanner";
 import { quizApi, Quiz, CreateQuizRequest } from "../../api/quiz";
@@ -94,7 +95,7 @@ const QuizzesPage: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Â¿Eliminar este cuestionario?")) return;
+    if (!window.confirm("¿Eliminar este cuestionario?")) return;
     try {
       await quizApi.delete(id);
       setQuizzes((prev) => prev.filter((q) => q.id !== id));
@@ -131,13 +132,13 @@ const QuizzesPage: React.FC = () => {
             className={`qz-mode-btn ${createMode === "manual" ? "active" : ""}`}
             onClick={() => setCreateMode("manual")}
           >
-            âœï¸ Manual
+            <Pencil size={14} /> Manual
           </button>
           <button
             className={`qz-mode-btn ${createMode === "ai" ? "active" : ""}`}
             onClick={() => setCreateMode("ai")}
           >
-            âœ¨ Generar con IA
+            <Sparkles size={14} /> Generar con IA
           </button>
         </div>
 
@@ -162,7 +163,7 @@ const QuizzesPage: React.FC = () => {
         <div>
           <h1 className="qz-page-title">Cuestionarios</h1>
           <p className="qz-page-sub">
-            Crea y practica cuestionarios de mÃºltiple opciÃ³n
+            Crea y practica cuestionarios de múltiple opción
           </p>
         </div>
         <button
@@ -200,7 +201,7 @@ const QuizzesPage: React.FC = () => {
                 onClick={() => setStudyingDraft(true)}
                 disabled={draftQuiz.questions.length === 0}
               >
-                Estudiar borrador â†’
+                Estudiar borrador →
               </button>
               <button
                 className="qz-btn-primary"
@@ -222,7 +223,7 @@ const QuizzesPage: React.FC = () => {
                   onClick={() => handleRemoveDraftQuestion(i)}
                   aria-label="Eliminar pregunta"
                 >
-                  âœ•
+                  <X size={14} />
                 </button>
               </div>
             ))}
@@ -234,9 +235,11 @@ const QuizzesPage: React.FC = () => {
         <div className="qz-loading">Cargando cuestionarios...</div>
       ) : quizzes.length === 0 ? (
         <div className="qz-empty">
-          <div className="qz-empty-icon">ðŸ“</div>
-          <h3>AÃºn no tienes cuestionarios</h3>
-          <p>Crea tu primer cuestionario de mÃºltiple opciÃ³n</p>
+          <div className="qz-empty-icon">
+            <FileText size={48} />
+          </div>
+          <h3>Aún no tienes cuestionarios</h3>
+          <p>Crea tu primer cuestionario de múltiple opción</p>
           <button
             className="qz-btn-primary"
             onClick={() => setShowCreate(true)}
@@ -260,7 +263,7 @@ const QuizzesPage: React.FC = () => {
                   onClick={() => handleDelete(quiz.id)}
                   aria-label="Eliminar"
                 >
-                  âœ•
+                  <X size={14} />
                 </button>
               </div>
               <h3 className="qz-card-title">{quiz.title}</h3>
@@ -276,7 +279,7 @@ const QuizzesPage: React.FC = () => {
                   onClick={() => handleStudy(quiz)}
                   disabled={loadingDetail === quiz.id}
                 >
-                  {loadingDetail === quiz.id ? "Cargando..." : "Estudiar â†’"}
+                  {loadingDetail === quiz.id ? "Cargando..." : "Estudiar →"}
                 </button>
               </div>
             </div>

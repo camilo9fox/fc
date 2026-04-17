@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Paperclip, X } from "lucide-react";
 import { FlashcardGenerationJob, flashCardsApi } from "../../api/flashcards";
 import { useCategories } from "../../hooks/useCategories";
 import {
@@ -98,7 +99,7 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
       <div className="qz-form-header">
         <h2>Generar flashcards con IA</h2>
         <button type="button" className="qz-close-btn" onClick={onCancel}>
-          ✕
+          <X size={16} />
         </button>
       </div>
 
@@ -156,7 +157,13 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
             className="qz-btn-secondary qz-file-btn"
             style={{ cursor: "pointer" }}
           >
-            {file ? `📄 ${file.name}` : "Seleccionar archivo"}
+            {file ? (
+              <>
+                <Paperclip size={14} /> {file.name}
+              </>
+            ) : (
+              "Seleccionar archivo"
+            )}
             <input
               id="generateFile"
               type="file"

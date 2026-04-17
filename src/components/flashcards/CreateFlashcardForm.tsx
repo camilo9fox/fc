@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { X } from "lucide-react";
 import { useCategories } from "../../hooks/useCategories";
 
 interface CreateFlashcardFormProps {
@@ -53,7 +54,7 @@ const CreateFlashcardForm: React.FC<CreateFlashcardFormProps> = ({
       <div className="qz-form-header">
         <h2>Nueva flashcard</h2>
         <button type="button" className="qz-close-btn" onClick={onCancel}>
-          ✕
+          <X size={16} />
         </button>
       </div>
 

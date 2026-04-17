@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { Paperclip, Sparkles, X } from "lucide-react";
 import { useCategories } from "../../hooks/useCategories";
 import {
   ALLOWED_UPLOAD_FORMATS,
@@ -70,7 +71,7 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({
       <div className="tf-form-header">
         <h2>Generar set V/F con IA</h2>
         <button type="button" className="tf-close-btn" onClick={onCancel}>
-          ✕
+          <X size={16} />
         </button>
       </div>
 
@@ -136,7 +137,13 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({
             className="tf-btn-secondary tf-file-btn"
             onClick={() => fileInputRef.current?.click()}
           >
-            {file ? `📄 ${file.name}` : "Seleccionar archivo"}
+            {file ? (
+              <>
+                <Paperclip size={14} /> {file.name}
+              </>
+            ) : (
+              "Seleccionar archivo"
+            )}
           </button>
           {file && (
             <button
@@ -164,7 +171,7 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({
 
       {generating && (
         <p className="tf-generating-msg">
-          ✨ Generando {quantity} enunciados con IA…
+          <Sparkles size={14} /> Generando {quantity} enunciados con IA…
         </p>
       )}
 

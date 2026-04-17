@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Check, X } from "lucide-react";
 import { useCategories } from "../../hooks/useCategories";
 import {
   CreateTrueFalseQuestionRequest,
@@ -87,7 +88,7 @@ const CreateTFForm: React.FC<CreateTFFormProps> = ({ onDrafted, onCancel }) => {
       <div className="tf-form-header">
         <h2>Nuevo set — Verdadero o Falso</h2>
         <button type="button" className="tf-close-btn" onClick={onCancel}>
-          ✕
+          <X size={16} />
         </button>
       </div>
 
@@ -160,14 +161,14 @@ const CreateTFForm: React.FC<CreateTFFormProps> = ({ onDrafted, onCancel }) => {
                   className={`tf-toggle-btn ${q.is_true ? "active-true" : ""}`}
                   onClick={() => updateQuestion(qi, "is_true", true)}
                 >
-                  ✓ Verdadero
+                  <Check size={14} /> Verdadero
                 </button>
                 <button
                   type="button"
                   className={`tf-toggle-btn ${!q.is_true ? "active-false" : ""}`}
                   onClick={() => updateQuestion(qi, "is_true", false)}
                 >
-                  ✗ Falso
+                  <X size={14} /> Falso
                 </button>
               </div>
             </div>

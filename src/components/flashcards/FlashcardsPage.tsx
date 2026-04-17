@@ -1,4 +1,5 @@
 ﻿import React, { useEffect, useMemo, useState } from "react";
+import { Layers, Pencil, Sparkles } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { flashCardsApi, FlashCard } from "../../api/flashcards";
 import { useCategories } from "../../hooks/useCategories";
@@ -38,9 +39,9 @@ const FlashcardsPage: React.FC = () => {
   const [createMode, setCreateMode] = useState<"manual" | "ai">("manual");
 
   const groupedFlashcards = useMemo(() => {
-    const grouped: { [key: string]: any[] } = { "Sin categorÃ­a": [] };
+    const grouped: { [key: string]: any[] } = { "Sin categoría": [] };
     savedFlashcards.forEach((card) => {
-      const categoryTitle = card.category?.title || "Sin categorÃ­a";
+      const categoryTitle = card.category?.title || "Sin categoría";
       if (!grouped[categoryTitle]) grouped[categoryTitle] = [];
       grouped[categoryTitle].push(card);
     });
@@ -72,7 +73,7 @@ const FlashcardsPage: React.FC = () => {
     const withoutCategory = draftFlashcards.filter((c) => !c.categoryId);
     if (withoutCategory.length > 0) {
       setError(
-        "Todas las flashcards deben tener una categorÃ­a antes de guardar.",
+        "Todas las flashcards deben tener una categoría antes de guardar.",
       );
       return;
     }
@@ -148,13 +149,13 @@ const FlashcardsPage: React.FC = () => {
             className={`qz-mode-btn ${createMode === "manual" ? "active" : ""}`}
             onClick={() => setCreateMode("manual")}
           >
-            âœï¸ Manual
+            <Pencil size={14} /> Manual
           </button>
           <button
             className={`qz-mode-btn ${createMode === "ai" ? "active" : ""}`}
             onClick={() => setCreateMode("ai")}
           >
-            âœ¨ Generar con IA
+            <Sparkles size={14} /> Generar con IA
           </button>
         </div>
 
@@ -199,7 +200,7 @@ const FlashcardsPage: React.FC = () => {
 
       {!hasCategories && <NoCategoryBanner feature="flashcards" />}
 
-      {/* SecciÃ³n borrador */}
+      {/* Sección borrador */}
       {draftFlashcards.length > 0 && (
         <section className="qz-draft-panel">
           <div className="qz-draft-header">
@@ -240,7 +241,7 @@ const FlashcardsPage: React.FC = () => {
                   )
                 }
               >
-                Estudiar borrador â†’
+                Estudiar borrador →
               </button>
             </div>
           </div>
@@ -261,13 +262,15 @@ const FlashcardsPage: React.FC = () => {
         </section>
       )}
 
-      {/* SecciÃ³n guardadas */}
+      {/* Sección guardadas */}
       {loading ? (
         <div className="qz-loading">Cargando tus flashcards...</div>
       ) : savedFlashcards.length === 0 && draftFlashcards.length === 0 ? (
         <div className="qz-empty">
-          <div className="qz-empty-icon">ðŸƒ</div>
-          <h3>AÃºn no tienes flashcards guardadas</h3>
+          <div className="qz-empty-icon">
+            <Layers size={48} />
+          </div>
+          <h3>Aún no tienes flashcards guardadas</h3>
           <p>Crea tu primera flashcard manual o con IA</p>
           <button
             className="qz-btn-primary"
@@ -290,7 +293,7 @@ const FlashcardsPage: React.FC = () => {
                 handleStartStudy(savedFlashcards, "Todas las flashcards")
               }
             >
-              Estudiar todas â†’
+              Estudiar todas →
             </button>
           </div>
           {Object.entries(groupedFlashcards).map(([categoryTitle, cards]) =>
@@ -302,7 +305,7 @@ const FlashcardsPage: React.FC = () => {
                 onStudy={() =>
                   handleStartStudy(
                     cards as FlashCard[],
-                    `CategorÃ­a: ${categoryTitle}`,
+                    `Categoría: ${categoryTitle}`,
                   )
                 }
                 onDelete={handleDeleteSavedCard}

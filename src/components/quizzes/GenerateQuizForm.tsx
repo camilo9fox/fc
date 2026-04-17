@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { Paperclip, Sparkles, X } from "lucide-react";
 import { useCategories } from "../../hooks/useCategories";
 import {
   ALLOWED_UPLOAD_FORMATS,
@@ -69,7 +70,7 @@ const GenerateQuizForm: React.FC<GenerateQuizFormProps> = ({
       <div className="qz-form-header">
         <h2>Generar cuestionario con IA</h2>
         <button type="button" className="qz-close-btn" onClick={onCancel}>
-          ✕
+          <X size={16} />
         </button>
       </div>
 
@@ -135,7 +136,13 @@ const GenerateQuizForm: React.FC<GenerateQuizFormProps> = ({
             className="qz-btn-secondary qz-file-btn"
             onClick={() => fileInputRef.current?.click()}
           >
-            {file ? `📄 ${file.name}` : "Seleccionar archivo"}
+            {file ? (
+              <>
+                <Paperclip size={14} /> {file.name}
+              </>
+            ) : (
+              "Seleccionar archivo"
+            )}
           </button>
           {file && (
             <button
@@ -163,7 +170,7 @@ const GenerateQuizForm: React.FC<GenerateQuizFormProps> = ({
 
       {generating && (
         <p className="qz-generating-msg">
-          ✨ Generando {quantity} preguntas con IA…
+          <Sparkles size={14} /> Generando {quantity} preguntas con IA…
         </p>
       )}
 

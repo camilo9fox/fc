@@ -1,4 +1,5 @@
 ﻿import React, { useEffect, useState } from "react";
+import { CheckSquare, Pencil, Sparkles, X } from "lucide-react";
 import { useCategories } from "../../hooks/useCategories";
 import NoCategoryBanner from "../layout/NoCategoryBanner";
 import {
@@ -95,7 +96,7 @@ const TrueFalsePage: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Â¿Eliminar este set?")) return;
+    if (!window.confirm("¿Eliminar este set?")) return;
     try {
       await trueFalseApi.delete(id);
       setSets((prev) => prev.filter((s) => s.id !== id));
@@ -132,13 +133,13 @@ const TrueFalsePage: React.FC = () => {
             className={`tf-mode-btn ${createMode === "manual" ? "active" : ""}`}
             onClick={() => setCreateMode("manual")}
           >
-            âœï¸ Manual
+            <Pencil size={14} /> Manual
           </button>
           <button
             className={`tf-mode-btn ${createMode === "ai" ? "active" : ""}`}
             onClick={() => setCreateMode("ai")}
           >
-            âœ¨ Generar con IA
+            <Sparkles size={14} /> Generar con IA
           </button>
         </div>
 
@@ -201,7 +202,7 @@ const TrueFalsePage: React.FC = () => {
                 onClick={() => setStudyingDraft(true)}
                 disabled={draftSet.questions.length === 0}
               >
-                Estudiar borrador â†’
+                Estudiar borrador →
               </button>
               <button
                 className="tf-btn-primary"
@@ -226,7 +227,7 @@ const TrueFalsePage: React.FC = () => {
                   onClick={() => handleRemoveDraftQuestion(i)}
                   aria-label="Eliminar enunciado"
                 >
-                  âœ•
+                  <X size={14} />
                 </button>
               </div>
             ))}
@@ -238,8 +239,10 @@ const TrueFalsePage: React.FC = () => {
         <div className="tf-loading">Cargando sets...</div>
       ) : sets.length === 0 ? (
         <div className="tf-empty">
-          <div className="tf-empty-icon">â˜‘ï¸</div>
-          <h3>AÃºn no tienes sets de Verdadero o Falso</h3>
+          <div className="tf-empty-icon">
+            <CheckSquare size={48} />
+          </div>
+          <h3>Aún no tienes sets de Verdadero o Falso</h3>
           <p>Crea tu primer set de enunciados</p>
           <button
             className="tf-btn-primary"
@@ -262,7 +265,7 @@ const TrueFalsePage: React.FC = () => {
                   onClick={() => handleDelete(set.id)}
                   aria-label="Eliminar"
                 >
-                  âœ•
+                  <X size={14} />
                 </button>
               </div>
               <h3 className="tf-card-title">{set.title}</h3>
@@ -278,7 +281,7 @@ const TrueFalsePage: React.FC = () => {
                   onClick={() => handleStudy(set)}
                   disabled={loadingDetail === set.id}
                 >
-                  {loadingDetail === set.id ? "Cargando..." : "Estudiar â†’"}
+                  {loadingDetail === set.id ? "Cargando..." : "Estudiar →"}
                 </button>
               </div>
             </div>
