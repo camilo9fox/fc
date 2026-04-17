@@ -19,16 +19,20 @@ const StudySession: React.FC<StudySessionProps> = ({
 }) => {
   const total = cards.length;
 
+  // ringAngle accumulates â€” never resets â€” so there is no snap-back flash
   const [ringAngle, setRingAngle] = useState(0);
+  // frontSlot tracks which physical slot is facing the viewer
+  const [frontSlot, setFrontSlot] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [animating, setAnimating] = useState(false);
   const [flipped, setFlipped] = useState(false);
-  const [snapping, setSnapping] = useState(false);
 
   const goNext = useCallback(() => {
     if (animating || total <= 1) return;
     setAnimating(true);
     setFlipped(false);
+    setFrontSlot((s) => (s + 1) % RING_SLOTS);
+    setCurrentIndex((i) => (i + 1) % total);
     setRingAngle((a) => a - ANGLE_STEP);
   }, [animating, total]);
 
@@ -36,24 +40,17 @@ const StudySession: React.FC<StudySessionProps> = ({
     if (animating || total <= 1) return;
     setAnimating(true);
     setFlipped(false);
+    setFrontSlot((s) => (s - 1 + RING_SLOTS) % RING_SLOTS);
+    setCurrentIndex((i) => (i - 1 + total) % total);
     setRingAngle((a) => a + ANGLE_STEP);
   }, [animating, total]);
 
   const handleRingTransitionEnd = useCallback(
     (e: React.TransitionEvent<HTMLDivElement>) => {
       if (e.propertyName !== "transform") return;
-      const stepsForward = Math.round(-ringAngle / ANGLE_STEP);
-      setSnapping(true);
-      setCurrentIndex((i) => (((i + stepsForward) % total) + total) % total);
-      setRingAngle(0);
-      requestAnimationFrame(() =>
-        requestAnimationFrame(() => {
-          setSnapping(false);
-          setAnimating(false);
-        }),
-      );
+      setAnimating(false);
     },
-    [ringAngle, total],
+    [],
   );
 
   useEffect(() => {
@@ -77,7 +74,7 @@ const StudySession: React.FC<StudySessionProps> = ({
           {currentIndex + 1} / {total}
         </span>
         <button className="ss-close" onClick={onClose} aria-label="Cerrar">
-          ✕
+          &#x2715;
         </button>
       </header>
 
@@ -96,14 +93,20 @@ const StudySession: React.FC<StudySessionProps> = ({
             transition: animating
               ? `transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94)`
               : "none",
-            opacity: snapping ? 0 : 1,
           }}
           onTransitionEnd={handleRingTransitionEnd}
         >
           {Array.from({ length: RING_SLOTS }, (_, slot) => {
             const slotAngle = slot * ANGLE_STEP;
-            const card = cards[(currentIndex + slot) % total];
-            const isActive = slot === 0;
+            const relPos = (slot - frontSlot + RING_SLOTS) % RING_SLOTS;
+            const offset =
+              relPos <= Math.floor(RING_SLOTS / 2)
+                ? relPos
+                : relPos - RING_SLOTS;
+            const cardIndex =
+              (((currentIndex + offset) % total) + total) % total;
+            const card = cards[cardIndex];
+            const isActive = slot === frontSlot;
 
             const normalizedAngle =
               (((slotAngle + ringAngle) % 360) + 360) % 360;
@@ -147,7 +150,6 @@ const StudySession: React.FC<StudySessionProps> = ({
                       </span>
                     )}
                   </div>
-
                   <div className="ss-face ss-face--back">
                     <span className="ss-tag ss-tag--a">Respuesta</span>
                     <p className="ss-text">{card.answer}</p>
@@ -182,7 +184,8 @@ const StudySession: React.FC<StudySessionProps> = ({
           </button>
         </div>
         <p className="ss-kbd-hint">
-          ← → navegar &nbsp;·&nbsp; Espacio voltear &nbsp;·&nbsp; Esc salir
+          &#8592; &#8594; navegar &nbsp;&middot;&nbsp; Espacio voltear
+          &nbsp;&middot;&nbsp; Esc salir
         </p>
       </footer>
     </div>

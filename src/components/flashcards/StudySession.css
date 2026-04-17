@@ -80,6 +80,79 @@
   border-radius: 0 2px 2px 0;
 }
 
+/* ── Stage (replaces 3D scene) ───────────────────────────── */
+.ss-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ss-card-wrapper {
+  position: absolute;
+  width: 260px;
+  height: 380px;
+  cursor: pointer;
+}
+
+/* ── Slide keyframes ─────────────────────────────────────── */
+@keyframes ss-enter-next {
+  from {
+    transform: translateX(56px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes ss-exit-next {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-56px);
+    opacity: 0;
+  }
+}
+@keyframes ss-enter-prev {
+  from {
+    transform: translateX(-56px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes ss-exit-prev {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(56px);
+    opacity: 0;
+  }
+}
+
+.ss-enter-next {
+  animation: ss-enter-next 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.ss-exit-next {
+  animation: ss-exit-next 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.ss-enter-prev {
+  animation: ss-enter-prev 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.ss-exit-prev {
+  animation: ss-exit-prev 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
 /* ── 3D Scene ─────────────────────────────────────────────── */
 .ss-scene {
   flex: 1;
