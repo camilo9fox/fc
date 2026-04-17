@@ -1,4 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { flashCardsApi, FlashCard, Category } from "../../api/flashcards";
+import { quizApi, Quiz } from "../../api/quiz";
+import { trueFalseApi, TrueFalseSet } from "../../api/trueFalse";
+import StudySession from "../flashcards/StudySession";
 import { useCategories } from "../../hooks/useCategories";
 import "./CategoriesPage.css";
 
@@ -10,6 +15,7 @@ interface ThemeCardProps {
   description?: string;
   onEdit: () => void;
   onDelete: () => void;
+  onOpen: () => void;
 }
 
 const ThemeCard: React.FC<ThemeCardProps> = ({
@@ -17,8 +23,9 @@ const ThemeCard: React.FC<ThemeCardProps> = ({
   description,
   onEdit,
   onDelete,
+  onOpen,
 }) => (
-  <div className="ts-card">
+  <div className="ts-card" onClick={onOpen} style={{ cursor: "pointer" }}>
     <div className="ts-card-accent" />
     <div className="ts-card-body">
       <div className="ts-card-top">
@@ -41,7 +48,14 @@ const ThemeCard: React.FC<ThemeCardProps> = ({
           </svg>
         </div>
         <div className="ts-card-actions">
-          <button className="ts-card-btn" onClick={onEdit} title="Editar">
+          <button
+            className="ts-card-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit();
+            }}
+            title="Editar"
+          >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
               <path
                 d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
@@ -61,7 +75,10 @@ const ThemeCard: React.FC<ThemeCardProps> = ({
           </button>
           <button
             className="ts-card-btn ts-card-btn-del"
-            onClick={onDelete}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete();
+            }}
             title="Eliminar"
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
@@ -241,6 +258,340 @@ const ThemeModal: React.FC<ThemeModalProps> = ({
   );
 };
 
+// ─── CategoryDetailModal ───────────────────────────────────────────────────────
+
+type DetailTab = "flashcards" | "quizzes" | "truefalse";
+
+interface CategoryDetailModalProps {
+  category: Category;
+  onClose: () => void;
+}
+
+const CategoryDetailModal: React.FC<CategoryDetailModalProps> = ({
+  category,
+  onClose,
+}) => {
+  const navigate = useNavigate();
+  const backdropRef = useRef<HTMLDivElement>(null);
+
+  const [tab, setTab] = useState<DetailTab>("flashcards");
+  const [flashcards, setFlashcards] = useState<FlashCard[]>([]);
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [tfSets, setTfSets] = useState<TrueFalseSet[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [studyCards, setStudyCards] = useState<FlashCard[] | null>(null);
+
+  useEffect(() => {
+    setLoading(true);
+    Promise.all([
+      flashCardsApi.getFlashCards({ categoryId: category.id, limit: 200 }),
+      quizApi.getAll({ categoryId: category.id, limit: 200 }),
+      trueFalseApi.getAll({ categoryId: category.id, limit: 200 }),
+    ])
+      .then(([fcRes, qRes, tfRes]) => {
+        setFlashcards(fcRes.flashcards);
+        setQuizzes(qRes.quizzes);
+        setTfSets(tfRes.sets);
+      })
+      .finally(() => setLoading(false));
+  }, [category.id]);
+
+  const handleBackdrop = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === backdropRef.current) onClose();
+  };
+
+  const tabs: { key: DetailTab; label: string; count: number }[] = [
+    { key: "flashcards", label: "Flashcards", count: flashcards.length },
+    { key: "quizzes", label: "Cuestionarios", count: quizzes.length },
+    { key: "truefalse", label: "V / F", count: tfSets.length },
+  ];
+
+  if (studyCards) {
+    return (
+      <StudySession
+        cards={studyCards}
+        title={`Estudio: ${category.title}`}
+        onClose={() => setStudyCards(null)}
+      />
+    );
+  }
+
+  return (
+    <div
+      className="ts-modal-backdrop"
+      ref={backdropRef}
+      onClick={handleBackdrop}
+    >
+      <div className="ts-detail-modal" role="dialog" aria-modal="true">
+        {/* Header */}
+        <div className="ts-detail-header">
+          <div className="ts-detail-header-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"
+                stroke="#fff"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                stroke="#fff"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          <div className="ts-detail-header-text">
+            <h2 className="ts-detail-title">{category.title}</h2>
+            {category.description && (
+              <p className="ts-detail-desc">{category.description}</p>
+            )}
+          </div>
+          <button
+            className="ts-modal-close"
+            onClick={onClose}
+            aria-label="Cerrar"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M18 6L6 18M6 6l12 12"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
+        </div>
+
+        {/* Tabs */}
+        <div className="ts-detail-tabs">
+          {tabs.map((t) => (
+            <button
+              key={t.key}
+              className={`ts-detail-tab${tab === t.key ? " ts-detail-tab--active" : ""}`}
+              onClick={() => setTab(t.key)}
+            >
+              {t.label}
+              <span className="ts-detail-tab-badge">
+                {loading ? "…" : t.count}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Body */}
+        <div className="ts-detail-body">
+          {loading ? (
+            <div className="ts-loading" style={{ padding: "40px 0" }}>
+              <div className="ts-spinner" />
+              <span>Cargando contenido…</span>
+            </div>
+          ) : (
+            <>
+              {/* ── Flashcards ── */}
+              {tab === "flashcards" && (
+                <div className="ts-detail-section">
+                  {flashcards.length === 0 ? (
+                    <div className="ts-detail-empty">
+                      <p>No hay flashcards en este tema todavía.</p>
+                      <button
+                        className="ts-btn-secondary"
+                        onClick={() => {
+                          onClose();
+                          navigate("/flashcards");
+                        }}
+                      >
+                        Ir a Flashcards
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="ts-detail-section-bar">
+                        <span className="ts-detail-count">
+                          {flashcards.length} tarjetas
+                        </span>
+                        <button
+                          className="ts-btn-primary ts-btn-sm"
+                          onClick={() => setStudyCards(flashcards)}
+                        >
+                          &#9654; Estudiar todo
+                        </button>
+                      </div>
+                      <div className="ts-detail-fc-list">
+                        {flashcards.map((fc) => (
+                          <div key={fc.id} className="ts-detail-fc-item">
+                            <div className="ts-detail-fc-q">
+                              <span className="ts-detail-fc-label">P</span>
+                              <span>{fc.question}</span>
+                            </div>
+                            <div className="ts-detail-fc-a">
+                              <span className="ts-detail-fc-label ts-detail-fc-label--a">
+                                R
+                              </span>
+                              <span>{fc.answer}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+
+              {/* ── Cuestionarios ── */}
+              {tab === "quizzes" && (
+                <div className="ts-detail-section">
+                  {quizzes.length === 0 ? (
+                    <div className="ts-detail-empty">
+                      <p>No hay cuestionarios en este tema todavía.</p>
+                      <button
+                        className="ts-btn-secondary"
+                        onClick={() => {
+                          onClose();
+                          navigate("/quizzes");
+                        }}
+                      >
+                        Ir a Cuestionarios
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="ts-detail-list">
+                      {quizzes.map((q) => (
+                        <div key={q.id} className="ts-detail-item">
+                          <div className="ts-detail-item-icon ts-detail-item-icon--quiz">
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                            >
+                              <circle
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                              />
+                              <path
+                                d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                              />
+                              <circle
+                                cx="12"
+                                cy="17"
+                                r="0.5"
+                                fill="currentColor"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                              />
+                            </svg>
+                          </div>
+                          <div className="ts-detail-item-info">
+                            <span className="ts-detail-item-title">
+                              {q.title}
+                            </span>
+                            {q.questions && (
+                              <span className="ts-detail-item-meta">
+                                {q.questions.length} preguntas
+                              </span>
+                            )}
+                          </div>
+                          <button
+                            className="ts-btn-primary ts-btn-sm"
+                            onClick={() => {
+                              onClose();
+                              navigate("/quizzes");
+                            }}
+                          >
+                            Estudiar
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* ── V/F ── */}
+              {tab === "truefalse" && (
+                <div className="ts-detail-section">
+                  {tfSets.length === 0 ? (
+                    <div className="ts-detail-empty">
+                      <p>No hay sets de V/F en este tema todavía.</p>
+                      <button
+                        className="ts-btn-secondary"
+                        onClick={() => {
+                          onClose();
+                          navigate("/truefalse");
+                        }}
+                      >
+                        Ir a Verdadero / Falso
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="ts-detail-list">
+                      {tfSets.map((s) => (
+                        <div key={s.id} className="ts-detail-item">
+                          <div className="ts-detail-item-icon ts-detail-item-icon--tf">
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                            >
+                              <path
+                                d="M9 11l3 3L22 4"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                              <path
+                                d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </div>
+                          <div className="ts-detail-item-info">
+                            <span className="ts-detail-item-title">
+                              {s.title}
+                            </span>
+                            {s.questions && (
+                              <span className="ts-detail-item-meta">
+                                {s.questions.length} enunciados
+                              </span>
+                            )}
+                          </div>
+                          <button
+                            className="ts-btn-primary ts-btn-sm"
+                            onClick={() => {
+                              onClose();
+                              navigate("/truefalse");
+                            }}
+                          >
+                            Estudiar
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // ─── Página principal ──────────────────────────────────────────────────────────
 
 type ModalState =
@@ -259,6 +610,7 @@ const CategoriesPage: React.FC = () => {
   } = useCategories();
 
   const [modal, setModal] = useState<ModalState>(null);
+  const [detailCat, setDetailCat] = useState<Category | null>(null);
   const [pageError, setPageError] = useState<string | null>(null);
 
   const openCreate = () => setModal({ mode: "create" });
@@ -428,6 +780,7 @@ const CategoriesPage: React.FC = () => {
                   openEdit(cat.id, cat.title, cat.description || "")
                 }
                 onDelete={() => handleDelete(cat.id, cat.title)}
+                onOpen={() => setDetailCat(cat)}
               />
             ))}
             <button className="ts-card-add" onClick={openCreate}>
@@ -443,6 +796,13 @@ const CategoriesPage: React.FC = () => {
             </button>
           </div>
         </>
+      )}
+
+      {detailCat && (
+        <CategoryDetailModal
+          category={detailCat}
+          onClose={() => setDetailCat(null)}
+        />
       )}
 
       {/* ── Modal ── */}
