@@ -7,6 +7,7 @@ import {
   TrueFalseSet,
   CreateTrueFalseSetRequest,
 } from "../../api/trueFalse";
+import { attemptsApi } from "../../api/attempts";
 import { DraftTFState, setToDraft } from "../../types/trueFalse.types";
 import DraftTFStudySession from "./DraftTFStudySession";
 import GenerateTFForm from "./GenerateTFForm";
@@ -112,6 +113,16 @@ const TrueFalsePage: React.FC = () => {
         onClose={() => setStudySet(null)}
         badge={studySet.category?.title}
         returnLabel="Volver al listado"
+        onComplete={(score, total) => {
+          attemptsApi
+            .recordTrueFalse({
+              set_id: studySet.id,
+              category_id: studySet.category?.id,
+              score,
+              total_questions: total,
+            })
+            .catch(() => {}); // fire-and-forget; don't block the UI
+        }}
       />
     );
   }

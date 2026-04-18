@@ -3,6 +3,7 @@ import { FileText, Pencil, Sparkles, X } from "lucide-react";
 import { useCategories } from "../../hooks/useCategories";
 import NoCategoryBanner from "../layout/NoCategoryBanner";
 import { quizApi, Quiz, CreateQuizRequest } from "../../api/quiz";
+import { attemptsApi } from "../../api/attempts";
 import { DraftQuizState, quizToDraft } from "../../types/quiz.types";
 import DraftQuizStudySession from "./DraftQuizStudySession";
 import GenerateQuizForm from "./GenerateQuizForm";
@@ -111,6 +112,16 @@ const QuizzesPage: React.FC = () => {
         onClose={() => setStudyQuiz(null)}
         badge={studyQuiz.category?.title}
         returnLabel="Volver al listado"
+        onComplete={(score, total) => {
+          attemptsApi
+            .recordQuiz({
+              quiz_id: studyQuiz.id,
+              category_id: studyQuiz.category?.id,
+              score,
+              total_questions: total,
+            })
+            .catch(() => {}); // fire-and-forget; don't block the UI
+        }}
       />
     );
   }

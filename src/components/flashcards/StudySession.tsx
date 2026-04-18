@@ -1,5 +1,6 @@
 ﻿import React, { useCallback, useEffect, useState } from "react";
 import { FlashCard } from "../../api/flashcards";
+import { StudyScoreResult } from "../shared/StudyScoreResult";
 import {
   RING_SLOTS,
   RING_RADIUS_PX,
@@ -13,6 +14,7 @@ interface StudySessionProps {
   cards: FlashCard[];
   title: string;
   onClose: () => void;
+  onComplete?: (known: number, unknown: number, total: number) => void;
 }
 
 const ANGLE_STEP = 360 / RING_SLOTS;
@@ -21,16 +23,19 @@ const StudySession: React.FC<StudySessionProps> = ({
   cards,
   title,
   onClose,
+  onComplete,
 }) => {
   const total = cards.length;
 
-  // ringAngle accumulates â€” never resets â€” so there is no snap-back flash
+  // ringAngle accumulates — never resets — so there is no snap-back flash
   const [ringAngle, setRingAngle] = useState(0);
   // frontSlot tracks which physical slot is facing the viewer
   const [frontSlot, setFrontSlot] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [animating, setAnimating] = useState(false);
   const [flipped, setFlipped] = useState(false);
+  const [known, setKnown] = useState(0);
+  const [finished, setFinished] = useState(false);
 
   const goNext = useCallback(() => {
     if (animating || total <= 1) return;
@@ -50,6 +55,41 @@ const StudySession: React.FC<StudySessionProps> = ({
     setRingAngle((a) => a + ANGLE_STEP);
   }, [animating, total]);
 
+  const advanceAfterAnswer = useCallback(
+    (wasKnown: boolean) => {
+      const newKnown = known + (wasKnown ? 1 : 0);
+      if (currentIndex + 1 >= total) {
+        onComplete?.(newKnown, total - newKnown, total);
+        setKnown(newKnown);
+        setFinished(true);
+      } else {
+        setKnown(newKnown);
+        goNext();
+      }
+    },
+    [currentIndex, total, known, goNext, onComplete],
+  );
+
+  const handleKnown = useCallback(() => {
+    if (!flipped || animating) return;
+    advanceAfterAnswer(true);
+  }, [flipped, animating, advanceAfterAnswer]);
+
+  const handleUnknown = useCallback(() => {
+    if (!flipped || animating) return;
+    advanceAfterAnswer(false);
+  }, [flipped, animating, advanceAfterAnswer]);
+
+  const handleRestart = () => {
+    setRingAngle(0);
+    setFrontSlot(0);
+    setCurrentIndex(0);
+    setAnimating(false);
+    setFlipped(false);
+    setKnown(0);
+    setFinished(false);
+  };
+
   const handleRingTransitionEnd = useCallback(
     (e: React.TransitionEvent<HTMLDivElement>) => {
       if (e.propertyName !== "transform") return;
@@ -65,11 +105,29 @@ const StudySession: React.FC<StudySessionProps> = ({
       else if (e.key === " " || e.key === "Enter") {
         e.preventDefault();
         setFlipped((f) => !f);
+      } else if (e.key === "1") {
+        handleKnown();
+      } else if (e.key === "2") {
+        handleUnknown();
       } else if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [goNext, goPrev, onClose]);
+  }, [goNext, goPrev, onClose, handleKnown, handleUnknown]);
+
+  if (finished) {
+    return (
+      <StudyScoreResult
+        score={known}
+        total={total}
+        title={title}
+        itemLabel="tarjetas"
+        returnLabel="Volver a las flashcards"
+        onRetry={handleRestart}
+        onClose={onClose}
+      />
+    );
+  }
 
   return (
     <div className="ss-overlay" role="dialog" aria-modal="true">
@@ -77,6 +135,9 @@ const StudySession: React.FC<StudySessionProps> = ({
         <h2 className="ss-title">{title}</h2>
         <span className="ss-counter">
           {currentIndex + 1} / {total}
+        </span>
+        <span className="ss-known-count" title="Sabidas hasta ahora">
+          ✓ {known}
         </span>
         <button className="ss-close" onClick={onClose} aria-label="Cerrar">
           &#x2715;
@@ -169,30 +230,51 @@ const StudySession: React.FC<StudySessionProps> = ({
       </div>
 
       <footer className="ss-footer">
-        <div className="ss-controls">
-          <button
-            className="ss-nav-btn"
-            onClick={goPrev}
-            disabled={total <= 1}
-            aria-label="Anterior"
-          >
-            &#8592;
-          </button>
-          <button className="ss-flip-btn" onClick={() => setFlipped((f) => !f)}>
-            {flipped ? "Ver pregunta" : "Ver respuesta"}
-          </button>
-          <button
-            className="ss-nav-btn"
-            onClick={goNext}
-            disabled={total <= 1}
-            aria-label="Siguiente"
-          >
-            &#8594;
-          </button>
-        </div>
+        {flipped ? (
+          <div className="ss-eval-controls">
+            <button
+              className="ss-eval-btn ss-eval-btn--unknown"
+              onClick={handleUnknown}
+            >
+              ✗ No la sabía
+            </button>
+            <button
+              className="ss-eval-btn ss-eval-btn--known"
+              onClick={handleKnown}
+            >
+              ✓ La sabía
+            </button>
+          </div>
+        ) : (
+          <div className="ss-controls">
+            <button
+              className="ss-nav-btn"
+              onClick={goPrev}
+              disabled={total <= 1}
+              aria-label="Anterior"
+            >
+              &#8592;
+            </button>
+            <button
+              className="ss-flip-btn"
+              onClick={() => setFlipped((f) => !f)}
+            >
+              Ver respuesta
+            </button>
+            <button
+              className="ss-nav-btn"
+              onClick={goNext}
+              disabled={total <= 1}
+              aria-label="Siguiente"
+            >
+              &#8594;
+            </button>
+          </div>
+        )}
         <p className="ss-kbd-hint">
-          &#8592; &#8594; navegar &nbsp;&middot;&nbsp; Espacio voltear
-          &nbsp;&middot;&nbsp; Esc salir
+          {flipped
+            ? "1 → La sabía  ·  2 → No la sabía"
+            : "← → navegar  ·  Espacio voltear  ·  Esc salir"}
         </p>
       </footer>
     </div>

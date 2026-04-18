@@ -2,6 +2,7 @@
 import { Layers, Pencil, Sparkles } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { flashCardsApi, FlashCard } from "../../api/flashcards";
+import { attemptsApi } from "../../api/attempts";
 import { useCategories } from "../../hooks/useCategories";
 import StudySession from "./StudySession";
 import GenerateFlashcardsForm from "./GenerateFlashcardsForm";
@@ -132,11 +133,28 @@ const FlashcardsPage: React.FC = () => {
   };
 
   if (studyMode && studyCards.length > 0) {
+    // Derive categoryId: use the common category if all cards belong to the same one
+    const categoryIds = new Set(
+      studyCards.map((c) => c.category?.id).filter(Boolean),
+    );
+    const categoryId =
+      categoryIds.size === 1 ? Array.from(categoryIds)[0] : undefined;
+
     return (
       <StudySession
         cards={studyCards}
         title={studyTitle}
         onClose={() => setStudyMode(false)}
+        onComplete={(known, unknown, total) => {
+          attemptsApi
+            .recordFlashcards({
+              category_id: categoryId,
+              cards_known: known,
+              cards_unknown: unknown,
+              total_cards: total,
+            })
+            .catch(() => {}); // fire-and-forget
+        }}
       />
     );
   }

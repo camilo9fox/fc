@@ -397,6 +397,59 @@
   color: rgba(255, 255, 255, 0.25);
 }
 
+/* ── Known counter in header ─────────────────────────────── */
+.ss-known-count {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #6ee7b7;
+  letter-spacing: 0.03em;
+}
+
+/* ── Self-assessment buttons (shown when flipped) ────────── */
+.ss-eval-controls {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.ss-eval-btn {
+  padding: 14px 36px;
+  border-radius: 30px;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.2s;
+}
+
+.ss-eval-btn--known {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  box-shadow: 0 4px 22px rgba(16, 185, 129, 0.45);
+}
+
+.ss-eval-btn--known:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 28px rgba(16, 185, 129, 0.6);
+}
+
+.ss-eval-btn--unknown {
+  background: linear-gradient(135deg, #f43f5e, #e11d48);
+  color: #fff;
+  box-shadow: 0 4px 22px rgba(244, 63, 94, 0.4);
+}
+
+.ss-eval-btn--unknown:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 28px rgba(244, 63, 94, 0.55);
+}
+
+.ss-eval-btn:active {
+  transform: translateY(1px);
+}
+
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 480px) {
   .ss-ring {

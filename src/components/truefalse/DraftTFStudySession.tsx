@@ -8,6 +8,7 @@ interface DraftTFStudySessionProps {
   onClose: () => void;
   badge?: string;
   returnLabel?: string;
+  onComplete?: (score: number, total: number) => void;
 }
 
 const DraftTFStudySession: React.FC<DraftTFStudySessionProps> = ({
@@ -15,6 +16,7 @@ const DraftTFStudySession: React.FC<DraftTFStudySessionProps> = ({
   onClose,
   badge = "Borrador",
   returnLabel = "Volver al borrador",
+  onComplete,
 }) => {
   const questions = draft.questions;
   const [index, setIndex] = useState(0);
@@ -32,6 +34,8 @@ const DraftTFStudySession: React.FC<DraftTFStudySessionProps> = ({
 
   const handleNext = () => {
     if (index + 1 >= questions.length) {
+      // score state is already updated by handleAnswer (separate user interaction)
+      onComplete?.(score, questions.length);
       setFinished(true);
     } else {
       setIndex((i) => i + 1);

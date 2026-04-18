@@ -26,6 +26,29 @@ const navSections: NavSection[] = [
     label: "Herramientas",
     items: [
       {
+        id: "dashboard",
+        label: "Panel de estadísticas",
+        path: "/dashboard",
+        exact: true,
+        icon: (
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
+        ),
+      },
+      {
         id: "categories",
         label: "Temas de estudio",
         path: "/categories",
@@ -165,6 +188,10 @@ const navSections: NavSection[] = [
 ];
 
 const pageTitles: Record<string, { title: string; subtitle: string }> = {
+  "/dashboard": {
+    title: "Panel de estadísticas",
+    subtitle: "Resumen de tu actividad de estudio",
+  },
   "/flashcards": {
     title: "Flashcards",
     subtitle: "Crea y estudia tus tarjetas de repaso",

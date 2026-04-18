@@ -8,6 +8,7 @@ import CategoriesPage from './components/categories/CategoriesPage';
 import QuizzesPage from './components/quizzes/QuizzesPage';
 import TrueFalsePage from './components/truefalse/TrueFalsePage';
 import StudyGuidesPage from './components/studyguides/StudyGuidesPage';
+import DashboardPage from './components/dashboard/DashboardPage';
 import LandingPage from './components/landing/LandingPage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import './App.css';
@@ -87,6 +88,16 @@ const AppRoutes: React.FC = () => {
           <ProtectedRoute>
             <DashboardLayout>
               <StudyGuidesPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <DashboardPage />
             </DashboardLayout>
           </ProtectedRoute>
         }
