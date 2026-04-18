@@ -7,6 +7,7 @@ import FlashcardsPage from './components/flashcards/FlashcardsPage';
 import CategoriesPage from './components/categories/CategoriesPage';
 import QuizzesPage from './components/quizzes/QuizzesPage';
 import TrueFalsePage from './components/truefalse/TrueFalsePage';
+import StudyGuidesPage from './components/studyguides/StudyGuidesPage';
 import LandingPage from './components/landing/LandingPage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import './App.css';
@@ -76,6 +77,16 @@ const AppRoutes: React.FC = () => {
           <ProtectedRoute>
             <DashboardLayout>
               <CategoriesPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/study-guides"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <StudyGuidesPage />
             </DashboardLayout>
           </ProtectedRoute>
         }

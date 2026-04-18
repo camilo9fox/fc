@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { flashCardsApi, FlashCard, Category } from "../../api/flashcards";
 import { quizApi, Quiz } from "../../api/quiz";
 import { trueFalseApi, TrueFalseSet } from "../../api/trueFalse";
+import { studyGuideApi, StudyGuide } from "../../api/studyGuides";
 import StudySession from "../flashcards/StudySession";
 import FlashcardsTab from "./FlashcardsTab";
 import QuizzesTab from "./QuizzesTab";
 import TrueFalseTab from "./TrueFalseTab";
+import StudyGuidesTab from "./StudyGuidesTab";
 
-type DetailTab = "flashcards" | "quizzes" | "truefalse";
+type DetailTab = "flashcards" | "quizzes" | "truefalse" | "studyguides";
 
 interface CategoryDetailModalProps {
   category: Category;
@@ -26,6 +28,7 @@ const CategoryDetailModal: React.FC<CategoryDetailModalProps> = ({
   const [flashcards, setFlashcards] = useState<FlashCard[]>([]);
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [tfSets, setTfSets] = useState<TrueFalseSet[]>([]);
+  const [guides, setGuides] = useState<StudyGuide[]>([]);
   const [loading, setLoading] = useState(true);
   const [studyCards, setStudyCards] = useState<FlashCard[] | null>(null);
 
@@ -35,11 +38,13 @@ const CategoryDetailModal: React.FC<CategoryDetailModalProps> = ({
       flashCardsApi.getFlashCards({ categoryId: category.id, limit: 200 }),
       quizApi.getAll({ categoryId: category.id, limit: 200 }),
       trueFalseApi.getAll({ categoryId: category.id, limit: 200 }),
+      studyGuideApi.getAll({ categoryId: category.id, limit: 200 }),
     ])
-      .then(([fcRes, qRes, tfRes]) => {
+      .then(([fcRes, qRes, tfRes, sgRes]) => {
         setFlashcards(fcRes.flashcards);
         setQuizzes(qRes.quizzes);
         setTfSets(tfRes.sets);
+        setGuides(sgRes.guides);
       })
       .finally(() => setLoading(false));
   }, [category.id]);
@@ -52,6 +57,7 @@ const CategoryDetailModal: React.FC<CategoryDetailModalProps> = ({
     { key: "flashcards", label: "Flashcards", count: flashcards.length },
     { key: "quizzes", label: "Cuestionarios", count: quizzes.length },
     { key: "truefalse", label: "V / F", count: tfSets.length },
+    { key: "studyguides", label: "Guías", count: guides.length },
   ];
 
   if (studyCards) {
@@ -163,6 +169,15 @@ const CategoryDetailModal: React.FC<CategoryDetailModalProps> = ({
                   onNavigate={() => {
                     onClose();
                     navigate("/truefalse");
+                  }}
+                />
+              )}
+              {tab === "studyguides" && (
+                <StudyGuidesTab
+                  guides={guides}
+                  onNavigate={() => {
+                    onClose();
+                    navigate("/study-guides");
                   }}
                 />
               )}

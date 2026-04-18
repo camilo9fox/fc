@@ -649,7 +649,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22);
   animation: tsFadeIn 0.22s ease;
 }
 
@@ -658,14 +658,14 @@
   align-items: center;
   gap: 14px;
   padding: 22px 24px 18px;
-  background: linear-gradient(135deg, #631D76 0%, #8B2FC9 100%);
+  background: linear-gradient(135deg, #631d76 0%, #8b2fc9 100%);
 }
 
 .ts-detail-header-icon {
   flex-shrink: 0;
   width: 40px;
   height: 40px;
-  background: rgba(255,255,255,0.18);
+  background: rgba(255, 255, 255, 0.18);
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -687,7 +687,7 @@
 
 .ts-detail-desc {
   font-size: 0.83rem;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255, 255, 255, 0.75);
   margin: 4px 0 0;
 }
 
@@ -713,22 +713,24 @@
   border-bottom: 3px solid transparent;
   margin-bottom: -2px;
   cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 }
 
 .ts-detail-tab:hover {
-  color: #631D76;
+  color: #631d76;
 }
 
 .ts-detail-tab--active {
-  color: #631D76;
-  border-bottom-color: #EE4266;
+  color: #631d76;
+  border-bottom-color: #ee4266;
   font-weight: 700;
 }
 
 .ts-detail-tab-badge {
   background: #f0eaf5;
-  color: #631D76;
+  color: #631d76;
   font-size: 0.75rem;
   font-weight: 700;
   padding: 1px 7px;
@@ -738,7 +740,7 @@
 }
 
 .ts-detail-tab--active .ts-detail-tab-badge {
-  background: #EE4266;
+  background: #ee4266;
   color: #fff;
 }
 
@@ -807,7 +809,7 @@
   width: 20px;
   height: 20px;
   border-radius: 6px;
-  background: #631D76;
+  background: #631d76;
   color: #fff;
   font-size: 0.7rem;
   font-weight: 800;
@@ -818,7 +820,7 @@
 }
 
 .ts-detail-fc-label--a {
-  background: #EE4266;
+  background: #ee4266;
 }
 
 /* Generic list (quizzes / TF) */
@@ -836,7 +838,9 @@
   border: 1.5px solid #ede5f5;
   border-radius: 10px;
   background: #faf8fc;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 
 .ts-detail-item:hover {
@@ -856,12 +860,17 @@
 
 .ts-detail-item-icon--quiz {
   background: #ede5f5;
-  color: #631D76;
+  color: #631d76;
 }
 
 .ts-detail-item-icon--tf {
   background: #fde8ee;
-  color: #EE4266;
+  color: #ee4266;
+}
+
+.ts-detail-item-icon--sg {
+  background: #e6f4ea;
+  color: #2e7d32;
 }
 
 .ts-detail-item-info {
@@ -875,7 +884,7 @@
 .ts-detail-item-title {
   font-size: 0.92rem;
   font-weight: 600;
-  color: #2E2532;
+  color: #2e2532;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
