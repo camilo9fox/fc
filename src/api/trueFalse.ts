@@ -48,6 +48,27 @@ export interface GenerateTrueFalseResponse {
   questions: DraftTrueFalseQuestion[];
 }
 
+export interface TrueFalseGenerationJob {
+  id: string;
+  type: string;
+  status: "queued" | "processing" | "completed" | "failed";
+  progress: {
+    stage: string;
+    percent: number;
+  };
+  metadata?: {
+    title?: string;
+    quantity?: number;
+    fileName?: string | null;
+    inputMode?: string;
+  };
+  result: null | { statements: DraftTrueFalseQuestion[] };
+  error: string | null;
+  createdAt: string;
+  updatedAt: string;
+  expiresAt: string;
+}
+
 export interface CreateTrueFalseSetRequest {
   title: string;
   category_id: string;
@@ -124,6 +145,28 @@ export const trueFalseApi = {
     const response = await apiClient.post("/true-false/generate", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
+    return response.data;
+  },
+
+  /** Start async V/F generation — returns a job immediately (202) */
+  startGenerateJob: async (
+    formData: FormData,
+  ): Promise<TrueFalseGenerationJob> => {
+    const response = await apiClient.post(
+      "/true-false/generate-async",
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      },
+    );
+    return response.data;
+  },
+
+  /** Poll the status of an async V/F generation job */
+  getGenerationJob: async (jobId: string): Promise<TrueFalseGenerationJob> => {
+    const response = await apiClient.get(
+      `/true-false/generation-jobs/${jobId}`,
+    );
     return response.data;
   },
 };

@@ -25,6 +25,9 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [generating, setGenerating] = useState(false);
+  const [generatingStage, setGeneratingStage] =
+    useState<string>("Generando...");
+  const [generatingPercent, setGeneratingPercent] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -50,11 +53,35 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({
       if (file) formData.append("file", file);
       if (text.trim()) formData.append("text", text.trim());
 
-      const result = await trueFalseApi.generate(formData);
-      onDrafted({
-        title: title.trim(),
-        categoryId,
-        questions: result.questions,
+      const job = await trueFalseApi.startGenerateJob(formData);
+
+      const POLL_INTERVAL = 2500;
+      await new Promise<void>((resolve, reject) => {
+        const interval = setInterval(async () => {
+          try {
+            const updated = await trueFalseApi.getGenerationJob(job.id);
+            setGeneratingStage(updated.progress.stage);
+            setGeneratingPercent(updated.progress.percent);
+
+            if (updated.status === "completed" && updated.result) {
+              clearInterval(interval);
+              onDrafted({
+                title: title.trim(),
+                categoryId,
+                questions: updated.result.statements,
+              });
+              resolve();
+            } else if (updated.status === "failed") {
+              clearInterval(interval);
+              reject(
+                new Error(updated.error || "Error al generar el set V/F."),
+              );
+            }
+          } catch (pollErr) {
+            clearInterval(interval);
+            reject(pollErr);
+          }
+        }, POLL_INTERVAL);
       });
     } catch (err: any) {
       setError(
@@ -170,9 +197,17 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({
       {error && <p className="tf-error">{error}</p>}
 
       {generating && (
-        <p className="tf-generating-msg">
-          <Sparkles size={14} /> Generando {quantity} enunciados con IA…
-        </p>
+        <div className="tf-generating-msg">
+          <p>
+            <Sparkles size={14} /> {generatingStage}
+          </p>
+          <div className="tf-progress-bar">
+            <div
+              className="tf-progress-fill"
+              style={{ width: `${generatingPercent}%` }}
+            />
+          </div>
+        </div>
       )}
 
       <div className="tf-form-actions">

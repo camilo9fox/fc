@@ -25,6 +25,9 @@ const GenerateQuizForm: React.FC<GenerateQuizFormProps> = ({
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [generating, setGenerating] = useState(false);
+  const [generatingStage, setGeneratingStage] =
+    useState<string>("Generando...");
+  const [generatingPercent, setGeneratingPercent] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -50,11 +53,37 @@ const GenerateQuizForm: React.FC<GenerateQuizFormProps> = ({
       if (file) formData.append("file", file);
       if (text.trim()) formData.append("text", text.trim());
 
-      const result = await quizApi.generate(formData);
-      onDrafted({
-        title: title.trim(),
-        categoryId,
-        questions: result.questions,
+      // Start async job
+      const job = await quizApi.startGenerateQuizJob(formData);
+
+      // Poll until done
+      const POLL_INTERVAL = 2500;
+      await new Promise<void>((resolve, reject) => {
+        const interval = setInterval(async () => {
+          try {
+            const updated = await quizApi.getGenerationJob(job.id);
+            setGeneratingStage(updated.progress.stage);
+            setGeneratingPercent(updated.progress.percent);
+
+            if (updated.status === "completed" && updated.result) {
+              clearInterval(interval);
+              onDrafted({
+                title: title.trim(),
+                categoryId,
+                questions: updated.result.questions,
+              });
+              resolve();
+            } else if (updated.status === "failed") {
+              clearInterval(interval);
+              reject(
+                new Error(updated.error || "Error al generar el cuestionario."),
+              );
+            }
+          } catch (pollErr) {
+            clearInterval(interval);
+            reject(pollErr);
+          }
+        }, POLL_INTERVAL);
       });
     } catch (err: any) {
       setError(
@@ -169,9 +198,17 @@ const GenerateQuizForm: React.FC<GenerateQuizFormProps> = ({
       {error && <p className="qz-error">{error}</p>}
 
       {generating && (
-        <p className="qz-generating-msg">
-          <Sparkles size={14} /> Generando {quantity} preguntas con IA…
-        </p>
+        <div className="qz-generating-msg">
+          <p>
+            <Sparkles size={14} /> {generatingStage}
+          </p>
+          <div className="qz-progress-bar">
+            <div
+              className="qz-progress-fill"
+              style={{ width: `${generatingPercent}%` }}
+            />
+          </div>
+        </div>
       )}
 
       <div className="qz-form-actions">

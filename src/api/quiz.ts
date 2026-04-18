@@ -52,6 +52,27 @@ export interface GenerateQuizResponse {
   questions: DraftQuizQuestion[];
 }
 
+export interface QuizGenerationJob {
+  id: string;
+  type: string;
+  status: "queued" | "processing" | "completed" | "failed";
+  progress: {
+    stage: string;
+    percent: number;
+  };
+  metadata?: {
+    title?: string;
+    quantity?: number;
+    fileName?: string | null;
+    inputMode?: string;
+  };
+  result: null | { questions: DraftQuizQuestion[] };
+  error: string | null;
+  createdAt: string;
+  updatedAt: string;
+  expiresAt: string;
+}
+
 export interface CreateQuizRequest {
   title: string;
   category_id: string;
@@ -128,6 +149,22 @@ export const quizApi = {
     const response = await apiClient.post("/quizzes/generate", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
+    return response.data;
+  },
+
+  /** Start async quiz generation — returns a job immediately (202) */
+  startGenerateQuizJob: async (
+    formData: FormData,
+  ): Promise<QuizGenerationJob> => {
+    const response = await apiClient.post("/quizzes/generate-async", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+  },
+
+  /** Poll the status of an async quiz generation job */
+  getGenerationJob: async (jobId: string): Promise<QuizGenerationJob> => {
+    const response = await apiClient.get(`/quizzes/generation-jobs/${jobId}`);
     return response.data;
   },
 };
