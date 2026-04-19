@@ -12,6 +12,11 @@ import DashboardPage from './components/dashboard/DashboardPage';
 import HistorialPage from './components/historial/HistorialPage';
 import LibraryPage from './components/library/LibraryPage';
 import ProfilePage from './components/profile/ProfilePage';
+import GamesHubPage from './components/games/GamesHubPage';
+import SurvivalModePage from './components/games/SurvivalModePage';
+import MemoryModePage from './components/games/MemoryModePage';
+import ContrarrelojModePage from './components/games/ContrarrelojModePage';
+import EscrituraModePage from './components/games/EscrituraModePage';
 import LandingPage from './components/landing/LandingPage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import './App.css';
@@ -131,6 +136,56 @@ const AppRoutes: React.FC = () => {
           <ProtectedRoute>
             <DashboardLayout>
               <ProfilePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/games"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <GamesHubPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/games/survival"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <SurvivalModePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/games/memoria"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <MemoryModePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/games/contrarreloj"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ContrarrelojModePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/games/escritura"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <EscrituraModePage />
             </DashboardLayout>
           </ProtectedRoute>
         }

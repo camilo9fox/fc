@@ -205,7 +205,6 @@ const navSections: NavSection[] = [
         id: "games",
         label: "Juegos de estudio",
         path: "/games",
-        disabled: true,
         icon: (
           <svg
             width="17"
@@ -293,6 +292,26 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
   "/biblioteca": {
     title: "Biblioteca pública",
     subtitle: "Explora e importa temas compartidos por la comunidad",
+  },
+  "/games": {
+    title: "Juegos de estudio",
+    subtitle: "Aprende jugando. Elige un modo y pon a prueba tu conocimiento.",
+  },
+  "/games/survival": {
+    title: "Modo Supervivencia",
+    subtitle: "¿Cuántas rondas aguantas sin fallar?",
+  },
+  "/games/memoria": {
+    title: "Modo Memoria",
+    subtitle: "Empareja cada pregunta con su respuesta.",
+  },
+  "/games/contrarreloj": {
+    title: "Modo Contrarreloj",
+    subtitle: "¿Cuánto aguantas con el tiempo en contra?",
+  },
+  "/games/escritura": {
+    title: "Modo Escritura",
+    subtitle: "Escribe tu respuesta y comprueba si la sabías.",
   },
 };
 
