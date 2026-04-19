@@ -9,6 +9,9 @@ import QuizzesPage from './components/quizzes/QuizzesPage';
 import TrueFalsePage from './components/truefalse/TrueFalsePage';
 import StudyGuidesPage from './components/studyguides/StudyGuidesPage';
 import DashboardPage from './components/dashboard/DashboardPage';
+import HistorialPage from './components/historial/HistorialPage';
+import LibraryPage from './components/library/LibraryPage';
+import ProfilePage from './components/profile/ProfilePage';
 import LandingPage from './components/landing/LandingPage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import './App.css';
@@ -98,6 +101,36 @@ const AppRoutes: React.FC = () => {
           <ProtectedRoute>
             <DashboardLayout>
               <DashboardPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/historial"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <HistorialPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/biblioteca"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <LibraryPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ProfilePage />
             </DashboardLayout>
           </ProtectedRoute>
         }

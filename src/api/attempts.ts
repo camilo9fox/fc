@@ -21,6 +21,52 @@ export interface RecordFlashcardSessionRequest {
   total_cards: number;
 }
 
+export interface DailyActivity {
+  date: string;
+  quizzes: number;
+  trueFalse: number;
+  flashcards: number;
+}
+
+export interface DailyScore {
+  date: string;
+  avgScore: number | null;
+}
+
+export interface ChartData {
+  activityByDay: DailyActivity[];
+  scoreByDay: DailyScore[];
+}
+
+export type AttemptType = "quiz" | "true-false" | "flashcards";
+
+export interface HistoryItem {
+  id: string;
+  type: AttemptType;
+  categoryId: string | null;
+  categoryTitle: string | null;
+  score: number;
+  total: number;
+  pct: number;
+  completedAt: string;
+}
+
+export interface HistoryResponse {
+  items: HistoryItem[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
+export interface HistoryFilters {
+  type?: AttemptType;
+  categoryId?: string;
+  from?: string;
+  to?: string;
+  page?: number;
+  limit?: number;
+}
+
 export const attemptsApi = {
   recordQuiz: (data: RecordQuizAttemptRequest): Promise<void> =>
     apiClient.post("/attempts/quiz", data).then(() => undefined),
@@ -30,4 +76,10 @@ export const attemptsApi = {
 
   recordFlashcards: (data: RecordFlashcardSessionRequest): Promise<void> =>
     apiClient.post("/attempts/flashcards", data).then(() => undefined),
+
+  getChartData: (): Promise<ChartData> =>
+    apiClient.get("/attempts/chart-data").then((r) => r.data),
+
+  getHistory: (filters: HistoryFilters = {}): Promise<HistoryResponse> =>
+    apiClient.get("/attempts/history", { params: filters }).then((r) => r.data),
 };

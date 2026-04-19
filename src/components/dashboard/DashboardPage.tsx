@@ -6,6 +6,7 @@ import {
   StatTotals,
   RecentAttempt,
 } from "../../api/stats";
+import DashboardCharts from "./DashboardCharts";
 import "./DashboardPage.css";
 
 // ─── Stat card config ────────────────────────────────────────────────────────
@@ -153,6 +154,9 @@ const BreakdownRow: React.FC<{ item: CategoryBreakdownItem }> = ({ item }) => (
     <td className="db-breakdown-cell db-cell--red">{item.trueFalseSets}</td>
     <td className="db-breakdown-cell db-cell--green">{item.studyGuides}</td>
     <td className="db-breakdown-cell db-cell--total">{item.total}</td>
+    <td className="db-breakdown-cell db-cell--score">
+      {item.avgScore != null ? `${item.avgScore}%` : "—"}
+    </td>
   </tr>
 );
 
@@ -261,6 +265,17 @@ const DashboardPage: React.FC = () => {
         </div>
       )}
 
+      {/* ── Streak banner ── */}
+      {attemptStats.currentStreak >= 3 && (
+        <div className="db-streak-banner">
+          <span className="db-streak-fire">🔥</span>
+          <span>
+            ¡Llevas <strong>{attemptStats.currentStreak} días seguidos</strong>{" "}
+            estudiando. ¡Sigue así!
+          </span>
+        </div>
+      )}
+
       {/* ── Stat cards ── */}
       <section className="db-section">
         <h2 className="db-section-title">Resumen general</h2>
@@ -303,7 +318,13 @@ const DashboardPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ── Recent attempts ── */}
+      {/* -- Charts -- */}
+      <section className="db-section">
+        <h2 className="db-section-title">Progreso de estudio</h2>
+        <DashboardCharts />
+      </section>
+
+      {/* -- Recent attempts -- */}
       {attemptStats.recentAttempts.length > 0 && (
         <section className="db-section">
           <h2 className="db-section-title">Últimos intentos</h2>
@@ -345,6 +366,7 @@ const DashboardPage: React.FC = () => {
                   <th className="db-th db-cell--red">V / F</th>
                   <th className="db-th db-cell--green">Guías</th>
                   <th className="db-th db-cell--total">Total</th>
+                  <th className="db-th db-cell--score">Promedio</th>
                 </tr>
               </thead>
               <tbody>

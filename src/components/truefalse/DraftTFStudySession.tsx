@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { DraftTFState } from "../../types/trueFalse.types";
 import { StudyScoreResult } from "../shared/StudyScoreResult";
+import SessionReview, { WrongTFQuestion } from "../shared/SessionReview";
 import "./TrueFalsePage.css";
 
 interface DraftTFStudySessionProps {
@@ -22,21 +23,39 @@ const DraftTFStudySession: React.FC<DraftTFStudySessionProps> = ({
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<boolean | null>(null);
   const [score, setScore] = useState(0);
+  const [wrongQuestions, setWrongQuestions] = useState<WrongTFQuestion[]>([]);
   const [finished, setFinished] = useState(false);
+  const [showReview, setShowReview] = useState(false);
 
   const current = questions[index];
 
   const handleAnswer = (answer: boolean) => {
     if (selected !== null) return;
     setSelected(answer);
-    if (answer === current.is_true) setScore((s) => s + 1);
+    if (answer === current.is_true) {
+      setScore((s) => s + 1);
+    } else {
+      setWrongQuestions((prev) => [
+        ...prev,
+        {
+          type: "true-false",
+          statement: current.statement,
+          is_true: current.is_true,
+          explanation: current.explanation ?? undefined,
+          selectedAnswer: answer,
+        },
+      ]);
+    }
   };
 
   const handleNext = () => {
     if (index + 1 >= questions.length) {
-      // score state is already updated by handleAnswer (separate user interaction)
       onComplete?.(score, questions.length);
-      setFinished(true);
+      if (wrongQuestions.length > 0) {
+        setShowReview(true);
+      } else {
+        setFinished(true);
+      }
     } else {
       setIndex((i) => i + 1);
       setSelected(null);
@@ -47,8 +66,22 @@ const DraftTFStudySession: React.FC<DraftTFStudySessionProps> = ({
     setIndex(0);
     setSelected(null);
     setScore(0);
+    setWrongQuestions([]);
     setFinished(false);
+    setShowReview(false);
   };
+
+  if (showReview) {
+    return (
+      <SessionReview
+        wrongQuestions={wrongQuestions}
+        onContinue={() => {
+          setShowReview(false);
+          setFinished(true);
+        }}
+      />
+    );
+  }
 
   if (finished) {
     return (

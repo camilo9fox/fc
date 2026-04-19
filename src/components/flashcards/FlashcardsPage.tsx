@@ -314,12 +314,14 @@ const FlashcardsPage: React.FC = () => {
               Estudiar todas →
             </button>
           </div>
-          {Object.entries(groupedFlashcards).map(([categoryTitle, cards]) =>
-            cards.length > 0 ? (
+          {Object.entries(groupedFlashcards).map(([categoryTitle, cards]) => {
+            const catId = (cards[0] as FlashCard)?.category?.id;
+            return cards.length > 0 ? (
               <CategoryAccordion
                 key={categoryTitle}
                 title={categoryTitle}
                 cards={cards}
+                categoryId={catId}
                 onStudy={() =>
                   handleStartStudy(
                     cards as FlashCard[],
@@ -328,8 +330,8 @@ const FlashcardsPage: React.FC = () => {
                 }
                 onDelete={handleDeleteSavedCard}
               />
-            ) : null,
-          )}
+            ) : null;
+          })}
         </>
       ) : null}
     </div>

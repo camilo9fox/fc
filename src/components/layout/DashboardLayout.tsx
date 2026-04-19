@@ -23,8 +23,29 @@ interface NavSection {
 
 const navSections: NavSection[] = [
   {
-    label: "Herramientas",
+    label: "Perfil",
     items: [
+      {
+        id: "profile",
+        label: "Mi perfil",
+        path: "/profile",
+        exact: true,
+        icon: (
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        ),
+      },
       {
         id: "dashboard",
         label: "Panel de estadísticas",
@@ -48,6 +69,32 @@ const navSections: NavSection[] = [
           </svg>
         ),
       },
+      {
+        id: "historial",
+        label: "Historial de actividad",
+        path: "/historial",
+        exact: true,
+        icon: (
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+        ),
+      },
+    ],
+  },
+  {
+    label: "Estudio",
+    items: [
       {
         id: "categories",
         label: "Temas de estudio",
@@ -154,11 +201,6 @@ const navSections: NavSection[] = [
           </svg>
         ),
       },
-    ],
-  },
-  {
-    label: "Próximamente",
-    items: [
       {
         id: "games",
         label: "Juegos de estudio",
@@ -185,12 +227,48 @@ const navSections: NavSection[] = [
       },
     ],
   },
+  {
+    label: "Comunidad",
+    items: [
+      {
+        id: "biblioteca",
+        label: "Biblioteca",
+        path: "/biblioteca",
+        icon: (
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            <line x1="12" y1="6" x2="16" y2="6" />
+            <line x1="12" y1="10" x2="16" y2="10" />
+            <line x1="12" y1="14" x2="16" y2="14" />
+          </svg>
+        ),
+      },
+    ],
+  },
 ];
 
 const pageTitles: Record<string, { title: string; subtitle: string }> = {
+  "/profile": {
+    title: "Mi perfil",
+    subtitle: "Gestiona tu cuenta y preferencias",
+  },
   "/dashboard": {
     title: "Panel de estadísticas",
     subtitle: "Resumen de tu actividad de estudio",
+  },
+  "/historial": {
+    title: "Historial de actividad",
+    subtitle: "Todos tus intentos y sesiones de estudio",
   },
   "/flashcards": {
     title: "Flashcards",
@@ -211,6 +289,10 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
   "/categories": {
     title: "Temas de estudio",
     subtitle: "Organiza tu material por tema",
+  },
+  "/biblioteca": {
+    title: "Biblioteca pública",
+    subtitle: "Explora e importa temas compartidos por la comunidad",
   },
 };
 

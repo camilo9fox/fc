@@ -20,6 +20,7 @@ export interface Category {
   title: string;
   description?: string;
   userId: string;
+  isPublic: boolean;
   createdAt: string;
   updatedAt: string;
 }

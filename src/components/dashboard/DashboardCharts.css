@@ -1,0 +1,84 @@
+/* ─── Grid ───────────────────────────────────────────────────────────────── */
+.dbc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* ─── Card wrapper ───────────────────────────────────────────────────────── */
+.dbc-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px 20px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dbc-card-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+/* ─── Custom tooltip ─────────────────────────────────────────────────────── */
+.dbc-tooltip {
+  background: #1f2937;
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.dbc-tooltip-label {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin: 0 0 4px;
+}
+
+.dbc-tooltip-row {
+  font-size: 0.8rem;
+  margin: 2px 0;
+}
+
+/* ─── Loading / empty states ─────────────────────────────────────────────── */
+.dbc-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.875rem;
+  color: #6b7280;
+  padding: 24px 0;
+}
+
+.dbc-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e5e7eb;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: dbc-spin 0.7s linear infinite;
+}
+
+@keyframes dbc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dbc-empty {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  text-align: center;
+  padding: 24px 0;
+  margin: 0;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .dbc-grid {
+    grid-template-columns: 1fr;
+  }
+}

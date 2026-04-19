@@ -4,7 +4,12 @@ interface ThemeModalProps {
   mode: "create" | "edit";
   initialTitle?: string;
   initialDescription?: string;
-  onSubmit: (title: string, description: string) => Promise<void>;
+  initialIsPublic?: boolean;
+  onSubmit: (
+    title: string,
+    description: string,
+    isPublic: boolean,
+  ) => Promise<void>;
   onClose: () => void;
 }
 
@@ -12,11 +17,13 @@ const ThemeModal: React.FC<ThemeModalProps> = ({
   mode,
   initialTitle = "",
   initialDescription = "",
+  initialIsPublic = false,
   onSubmit,
   onClose,
 }) => {
   const [title, setTitle] = useState(initialTitle);
   const [description, setDescription] = useState(initialDescription);
+  const [isPublic, setIsPublic] = useState(initialIsPublic);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
@@ -27,7 +34,7 @@ const ThemeModal: React.FC<ThemeModalProps> = ({
     setSaving(true);
     setError(null);
     try {
-      await onSubmit(title.trim(), description.trim());
+      await onSubmit(title.trim(), description.trim(), isPublic);
     } catch (err: any) {
       setError(err?.message || "Error al guardar.");
       setSaving(false);
@@ -107,6 +114,25 @@ const ThemeModal: React.FC<ThemeModalProps> = ({
               />
             </div>
             {error && <p className="ts-field-error">{error}</p>}
+            {mode === "edit" && (
+              <div className="ts-field">
+                <label className="ts-label">Visibilidad</label>
+                <button
+                  type="button"
+                  className={`ts-visibility-toggle${isPublic ? " ts-visibility-toggle--on" : ""}`}
+                  onClick={() => setIsPublic((v) => !v)}
+                >
+                  <span className="ts-visibility-icon">
+                    {isPublic ? "🌐" : "🔒"}
+                  </span>
+                  <span>
+                    {isPublic
+                      ? "Público — visible en la biblioteca"
+                      : "Privado — solo tú puedes verlo"}
+                  </span>
+                </button>
+              </div>
+            )}
           </div>
           <div className="ts-modal-footer">
             <button

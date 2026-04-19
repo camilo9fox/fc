@@ -535,9 +535,17 @@
 }
 
 /* --- New page layout (matching Quiz/TF style) ------------------------------ */
-.fc-page { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
-.fc-cancel-btn { margin-top: 16px; }
-.fc-draft-section { margin-bottom: 28px; }
+.fc-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+.fc-cancel-btn {
+  margin-top: 16px;
+}
+.fc-draft-section {
+  margin-bottom: 28px;
+}
 
 /* --- Compact Flashcard Layout ------------------------------------------------- */
 .fc-list-header {
@@ -605,7 +613,7 @@
 
 .fc-accordion-count {
   font-size: 0.72rem;
-  background: rgba(37,99,235,0.08);
+  background: rgba(37, 99, 235, 0.08);
   color: #2563eb;
   padding: 1px 7px;
   border-radius: 20px;
@@ -623,11 +631,44 @@
   border-radius: 8px;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
 }
 .fc-accordion-study:hover {
-  background: rgba(37,99,235,0.06);
+  background: rgba(37, 99, 235, 0.06);
   border-color: #2563eb;
+}
+
+.fc-publish-btn {
+  background: none;
+  border: 1px solid #e2e8f0;
+  color: #888;
+  font-size: 0.78rem;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.fc-publish-btn:hover {
+  border-color: #6c63ff;
+  color: #6c63ff;
+}
+
+.fc-publish-btn--public {
+  border-color: #6c63ff;
+  color: #6c63ff;
+  background: rgba(108, 99, 255, 0.07);
+}
+
+.fc-publish-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .fc-accordion-body {
@@ -685,11 +726,11 @@
   flex-shrink: 0;
 }
 .fc-row-badge.ai {
-  background: rgba(124,58,237,0.1);
+  background: rgba(124, 58, 237, 0.1);
   color: #7c3aed;
 }
 .fc-row-badge.manual {
-  background: rgba(37,99,235,0.1);
+  background: rgba(37, 99, 235, 0.1);
   color: #1d4ed8;
 }
 
@@ -701,8 +742,14 @@
 }
 
 @keyframes fcFadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .fc-row-answer p {

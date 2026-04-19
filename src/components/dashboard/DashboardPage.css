@@ -260,6 +260,28 @@
   font-weight: 700;
   background: #f9fafb;
 }
+.db-cell--score {
+  color: #6366f1;
+  font-weight: 700;
+}
+
+/* ─── Streak banner ──────────────────────────────────────────────────────── */
+.db-streak-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+  border: 1px solid #fed7aa;
+  font-size: 0.875rem;
+  color: #92400e;
+}
+
+.db-streak-fire {
+  font-size: 1.2rem;
+  line-height: 1;
+}
 
 /* ─── Empty state ────────────────────────────────────────────────────────── */
 .db-empty {

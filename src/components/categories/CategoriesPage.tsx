@@ -1,6 +1,7 @@
 ﻿import React, { useState } from "react";
 import { Category } from "../../api/flashcards";
 import { useCategories } from "../../hooks/useCategories";
+import { publishApi } from "../../api/library";
 import ThemeCard from "./ThemeCard";
 import ThemeModal from "./ThemeModal";
 import CategoryDetailModal from "./CategoryDetailModal";
@@ -9,13 +10,20 @@ import "./CategoriesPage.css";
 type ModalState =
   | null
   | { mode: "create" }
-  | { mode: "edit"; id: string; title: string; description: string };
+  | {
+      mode: "edit";
+      id: string;
+      title: string;
+      description: string;
+      isPublic: boolean;
+    };
 
 const CategoriesPage: React.FC = () => {
   const {
     categories,
     loading,
     error: loadError,
+    loadCategories,
     createCategory,
     updateCategory,
     deleteCategory,
@@ -26,22 +34,46 @@ const CategoriesPage: React.FC = () => {
   const [pageError, setPageError] = useState<string | null>(null);
 
   const openCreate = () => setModal({ mode: "create" });
-  const openEdit = (id: string, title: string, description: string) =>
-    setModal({ mode: "edit", id, title, description });
+  const openEdit = (
+    id: string,
+    title: string,
+    description: string,
+    isPublic: boolean,
+  ) => setModal({ mode: "edit", id, title, description, isPublic });
   const closeModal = () => setModal(null);
 
-  const handleCreate = async (title: string, description: string) => {
+  const handleCreate = async (
+    title: string,
+    description: string,
+    _isPublic: boolean,
+  ) => {
     await createCategory({ title, description: description || undefined });
     closeModal();
   };
 
-  const handleUpdate = async (title: string, description: string) => {
+  const handleUpdate = async (
+    title: string,
+    description: string,
+    isPublic: boolean,
+  ) => {
     if (!modal || modal.mode !== "edit") return;
-    await updateCategory(modal.id, {
-      title,
-      description: description || undefined,
-    });
-    closeModal();
+    try {
+      await updateCategory(modal.id, {
+        title,
+        description: description || undefined,
+      });
+      if (isPublic !== modal.isPublic) {
+        await publishApi.publishCategory(modal.id, isPublic);
+      }
+      await loadCategories();
+      closeModal();
+    } catch (err: any) {
+      setPageError(
+        err?.response?.data?.error ||
+          err?.message ||
+          "Error al guardar el tema.",
+      );
+    }
   };
 
   const handleDelete = async (id: string, title: string) => {
@@ -111,7 +143,9 @@ const CategoriesPage: React.FC = () => {
             <span>Dale un nombre como "Biología" o "Historia"</span>
           </div>
         </div>
-        <div className="ts-how-arrow" aria-hidden="true">→</div>
+        <div className="ts-how-arrow" aria-hidden="true">
+          →
+        </div>
         <div className="ts-how-step">
           <div className="ts-how-num">2</div>
           <div className="ts-how-info">
@@ -119,7 +153,9 @@ const CategoriesPage: React.FC = () => {
             <span>Flashcards, cuestionarios y V/F</span>
           </div>
         </div>
-        <div className="ts-how-arrow" aria-hidden="true">→</div>
+        <div className="ts-how-arrow" aria-hidden="true">
+          →
+        </div>
         <div className="ts-how-step">
           <div className="ts-how-num">3</div>
           <div className="ts-how-info">
@@ -184,8 +220,14 @@ const CategoriesPage: React.FC = () => {
                 id={cat.id}
                 title={cat.title}
                 description={cat.description}
+                isPublic={cat.isPublic}
                 onEdit={() =>
-                  openEdit(cat.id, cat.title, cat.description || "")
+                  openEdit(
+                    cat.id,
+                    cat.title,
+                    cat.description || "",
+                    cat.isPublic,
+                  )
                 }
                 onDelete={() => handleDelete(cat.id, cat.title)}
                 onOpen={() => setDetailCat(cat)}
@@ -227,6 +269,7 @@ const CategoriesPage: React.FC = () => {
           mode="edit"
           initialTitle={modal.title}
           initialDescription={modal.description}
+          initialIsPublic={modal.isPublic}
           onSubmit={handleUpdate}
           onClose={closeModal}
         />

@@ -16,6 +16,7 @@ export interface CategoryBreakdownItem {
   trueFalseSets: number;
   studyGuides: number;
   total: number;
+  avgScore: number | null;
 }
 
 export interface RecentAttempt {
@@ -32,6 +33,7 @@ export interface AttemptStats {
   avgScore: number;
   currentStreak: number;
   recentAttempts: RecentAttempt[];
+  avgScoreByCategory: Record<string, number>;
 }
 
 export interface UserStats {

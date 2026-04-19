@@ -4,6 +4,7 @@ interface ThemeCardProps {
   id: string;
   title: string;
   description?: string;
+  isPublic: boolean;
   onEdit: () => void;
   onDelete: () => void;
   onOpen: () => void;
@@ -12,6 +13,7 @@ interface ThemeCardProps {
 const ThemeCard: React.FC<ThemeCardProps> = ({
   title,
   description,
+  isPublic,
   onEdit,
   onDelete,
   onOpen,
@@ -39,6 +41,11 @@ const ThemeCard: React.FC<ThemeCardProps> = ({
           </svg>
         </div>
         <div className="ts-card-actions">
+          <span
+            className={`ts-publish-badge${isPublic ? " ts-publish-badge--on" : ""}`}
+          >
+            {isPublic ? "🌐 Público" : "🔒 Privado"}
+          </span>
           <button
             className="ts-card-btn"
             onClick={(e) => {

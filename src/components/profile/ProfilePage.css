@@ -1,0 +1,443 @@
+/* ──────────────────────────────────────────────────
+   ProfilePage — prf-*
+   Palette: #631D76 purple · #EE4266 pink · #f0eaf5 bg · #2E2532 dark
+   ────────────────────────────────────────────────── */
+
+.prf-page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* ── Hero ── */
+.prf-hero {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: linear-gradient(135deg, #1a0530, #2e0a42);
+  border-radius: 18px;
+  padding: 2rem 2rem;
+  color: #fff;
+  box-shadow: 0 6px 28px rgba(99, 29, 118, 0.35);
+}
+
+.prf-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ee4266, #631d76);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  letter-spacing: 1px;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+.prf-hero-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.prf-email {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  word-break: break-all;
+}
+
+.prf-member-since {
+  margin: 0;
+  font-size: 0.83rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Sections ── */
+.prf-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.prf-section-title {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #631d76;
+}
+
+/* ── Quick-access cards ── */
+.prf-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.prf-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid #e8dff0;
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  cursor: pointer;
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s,
+    transform 0.14s;
+  text-align: left;
+}
+
+.prf-card:hover {
+  border-color: #631d76;
+  box-shadow: 0 4px 18px rgba(99, 29, 118, 0.12);
+  transform: translateY(-1px);
+}
+
+.prf-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.prf-icon-stats {
+  background: #f0eaf5;
+  color: #631d76;
+}
+
+.prf-icon-history {
+  background: #fff0f3;
+  color: #ee4266;
+}
+
+.prf-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.prf-card-title {
+  margin: 0 0 0.2rem;
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: #2e2532;
+}
+
+.prf-card-desc {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #7a6886;
+  line-height: 1.4;
+}
+
+.prf-card-arrow {
+  color: #b8a8c8;
+  flex-shrink: 0;
+  transition: color 0.18s;
+}
+
+.prf-card:hover .prf-card-arrow {
+  color: #631d76;
+}
+
+/* ── Password change card ── */
+.prf-pw-card {
+  background: #fff;
+  border: 1.5px solid #e8dff0;
+  border-radius: 14px;
+  padding: 1.5rem 1.5rem;
+}
+
+.prf-pw-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.prf-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.prf-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #2e2532;
+}
+
+.prf-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.65rem 0.9rem;
+  border: 1.5px solid #ddd0e8;
+  border-radius: 9px;
+  font-size: 0.92rem;
+  background: #faf8fc;
+  color: #2e2532;
+  outline: none;
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s;
+}
+
+.prf-input:focus {
+  border-color: #631d76;
+  box-shadow: 0 0 0 3px rgba(99, 29, 118, 0.12);
+  background: #fff;
+}
+
+.prf-input::placeholder {
+  color: #bbb0c8;
+}
+
+.prf-pw-error {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #ee4266;
+  background: #fff0f3;
+  border: 1px solid #ffd0dc;
+  border-radius: 7px;
+  padding: 0.5rem 0.75rem;
+}
+
+.prf-pw-success {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #1a7a4a;
+  background: #edfaf3;
+  border: 1px solid #b5e8cc;
+  border-radius: 7px;
+  padding: 0.5rem 0.75rem;
+}
+
+.prf-pw-btn {
+  align-self: flex-start;
+  padding: 0.65rem 1.5rem;
+  background: linear-gradient(135deg, #631d76, #ee4266);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    opacity 0.18s,
+    transform 0.14s;
+}
+
+.prf-pw-btn:hover:not(:disabled) {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.prf-pw-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ── Responsive ── */
+@media (max-width: 500px) {
+  .prf-hero {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+
+  .prf-pw-btn {
+    width: 100%;
+    align-self: stretch;
+  }
+}
+
+/* ── Action card (logout row) ── */
+.prf-action-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #fff;
+  border: 1.5px solid #e8dff0;
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+}
+
+.prf-action-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.prf-action-title {
+  margin: 0 0 0.2rem;
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: #2e2532;
+}
+
+.prf-action-desc {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #7a6886;
+  line-height: 1.4;
+}
+
+.prf-logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+  padding: 0.55rem 1.1rem;
+  border: 1.5px solid #ddd0e8;
+  border-radius: 9px;
+  background: #fff;
+  color: #2e2532;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 0.18s,
+    background 0.18s;
+}
+
+.prf-logout-btn:hover {
+  border-color: #631d76;
+  background: #f0eaf5;
+  color: #631d76;
+}
+
+/* ── Danger zone ── */
+.prf-danger-title {
+  color: #c0392b;
+}
+
+.prf-danger-card {
+  background: #fff;
+  border: 1.5px solid #ffd0d0;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.prf-danger-row {
+  border: none;
+  border-radius: 0;
+}
+
+.prf-delete-btn {
+  flex-shrink: 0;
+  padding: 0.55rem 1.1rem;
+  border: 1.5px solid #ee4266;
+  border-radius: 9px;
+  background: #fff;
+  color: #ee4266;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.18s,
+    color 0.18s;
+}
+
+.prf-delete-btn:hover {
+  background: #ee4266;
+  color: #fff;
+}
+
+.prf-delete-confirm {
+  padding: 1.25rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.prf-delete-warning {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #2e2532;
+  line-height: 1.5;
+}
+
+.prf-delete-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.prf-cancel-btn {
+  padding: 0.6rem 1.2rem;
+  border: 1.5px solid #ddd0e8;
+  border-radius: 9px;
+  background: #fff;
+  color: #2e2532;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.prf-cancel-btn:hover:not(:disabled) {
+  background: #f0eaf5;
+}
+
+.prf-cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.prf-delete-confirm-btn {
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: 9px;
+  background: #ee4266;
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.18s;
+}
+
+.prf-delete-confirm-btn:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.prf-delete-confirm-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+@media (max-width: 500px) {
+  .prf-action-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .prf-logout-btn,
+  .prf-delete-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .prf-delete-actions {
+    flex-direction: column;
+  }
+
+  .prf-cancel-btn,
+  .prf-delete-confirm-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

@@ -132,6 +132,17 @@ const TrueFalsePage: React.FC = () => {
       <DraftTFStudySession
         draft={draftSet}
         onClose={() => setStudyingDraft(false)}
+        onComplete={(score, total) => {
+          if (draftSet.categoryId) {
+            attemptsApi
+              .recordTrueFalse({
+                category_id: draftSet.categoryId,
+                score,
+                total_questions: total,
+              })
+              .catch(() => {});
+          }
+        }}
       />
     );
   }

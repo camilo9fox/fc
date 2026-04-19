@@ -1,4 +1,4 @@
-import apiClient from './client';
+import apiClient from "./client";
 
 export interface LoginRequest {
   email: string;
@@ -36,7 +36,7 @@ export const authApi = {
    * Sign up a new user
    */
   signup: async (data: SignupRequest): Promise<AuthResponse> => {
-    const response = await apiClient.post('/auth/signup', data);
+    const response = await apiClient.post("/auth/signup", data);
     return response.data;
   },
 
@@ -44,7 +44,7 @@ export const authApi = {
    * Sign in an existing user
    */
   signin: async (data: LoginRequest): Promise<AuthResponse> => {
-    const response = await apiClient.post('/auth/signin', data);
+    const response = await apiClient.post("/auth/signin", data);
     return response.data;
   },
 
@@ -52,7 +52,7 @@ export const authApi = {
    * Sign out the current user
    */
   signout: async (): Promise<{ message: string }> => {
-    const response = await apiClient.post('/auth/signout');
+    const response = await apiClient.post("/auth/signout");
     return response.data;
   },
 
@@ -60,7 +60,7 @@ export const authApi = {
    * Get current user profile
    */
   getProfile: async (): Promise<{ user: User }> => {
-    const response = await apiClient.get('/auth/profile');
+    const response = await apiClient.get("/auth/profile");
     return response.data;
   },
 
@@ -68,7 +68,22 @@ export const authApi = {
    * Reset user password
    */
   resetPassword: async (email: string): Promise<{ message: string }> => {
-    const response = await apiClient.post('/auth/reset-password', { email });
+    const response = await apiClient.post("/auth/reset-password", { email });
+    return response.data;
+  },
+
+  /**
+   * Update current user password
+   */
+  updatePassword: async (password: string): Promise<{ message: string }> => {
+    const response = await apiClient.put("/auth/password", { password });
+    return response.data;
+  },
+  /**
+   * Delete the current user account
+   */
+  deleteAccount: async (): Promise<{ message: string }> => {
+    const response = await apiClient.delete("/auth/account");
     return response.data;
   },
 };

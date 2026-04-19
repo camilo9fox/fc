@@ -23,7 +23,6 @@ const QuizzesPage: React.FC = () => {
   const [studyingDraft, setStudyingDraft] = useState(false);
   const { categories, loading: catsLoading } = useCategories();
   const hasCategories = catsLoading || categories.length > 0;
-
   useEffect(() => {
     const load = async () => {
       try {
@@ -131,6 +130,17 @@ const QuizzesPage: React.FC = () => {
       <DraftQuizStudySession
         draft={draftQuiz}
         onClose={() => setStudyingDraft(false)}
+        onComplete={(score, total) => {
+          if (draftQuiz.categoryId) {
+            attemptsApi
+              .recordQuiz({
+                category_id: draftQuiz.categoryId,
+                score,
+                total_questions: total,
+              })
+              .catch(() => {});
+          }
+        }}
       />
     );
   }

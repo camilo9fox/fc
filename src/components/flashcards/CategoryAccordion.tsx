@@ -7,6 +7,7 @@ interface CategoryAccordionProps {
   onStudy: () => void;
   onDelete?: (id: string) => void;
   isDraft?: boolean;
+  categoryId?: string;
 }
 
 const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
@@ -17,6 +18,7 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
   isDraft,
 }) => {
   const [expanded, setExpanded] = useState(true);
+
   return (
     <div className="fc-accordion">
       <div
