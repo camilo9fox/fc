@@ -1,8 +1,16 @@
 ﻿import React, { useEffect, useState } from "react";
-import { FileText, Pencil, Sparkles, X } from "lucide-react";
+import {
+  FileText,
+  Pencil,
+  Sparkles,
+  X,
+  ChevronDown,
+  ChevronUp,
+  Check,
+} from "lucide-react";
 import { useCategories } from "../../hooks/useCategories";
 import NoCategoryBanner from "../layout/NoCategoryBanner";
-import { quizApi, Quiz, CreateQuizRequest } from "../../api/quiz";
+import { quizApi, Quiz, QuizQuestion, CreateQuizRequest } from "../../api/quiz";
 import { attemptsApi } from "../../api/attempts";
 import { DraftQuizState, quizToDraft } from "../../types/quiz.types";
 import DraftQuizStudySession from "./DraftQuizStudySession";
@@ -21,6 +29,16 @@ const QuizzesPage: React.FC = () => {
   const [draftQuiz, setDraftQuiz] = useState<DraftQuizState | null>(null);
   const [savingDraft, setSavingDraft] = useState(false);
   const [studyingDraft, setStudyingDraft] = useState(false);
+
+  // Per-card question editing state
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const [editingQuestion, setEditingQuestion] = useState<{
+    quizId: string;
+    questionId: string;
+  } | null>(null);
+  const [editForm, setEditForm] = useState<Partial<QuizQuestion>>({});
+  const [savingQuestion, setSavingQuestion] = useState(false);
+
   const { categories, loading: catsLoading } = useCategories();
   const hasCategories = catsLoading || categories.length > 0;
   useEffect(() => {
@@ -101,6 +119,73 @@ const QuizzesPage: React.FC = () => {
       setQuizzes((prev) => prev.filter((q) => q.id !== id));
     } catch {
       setError("No se pudo eliminar el cuestionario.");
+    }
+  };
+
+  const toggleCardExpand = async (quiz: Quiz) => {
+    if (expandedCard === quiz.id) {
+      setExpandedCard(null);
+      setEditingQuestion(null);
+      return;
+    }
+    // Load questions if not yet present
+    if (!quiz.questions || quiz.questions.length === 0) {
+      setLoadingDetail(quiz.id);
+      try {
+        const full = await quizApi.getById(quiz.id);
+        setQuizzes((prev) => prev.map((q) => (q.id === quiz.id ? full : q)));
+      } catch {
+        setError("No se pudieron cargar las preguntas.");
+        setLoadingDetail(null);
+        return;
+      }
+      setLoadingDetail(null);
+    }
+    setExpandedCard(quiz.id);
+    setEditingQuestion(null);
+  };
+
+  const startEditQuestion = (quizId: string, q: QuizQuestion) => {
+    setEditingQuestion({ quizId, questionId: q.id });
+    setEditForm({
+      question: q.question,
+      options: [...q.options],
+      correct_answer: q.correct_answer,
+      explanation: q.explanation ?? "",
+    });
+  };
+
+  const handleSaveQuestion = async () => {
+    if (!editingQuestion || !editForm.question || !editForm.options) return;
+    setSavingQuestion(true);
+    try {
+      const updated = await quizApi.updateQuestion(
+        editingQuestion.quizId,
+        editingQuestion.questionId,
+        {
+          question: editForm.question,
+          options: editForm.options,
+          correct_answer: editForm.correct_answer,
+          explanation: editForm.explanation || undefined,
+        },
+      );
+      setQuizzes((prev) =>
+        prev.map((quiz) =>
+          quiz.id === editingQuestion.quizId
+            ? {
+                ...quiz,
+                questions: quiz.questions?.map((q) =>
+                  q.id === updated.id ? updated : q,
+                ),
+              }
+            : quiz,
+        ),
+      );
+      setEditingQuestion(null);
+    } catch (err: any) {
+      setError(err?.response?.data?.error || "No se pudo guardar la pregunta.");
+    } finally {
+      setSavingQuestion(false);
     }
   };
 
@@ -295,14 +380,132 @@ const QuizzesPage: React.FC = () => {
                 <span className="qz-card-count">
                   {quiz.questions?.length ?? "?"} preguntas
                 </span>
-                <button
-                  className="qz-btn-study"
-                  onClick={() => handleStudy(quiz)}
-                  disabled={loadingDetail === quiz.id}
-                >
-                  {loadingDetail === quiz.id ? "Cargando..." : "Estudiar →"}
-                </button>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <button
+                    className="qz-btn-edit-questions"
+                    onClick={() => toggleCardExpand(quiz)}
+                    disabled={loadingDetail === quiz.id}
+                    title="Editar preguntas"
+                  >
+                    {expandedCard === quiz.id ? (
+                      <ChevronUp size={14} />
+                    ) : (
+                      <ChevronDown size={14} />
+                    )}
+                    Editar
+                  </button>
+                  <button
+                    className="qz-btn-study"
+                    onClick={() => handleStudy(quiz)}
+                    disabled={loadingDetail === quiz.id}
+                  >
+                    {loadingDetail === quiz.id ? "Cargando..." : "Estudiar →"}
+                  </button>
+                </div>
               </div>
+
+              {/* Inline question editor */}
+              {expandedCard === quiz.id && quiz.questions && (
+                <div className="qz-question-list">
+                  {quiz.questions.map((q, idx) => (
+                    <div key={q.id} className="qz-question-item">
+                      {editingQuestion?.questionId === q.id ? (
+                        <div className="qz-question-edit-form">
+                          <textarea
+                            className="qz-question-edit-input"
+                            value={editForm.question ?? ""}
+                            maxLength={2000}
+                            onChange={(e) =>
+                              setEditForm((f) => ({
+                                ...f,
+                                question: e.target.value,
+                              }))
+                            }
+                            rows={2}
+                          />
+                          {(editForm.options ?? []).map((opt, oi) => (
+                            <div key={oi} className="qz-option-row">
+                              <input
+                                type="radio"
+                                name={`correct-${q.id}`}
+                                checked={editForm.correct_answer === opt}
+                                onChange={() =>
+                                  setEditForm((f) => ({
+                                    ...f,
+                                    correct_answer: opt,
+                                  }))
+                                }
+                                title="Marcar como respuesta correcta"
+                              />
+                              <input
+                                type="text"
+                                className="qz-option-input"
+                                value={opt}
+                                maxLength={500}
+                                onChange={(e) => {
+                                  const newOpts = [...(editForm.options ?? [])];
+                                  newOpts[oi] = e.target.value;
+                                  const wasCorrect =
+                                    editForm.correct_answer === opt;
+                                  setEditForm((f) => ({
+                                    ...f,
+                                    options: newOpts,
+                                    correct_answer: wasCorrect
+                                      ? e.target.value
+                                      : f.correct_answer,
+                                  }));
+                                }}
+                              />
+                            </div>
+                          ))}
+                          <input
+                            type="text"
+                            className="qz-explanation-input"
+                            placeholder="Explicación (opcional)"
+                            value={editForm.explanation ?? ""}
+                            maxLength={2000}
+                            onChange={(e) =>
+                              setEditForm((f) => ({
+                                ...f,
+                                explanation: e.target.value,
+                              }))
+                            }
+                          />
+                          <div className="qz-question-edit-actions">
+                            <button
+                              className="qz-btn-save-question"
+                              onClick={handleSaveQuestion}
+                              disabled={savingQuestion}
+                            >
+                              <Check size={13} />
+                              {savingQuestion ? "Guardando…" : "Guardar"}
+                            </button>
+                            <button
+                              className="qz-btn-cancel-edit"
+                              onClick={() => setEditingQuestion(null)}
+                              disabled={savingQuestion}
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="qz-question-row">
+                          <span className="qz-question-num">{idx + 1}.</span>
+                          <span className="qz-question-text">{q.question}</span>
+                          <button
+                            className="qz-btn-edit-q"
+                            onClick={() => startEditQuestion(quiz.id, q)}
+                            title="Editar pregunta"
+                          >
+                            <Pencil size={12} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>

@@ -153,3 +153,25 @@
     padding: 1.25rem 1rem;
   }
 }
+
+/* ── Dark mode ── */
+[data-theme="dark"] .ghub-title {
+  color: #e8ddef;
+}
+[data-theme="dark"] .ghub-subtitle {
+  color: #9b8aab;
+}
+[data-theme="dark"] .ghub-card {
+  background: #231a2c;
+  border-color: #3b2e45;
+}
+[data-theme="dark"] .ghub-card-title {
+  color: #e8ddef;
+}
+[data-theme="dark"] .ghub-card-desc {
+  color: #9b8aab;
+}
+[data-theme="dark"] .ghub-card:hover {
+  background: #2b1f38;
+  border-color: #5a2d7a;
+}

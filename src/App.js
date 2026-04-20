@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+import ErrorBoundary from './components/shared/ErrorBoundary';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
 import FlashcardsPage from './components/flashcards/FlashcardsPage';
@@ -17,8 +19,11 @@ import SurvivalModePage from './components/games/SurvivalModePage';
 import MemoryModePage from './components/games/MemoryModePage';
 import ContrarrelojModePage from './components/games/ContrarrelojModePage';
 import EscrituraModePage from './components/games/EscrituraModePage';
+import SpacedRepetitionPage from './components/flashcards/SpacedRepetitionPage';
+import NotFoundPage from './components/shared/NotFoundPage';
 import LandingPage from './components/landing/LandingPage';
 import DashboardLayout from './components/layout/DashboardLayout';
+import OfflineBanner from './components/shared/OfflineBanner';
 import './App.css';
 
 // Protected Route component
@@ -190,20 +195,35 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         }
       />
-      <Route path="*" element={<Navigate to="/" />} />
+      <Route
+        path="/repaso"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <SpacedRepetitionPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 };
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <div className="App">
-          <AppRoutes />
-        </div>
-      </Router>
-    </AuthProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <AuthProvider>
+          <Router>
+            <OfflineBanner />
+            <div className="App">
+              <AppRoutes />
+            </div>
+          </Router>
+        </AuthProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

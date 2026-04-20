@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStats } from "../../hooks/useStats";
+import { flashCardsApi } from "../../api/flashcards";
 import {
   CategoryBreakdownItem,
   StatTotals,
   RecentAttempt,
 } from "../../api/stats";
 import DashboardCharts from "./DashboardCharts";
+import { StatCardSkeleton, SkeletonList, Skeleton } from "../shared/Skeleton";
 import "./DashboardPage.css";
 
 // ─── Stat card config ────────────────────────────────────────────────────────
@@ -214,12 +216,29 @@ const RecentAttemptRow: React.FC<{ attempt: RecentAttempt }> = ({
 const DashboardPage: React.FC = () => {
   const { stats, loading, error, refresh } = useStats();
   const navigate = useNavigate();
+  const [dueCount, setDueCount] = useState<number>(0);
+
+  useEffect(() => {
+    flashCardsApi
+      .getReviewStats()
+      .then((s) => setDueCount(s.due))
+      .catch(() => {}); // non-blocking
+  }, []);
 
   if (loading) {
     return (
-      <div className="db-loading">
-        <div className="db-spinner" />
-        <span>Cargando estadísticas…</span>
+      <div className="db-page">
+        <div className="db-section">
+          <div className="db-stat-grid">
+            <SkeletonList count={5} component={StatCardSkeleton} />
+          </div>
+        </div>
+        <div className="db-section">
+          <Skeleton height="220px" borderRadius="14px" />
+        </div>
+        <div className="db-section">
+          <Skeleton height="180px" borderRadius="14px" />
+        </div>
       </div>
     );
   }
@@ -244,6 +263,43 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="db-page">
+      {/* ── SM-2 review reminder ── */}
+      {dueCount > 0 && (
+        <div className="db-sm2-banner">
+          <div className="db-sm2-icon">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>
+          </div>
+          <div className="db-sm2-body">
+            <p className="db-sm2-title">
+              Tienes <strong>{dueCount}</strong>{" "}
+              {dueCount === 1 ? "flashcard pendiente" : "flashcards pendientes"}{" "}
+              de repaso
+            </p>
+            <p className="db-sm2-sub">
+              Repasar ahora maximiza tu retención a largo plazo.
+            </p>
+          </div>
+          <button
+            className="db-sm2-btn"
+            onClick={() => navigate("/spaced-repetition")}
+          >
+            Repasar ahora →
+          </button>
+        </div>
+      )}
+
       {/* ── Summary banner ── */}
       {mostActive && (
         <div className="db-banner">

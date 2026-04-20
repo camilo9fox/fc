@@ -643,3 +643,43 @@
     justify-content: center;
   }
 }
+
+/* ── Dark mode ── */
+/* Library cards (white bg with light borders) */
+[data-theme="dark"] .lib-card {
+  background: #231a2c;
+  border-color: #3b2e45;
+}
+[data-theme="dark"] .lib-card-title {
+  color: #e8ddef;
+}
+[data-theme="dark"] .lib-card-desc {
+  color: #9b8aab;
+}
+[data-theme="dark"] .lib-card:hover {
+  border-color: #5a2d7a;
+}
+
+/* Search input */
+[data-theme="dark"] .lib-search-input {
+  background: #231a2c;
+  border-color: #3b2e45;
+  color: #e8ddef;
+}
+[data-theme="dark"] .lib-search-input::placeholder {
+  color: #5e4b68;
+}
+
+/* Import confirmation panels */
+[data-theme="dark"] .lib-import-confirm {
+  background: #1a2a1e;
+  border-color: #14532d;
+}
+
+/* Section / list text */
+[data-theme="dark"] .lib-section-title {
+  color: #9b8aab;
+}
+[data-theme="dark"] .lib-empty {
+  color: #9b8aab;
+}

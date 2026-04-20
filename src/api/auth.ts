@@ -73,6 +73,17 @@ export const authApi = {
   },
 
   /**
+   * Update current user profile (name and/or email)
+   */
+  updateProfile: async (data: {
+    name?: string;
+    email?: string;
+  }): Promise<{ user: User }> => {
+    const response = await apiClient.put("/auth/profile", data);
+    return response.data;
+  },
+
+  /**
    * Update current user password
    */
   updatePassword: async (password: string): Promise<{ message: string }> => {

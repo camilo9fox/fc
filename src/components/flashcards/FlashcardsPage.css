@@ -546,6 +546,52 @@
 .fc-draft-section {
   margin-bottom: 28px;
 }
+.fc-accordion-skeleton {
+  background: #fff;
+  border: 1.5px solid #e2d9ee;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+/* --- Search bar --------------------------------------------------------------- */
+*/ .fc-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fff;
+  border: 1.5px solid #e2d9ee;
+  border-radius: 10px;
+  padding: 0.45rem 0.75rem;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s;
+}
+.fc-search-bar:focus-within {
+  border-color: #631d76;
+}
+.fc-search-icon {
+  color: #9e7bb5;
+  flex-shrink: 0;
+}
+.fc-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  background: transparent;
+  color: #2e2532;
+}
+.fc-search-clear {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9e7bb5;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+.fc-search-clear:hover {
+  color: #631d76;
+}
 
 /* --- Compact Flashcard Layout ------------------------------------------------- */
 .fc-list-header {
@@ -766,8 +812,197 @@
   font-size: 0.75rem;
   cursor: pointer;
   padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   transition: color 0.15s;
 }
 .fc-row-delete:hover {
   color: #dc2626;
+}
+
+/* Edit button inside card row toggle */
+.fc-row-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: #94a3b8;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.fc-row-edit-btn:hover {
+  color: #631d76;
+  background: #f0eaf5;
+}
+
+/* Inline edit form */
+.fc-row-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.fc-edit-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.fc-edit-input {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+.fc-edit-input:focus {
+  outline: none;
+  border-color: #631d76;
+}
+.fc-edit-error {
+  font-size: 0.75rem;
+  color: #dc2626;
+  margin: 0;
+}
+.fc-edit-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+.fc-edit-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #631d76;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.fc-edit-save:hover:not(:disabled) {
+  background: #4e1660;
+}
+.fc-edit-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.fc-edit-cancel {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+.fc-edit-cancel:hover:not(:disabled) {
+  border-color: #94a3b8;
+  color: #334155;
+}
+.fc-edit-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Dark mode ── */
+[data-theme="dark"] .qz-page {
+  --fc-ink: #e8ddef;
+}
+
+/* Page header text */
+[data-theme="dark"] .qz-title {
+  color: #e8ddef;
+}
+[data-theme="dark"] .qz-subtitle {
+  color: #9b8aab;
+}
+
+/* Cards/panels with white backgrounds */
+[data-theme="dark"] .fc-accordion,
+[data-theme="dark"] .fc-card-row,
+[data-theme="dark"] .qz-card,
+[data-theme="dark"] .qz-draft-panel,
+[data-theme="dark"] .fc-search-bar {
+  background: #231a2c;
+  border-color: #3b2e45;
+}
+
+/* Accordion header */
+[data-theme="dark"] .fc-accordion-header {
+  background: #231a2c;
+  border-color: #3b2e45;
+}
+[data-theme="dark"] .fc-accordion-title {
+  color: #e8ddef;
+}
+[data-theme="dark"] .fc-accordion-count {
+  color: #9b8aab;
+  background: #2b1f38;
+}
+
+/* Card rows */
+[data-theme="dark"] .fc-card-row {
+  background: linear-gradient(180deg, #231a2c 0%, #1e1525 100%);
+}
+[data-theme="dark"] .fc-row-question {
+  color: #e8ddef;
+}
+[data-theme="dark"] .fc-row-answer {
+  color: #9b8aab;
+}
+
+/* Search bar */
+[data-theme="dark"] .fc-search-input {
+  background: transparent;
+  color: #e8ddef;
+}
+[data-theme="dark"] .fc-search-input::placeholder {
+  color: #5e4b68;
+}
+[data-theme="dark"] .fc-search-icon {
+  color: #9b8aab;
+}
+
+/* Section headers */
+[data-theme="dark"] .qz-section-title,
+[data-theme="dark"] .fc-list-header {
+  color: #e8ddef;
+}
+[data-theme="dark"] .fc-list-count {
+  color: #9b8aab;
+}
+
+/* Edit form */
+[data-theme="dark"] .fc-edit-input {
+  background: #1a1320;
+  border-color: #3b2e45;
+  color: #e8ddef;
+}
+[data-theme="dark"] .fc-edit-label {
+  color: #dbc8e8;
+}
+[data-theme="dark"] .fc-edit-cancel {
+  background: #231a2c;
+  border-color: #3b2e45;
+  color: #9b8aab;
+}
+[data-theme="dark"] .fc-edit-cancel:hover:not(:disabled) {
+  border-color: #6b7280;
+  color: #dbc8e8;
 }

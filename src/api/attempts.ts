@@ -82,4 +82,17 @@ export const attemptsApi = {
 
   getHistory: (filters: HistoryFilters = {}): Promise<HistoryResponse> =>
     apiClient.get("/attempts/history", { params: filters }).then((r) => r.data),
+
+  recordGame: (data: {
+    game_type: string;
+    category_id?: string | null;
+    score: number;
+  }): Promise<void> =>
+    apiClient.post("/attempts/game", data).then(() => undefined),
+
+  getGameBest: (params: {
+    gameType: string;
+    categoryId?: string | null;
+  }): Promise<{ score: number }> =>
+    apiClient.get("/attempts/game-best", { params }).then((r) => r.data),
 };

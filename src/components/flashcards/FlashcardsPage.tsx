@@ -1,5 +1,19 @@
-﻿import React, { useEffect, useMemo, useState } from "react";
-import { Layers, Pencil, Sparkles } from "lucide-react";
+﻿import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  Download,
+  Layers,
+  Pencil,
+  Search,
+  Sparkles,
+  Upload,
+  X,
+} from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { flashCardsApi, FlashCard } from "../../api/flashcards";
 import { attemptsApi } from "../../api/attempts";
@@ -10,6 +24,8 @@ import CreateFlashcardForm from "./CreateFlashcardForm";
 import CardRow from "./CardRow";
 import CategoryAccordion from "./CategoryAccordion";
 import NoCategoryBanner from "../layout/NoCategoryBanner";
+import CsvImportModal from "./CsvImportModal";
+import { CardRowSkeleton } from "../shared/Skeleton";
 import "./FlashcardsPage.css";
 
 type DraftFlashcard = {
@@ -23,6 +39,13 @@ type DraftFlashcard = {
     description?: string;
   };
 };
+
+const escapeHtml = (str: string) =>
+  str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 
 const FlashcardsPage: React.FC = () => {
   const { token } = useAuth();
@@ -38,6 +61,12 @@ const FlashcardsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [createMode, setCreateMode] = useState<"manual" | "ai">("manual");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<FlashCard[] | null>(null);
+  const [searching, setSearching] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [showCsvImport, setShowCsvImport] = useState(false);
+  const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const groupedFlashcards = useMemo(() => {
     const grouped: { [key: string]: any[] } = { "Sin categoría": [] };
@@ -132,6 +161,136 @@ const FlashcardsPage: React.FC = () => {
     }
   };
 
+  const handleUpdateSavedCard = async (
+    cardId: string,
+    question: string,
+    answer: string,
+  ) => {
+    const updated = await flashCardsApi.updateFlashCard(cardId, {
+      question,
+      answer,
+    });
+    setSavedFlashcards((prev) =>
+      prev.map((card) => (card.id === cardId ? { ...card, ...updated } : card)),
+    );
+  };
+
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const q = e.target.value;
+      setSearchQuery(q);
+
+      if (searchTimeout.current) clearTimeout(searchTimeout.current);
+
+      if (q.trim().length < 2) {
+        setSearchResults(null);
+        return;
+      }
+
+      searchTimeout.current = setTimeout(async () => {
+        setSearching(true);
+        try {
+          const res = await flashCardsApi.searchFlashCards({ q: q.trim() });
+          setSearchResults(res.flashcards);
+        } catch {
+          setSearchResults([]);
+        } finally {
+          setSearching(false);
+        }
+      }, 300);
+    },
+    [],
+  );
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+    setSearchResults(null);
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+  };
+
+  const [exportingPdf, setExportingPdf] = useState(false);
+
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      await flashCardsApi.exportFlashCards();
+    } catch {
+      setError("No se pudo exportar el CSV.");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleExportPdf = () => {
+    if (!savedFlashcards.length) return;
+    setExportingPdf(true);
+
+    // Group by category title for the printed output
+    const grouped: Record<string, FlashCard[]> = {};
+    for (const card of savedFlashcards) {
+      const cat = card.category?.title ?? "Sin categoría";
+      if (!grouped[cat]) grouped[cat] = [];
+      grouped[cat].push(card);
+    }
+
+    const rows = Object.entries(grouped)
+      .map(
+        ([cat, cards]) => `
+        <section>
+          <h2>${escapeHtml(cat)}</h2>
+          ${cards
+            .map(
+              (c, i) => `
+            <div class="card">
+              <div class="card-num">${i + 1}</div>
+              <div class="card-q"><strong>P:</strong> ${escapeHtml(c.question)}</div>
+              <div class="card-a"><strong>R:</strong> ${escapeHtml(c.answer)}</div>
+            </div>`,
+            )
+            .join("")}
+        </section>`,
+      )
+      .join("");
+
+    const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<title>Flashcards — StudyAI</title>
+<style>
+  body { font-family: Georgia, serif; color: #1a1a1a; padding: 32px; max-width: 720px; margin: auto; }
+  h1 { font-size: 1.5rem; color: #631D76; border-bottom: 2px solid #631D76; padding-bottom: 8px; margin-bottom: 24px; }
+  h2 { font-size: 1.1rem; color: #631D76; margin: 28px 0 12px; border-left: 4px solid #EE4266; padding-left: 10px; }
+  .card { border: 1px solid #ddd; border-radius: 8px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid; position: relative; }
+  .card-num { position: absolute; top: 8px; right: 12px; font-size: 0.75rem; color: #999; }
+  .card-q { margin-bottom: 6px; line-height: 1.5; }
+  .card-a { line-height: 1.5; color: #333; border-top: 1px solid #f0f0f0; padding-top: 6px; margin-top: 6px; }
+  @media print { body { padding: 16px; } }
+</style>
+</head>
+<body>
+<h1>📚 Mis Flashcards — StudyAI</h1>
+${rows}
+</body>
+</html>`;
+
+    const win = window.open("", "_blank");
+    if (!win) {
+      setError(
+        "El navegador bloqueó la ventana emergente. Permite popups e inténtalo de nuevo.",
+      );
+      setExportingPdf(false);
+      return;
+    }
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    setTimeout(() => {
+      win.print();
+      setExportingPdf(false);
+    }, 400);
+  };
+
   if (studyMode && studyCards.length > 0) {
     // Derive categoryId: use the common category if all cards belong to the same one
     const categoryIds = new Set(
@@ -205,18 +364,104 @@ const FlashcardsPage: React.FC = () => {
           <h1 className="qz-page-title">Flashcards</h1>
           <p className="qz-page-sub">Crea y estudia tus tarjetas de repaso</p>
         </div>
-        <button
-          className="qz-btn-primary"
-          onClick={() => setShowCreate(true)}
-          disabled={!hasCategories}
+        <div
+          style={{
+            display: "flex",
+            gap: "0.5rem",
+            flexWrap: "wrap",
+            justifyContent: "flex-end",
+          }}
         >
-          + Nueva flashcard
-        </button>
+          {savedFlashcards.length > 0 && (
+            <>
+              <button
+                className="qz-btn-secondary"
+                onClick={handleExport}
+                disabled={exporting}
+                title="Exportar flashcards como CSV"
+              >
+                <Download size={14} /> {exporting ? "Exportando..." : "CSV"}
+              </button>
+              <button
+                className="qz-btn-secondary"
+                onClick={handleExportPdf}
+                disabled={exportingPdf}
+                title="Exportar flashcards como PDF (imprimir)"
+              >
+                <Download size={14} /> {exportingPdf ? "Preparando..." : "PDF"}
+              </button>
+            </>
+          )}
+          <button
+            className="qz-btn-secondary"
+            onClick={() => setShowCsvImport(true)}
+            disabled={!hasCategories}
+            title="Importar flashcards desde CSV"
+          >
+            <Upload size={14} /> Importar CSV
+          </button>
+          <button
+            className="qz-btn-primary"
+            onClick={() => setShowCreate(true)}
+            disabled={!hasCategories}
+          >
+            + Nueva flashcard
+          </button>
+        </div>
       </div>
 
       {error && <p className="qz-error">{error}</p>}
 
       {!hasCategories && <NoCategoryBanner feature="flashcards" />}
+
+      {/* Search bar */}
+      {savedFlashcards.length > 0 && (
+        <div className="fc-search-bar">
+          <Search size={16} className="fc-search-icon" />
+          <input
+            type="text"
+            placeholder="Buscar flashcards por pregunta o respuesta..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="fc-search-input"
+          />
+          {searchQuery && (
+            <button className="fc-search-clear" onClick={handleClearSearch}>
+              <X size={14} />
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Search results */}
+      {searchResults !== null && (
+        <section className="qz-draft-panel">
+          <div className="qz-draft-header">
+            <div>
+              <h2 className="qz-draft-title">Resultados de búsqueda</h2>
+              <span className="qz-draft-badge">
+                {searching
+                  ? "Buscando..."
+                  : `${searchResults.length} resultado${searchResults.length !== 1 ? "s" : ""}`}
+              </span>
+            </div>
+          </div>
+          {!searching && searchResults.length === 0 && (
+            <p style={{ padding: "1rem", color: "#64748b" }}>
+              No se encontraron flashcards con ese término.
+            </p>
+          )}
+          {searchResults.map((card) => (
+            <CardRow
+              key={card.id}
+              question={card.question}
+              answer={card.answer}
+              source={card.source as any}
+              onDelete={() => handleDeleteSavedCard(card.id)}
+            />
+          ))}
+        </section>
+      )}
 
       {/* Sección borrador */}
       {draftFlashcards.length > 0 && (
@@ -282,7 +527,15 @@ const FlashcardsPage: React.FC = () => {
 
       {/* Sección guardadas */}
       {loading ? (
-        <div className="qz-loading">Cargando tus flashcards...</div>
+        <div style={{ marginTop: "0.5rem" }}>
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="fc-accordion-skeleton">
+              <CardRowSkeleton />
+              <CardRowSkeleton />
+              <CardRowSkeleton />
+            </div>
+          ))}
+        </div>
       ) : savedFlashcards.length === 0 && draftFlashcards.length === 0 ? (
         <div className="qz-empty">
           <div className="qz-empty-icon">
@@ -329,11 +582,28 @@ const FlashcardsPage: React.FC = () => {
                   )
                 }
                 onDelete={handleDeleteSavedCard}
+                onUpdate={handleUpdateSavedCard}
               />
             ) : null;
           })}
         </>
       ) : null}
+
+      {showCsvImport && (
+        <CsvImportModal
+          categories={categories}
+          onClose={() => setShowCsvImport(false)}
+          onImported={() => {
+            // reload saved flashcards
+            flashCardsApi
+              .getFlashCards({ limit: 200 })
+              .then((res) => {
+                setSavedFlashcards(res.flashcards);
+              })
+              .catch(() => {});
+          }}
+        />
+      )}
     </div>
   );
 };

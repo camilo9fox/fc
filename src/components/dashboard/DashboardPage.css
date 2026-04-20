@@ -411,3 +411,210 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Dark mode ── */
+[data-theme="dark"] .db-section-title {
+  color: #e8ddef;
+}
+[data-theme="dark"] .db-loading {
+  color: #9b8aab;
+}
+[data-theme="dark"] .db-spinner {
+  border-color: #3b2e45;
+  border-top-color: #631d76;
+}
+[data-theme="dark"] .db-error {
+  color: #9b8aab;
+}
+
+[data-theme="dark"] .db-banner {
+  background: linear-gradient(135deg, #2b1740 0%, #1e1030 100%);
+  border-color: #5a2d7a;
+  color: #dbc8e8;
+}
+[data-theme="dark"] .db-banner svg {
+  color: #c89de0;
+}
+
+[data-theme="dark"] .db-card--purple {
+  background: #241035;
+  border-color: #4a2860;
+  color: #dbc8e8;
+}
+[data-theme="dark"] .db-card--purple .db-stat-icon {
+  background: #3b1e50;
+  color: #c89de0;
+}
+[data-theme="dark"] .db-card--blue {
+  background: #0d1f3c;
+  border-color: #1e3a6e;
+  color: #bfdbfe;
+}
+[data-theme="dark"] .db-card--blue .db-stat-icon {
+  background: #162c50;
+  color: #60a5fa;
+}
+[data-theme="dark"] .db-card--orange {
+  background: #2a1600;
+  border-color: #5a2e00;
+  color: #fed7aa;
+}
+[data-theme="dark"] .db-card--orange .db-stat-icon {
+  background: #3a2000;
+  color: #fb923c;
+}
+[data-theme="dark"] .db-card--red {
+  background: #2d0a14;
+  border-color: #6b1228;
+  color: #fecdd3;
+}
+[data-theme="dark"] .db-card--red .db-stat-icon {
+  background: #3d1020;
+  color: #f87171;
+}
+[data-theme="dark"] .db-card--green {
+  background: #052e16;
+  border-color: #0a4f28;
+  color: #bbf7d0;
+}
+[data-theme="dark"] .db-card--green .db-stat-icon {
+  background: #073d1e;
+  color: #4ade80;
+}
+
+[data-theme="dark"] .db-activity--blue {
+  background: #0d1f3c;
+  border-color: #1e3a6e;
+  color: #93c5fd;
+}
+[data-theme="dark"] .db-activity--purple {
+  background: #241035;
+  border-color: #4a2860;
+  color: #d8b4fe;
+}
+[data-theme="dark"] .db-activity--green {
+  background: #052e16;
+  border-color: #0a4f28;
+  color: #86efac;
+}
+[data-theme="dark"] .db-activity--orange {
+  background: #2a1600;
+  border-color: #5a2e00;
+  color: #fdba74;
+}
+
+[data-theme="dark"] .db-table-wrapper {
+  background: #231a2c;
+  border-color: #3b2e45;
+}
+[data-theme="dark"] .db-breakdown-table thead tr {
+  background: #2b1f38;
+  border-bottom-color: #3b2e45;
+}
+[data-theme="dark"] .db-th-title,
+[data-theme="dark"] .db-th {
+  color: #a89ab8;
+}
+[data-theme="dark"] .db-breakdown-row {
+  border-bottom-color: #2b1f38;
+}
+[data-theme="dark"] .db-breakdown-row:hover {
+  background: #2b1f38;
+}
+[data-theme="dark"] .db-breakdown-title {
+  color: #e8ddef;
+}
+[data-theme="dark"] .db-breakdown-cell {
+  color: inherit;
+}
+[data-theme="dark"] .db-cell--total {
+  color: #e8ddef;
+  background: #2b1f38;
+}
+[data-theme="dark"] .db-cell--score {
+  color: #a5b4fc;
+}
+
+[data-theme="dark"] .db-streak-banner {
+  background: linear-gradient(135deg, #2a1600 0%, #1e1000 100%);
+  border-color: #5a2e00;
+  color: #fdba74;
+}
+[data-theme="dark"] .db-empty {
+  background: #231a2c;
+  border-color: #3b2e45;
+  color: #9b8aab;
+}
+[data-theme="dark"] .db-btn-secondary {
+  color: #c89de0;
+  border-color: #5a2d7a;
+}
+[data-theme="dark"] .db-btn-secondary:hover {
+  background: #2b1f38;
+}
+
+/* -- SM-2 review banner -- */
+.db-sm2-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(135deg, #631D76 0%, #8b2fa8 100%);
+  border-radius: 16px;
+  padding: 18px 22px;
+  color: #fff;
+  box-shadow: 0 4px 20px -4px rgba(99, 29, 118, 0.45);
+  animation: dbFadeIn 0.35s ease;
+}
+
+.db-sm2-icon {
+  background: rgba(255,255,255,0.18);
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.db-sm2-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.db-sm2-title {
+  margin: 0 0 2px;
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.db-sm2-sub {
+  margin: 0;
+  font-size: 0.83rem;
+  color: rgba(255,255,255,0.75);
+}
+
+.db-sm2-btn {
+  background: #EE4266;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, transform 0.12s;
+  flex-shrink: 0;
+}
+.db-sm2-btn:hover {
+  background: #d63058;
+  transform: translateY(-1px);
+}
+
+/* Dark mode */
+[data-theme="dark"] .db-sm2-banner {
+  background: linear-gradient(135deg, #4a1559 0%, #6b2487 100%);
+  box-shadow: 0 4px 20px -4px rgba(99, 29, 118, 0.6);
+}

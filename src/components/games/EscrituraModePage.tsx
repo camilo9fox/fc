@@ -50,14 +50,11 @@ const EscrituraModePage: React.FC = () => {
     setPhase("loading");
     setLoadError(null);
     try {
-      const params: Record<string, unknown> = {};
+      const params: { categoryId?: string; limit?: number } = {};
       if (selectedCategory) params.categoryId = selectedCategory;
-      if (limitChoice > 0) params.limit = limitChoice;
-      else params.limit = 500;
+      params.limit = limitChoice > 0 ? limitChoice : 500;
 
-      const { flashcards } = await flashCardsApi.getFlashCards(
-        params as Parameters<typeof flashCardsApi.getFlashCards>[0],
-      );
+      const { flashcards } = await flashCardsApi.getFlashCards(params);
 
       if (flashcards.length === 0) {
         setLoadError("No hay flashcards disponibles. Crea algunas primero.");

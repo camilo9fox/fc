@@ -6,6 +6,7 @@ interface CategoryAccordionProps {
   cards: any[];
   onStudy: () => void;
   onDelete?: (id: string) => void;
+  onUpdate?: (id: string, question: string, answer: string) => Promise<void>;
   isDraft?: boolean;
   categoryId?: string;
 }
@@ -15,6 +16,7 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
   cards,
   onStudy,
   onDelete,
+  onUpdate,
   isDraft,
 }) => {
   const [expanded, setExpanded] = useState(true);
@@ -49,6 +51,11 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
               answer={card.answer}
               source={card.source}
               onDelete={onDelete ? () => onDelete(card.id) : undefined}
+              onUpdate={
+                onUpdate && card.id
+                  ? (q, a) => onUpdate(card.id, q, a)
+                  : undefined
+              }
             />
           ))}
         </div>

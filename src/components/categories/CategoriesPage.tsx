@@ -5,6 +5,7 @@ import { publishApi } from "../../api/library";
 import ThemeCard from "./ThemeCard";
 import ThemeModal from "./ThemeModal";
 import CategoryDetailModal from "./CategoryDetailModal";
+import { ThemeCardSkeleton, SkeletonList } from "../shared/Skeleton";
 import "./CategoriesPage.css";
 
 type ModalState =
@@ -175,9 +176,8 @@ const CategoriesPage: React.FC = () => {
 
       {/* Contenido */}
       {loading ? (
-        <div className="ts-loading">
-          <div className="ts-spinner" />
-          <span>Cargando temas…</span>
+        <div className="ts-grid">
+          <SkeletonList count={6} component={ThemeCardSkeleton} />
         </div>
       ) : categories.length === 0 ? (
         <div className="ts-empty">

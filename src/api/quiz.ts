@@ -144,6 +144,19 @@ export const quizApi = {
     await apiClient.delete(`/quizzes/${quizId}/questions/${questionId}`);
   },
 
+  /** Update a single question in a saved quiz */
+  updateQuestion: async (
+    quizId: string,
+    questionId: string,
+    data: Partial<CreateQuizQuestionRequest>,
+  ): Promise<QuizQuestion> => {
+    const response = await apiClient.patch(
+      `/quizzes/${quizId}/questions/${questionId}`,
+      data,
+    );
+    return response.data;
+  },
+
   /** Generate quiz questions from a document or text using AI (returns draft, not saved) */
   generate: async (formData: FormData): Promise<GenerateQuizResponse> => {
     const response = await apiClient.post("/quizzes/generate", formData, {

@@ -967,3 +967,89 @@
   font-size: 0.82rem !important;
   white-space: nowrap;
 }
+
+/* ── Dark mode ── */
+[data-theme="dark"] .ts-page {
+  color: #e8ddef;
+}
+
+/* Category cards */
+[data-theme="dark"] .ts-card {
+  background: #231a2c;
+  border-color: #3b2e45;
+}
+[data-theme="dark"] .ts-card-title {
+  color: #e8ddef;
+}
+[data-theme="dark"] .ts-card-desc,
+[data-theme="dark"] .ts-card-meta {
+  color: #9b8aab;
+}
+
+/* Form / modal inputs */
+[data-theme="dark"] .ts-input,
+[data-theme="dark"] .ts-textarea {
+  background: #1a1320;
+  border-color: #3b2e45;
+  color: #e8ddef;
+}
+[data-theme="dark"] .ts-input:focus,
+[data-theme="dark"] .ts-textarea:focus {
+  border-color: #8b44aa;
+  background: #231a2c;
+}
+[data-theme="dark"] .ts-input::placeholder,
+[data-theme="dark"] .ts-textarea::placeholder {
+  color: #5e4b68;
+}
+[data-theme="dark"] .ts-label {
+  color: #dbc8e8;
+}
+
+/* Category form panel */
+[data-theme="dark"] .ts-form-panel {
+  background: #231a2c;
+  border-color: #3b2e45;
+}
+[data-theme="dark"] .ts-form-title {
+  color: #e8ddef;
+}
+
+/* Empty / loading states */
+[data-theme="dark"] .ts-empty-title {
+  color: #dbc8e8;
+}
+[data-theme="dark"] .ts-empty-sub {
+  color: #9b8aab;
+}
+
+/* Badges */
+[data-theme="dark"] .ts-badge-public {
+  background: #0a3020;
+  color: #4ade80;
+  border-color: #0a4f28;
+}
+[data-theme="dark"] .ts-badge-private {
+  background: #2b1f38;
+  color: #9b8aab;
+  border-color: #3b2e45;
+}
+
+/* Delete confirmation */
+[data-theme="dark"] .ts-delete-confirm {
+  background: #2d0a14;
+  border-color: #5a1a2a;
+  color: #fda4af;
+}
+
+/* Search / filter inputs */
+[data-theme="dark"] .ts-search-input {
+  background: #1a1320;
+  border-color: #3b2e45;
+  color: #e8ddef;
+}
+
+/* Section titles */
+[data-theme="dark"] .ts-section-title {
+  color: #9b8aab;
+}

@@ -3,11 +3,38 @@
    Palette: #631D76 · #EE4266 · #FBFBFB · #2E2532
 ───────────────────────────────────────────── */
 
+/* ── CSS Variables ── */
+:root {
+  --ds-bg: #f0eaf5;
+  --ds-topbar-bg: #ffffff;
+  --ds-topbar-border: #e8ddef;
+  --ds-page-title: #2e2532;
+  --ds-breadcrumb: #a094aa;
+  --ds-content-bg: #f0eaf5;
+  --ds-topbar-btn-bg: #f4eef8;
+  --ds-topbar-btn-color: #631d76;
+  --ds-topbar-btn-border: #dcc8e4;
+  --ds-topbar-btn-hover: #ead8f4;
+}
+
+[data-theme="dark"] {
+  --ds-bg: #1a1320;
+  --ds-topbar-bg: #231a2c;
+  --ds-topbar-border: #3b2e45;
+  --ds-page-title: #e8ddef;
+  --ds-breadcrumb: #7a6b82;
+  --ds-content-bg: #1a1320;
+  --ds-topbar-btn-bg: #2e2248;
+  --ds-topbar-btn-color: #c89de0;
+  --ds-topbar-btn-border: #4a3558;
+  --ds-topbar-btn-hover: #3b2e55;
+}
+
 /* ── Shell ── */
 .ds-shell {
   display: flex;
   min-height: 100vh;
-  background: #f0eaf5;
+  background: var(--ds-bg);
   font-family:
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
@@ -142,6 +169,18 @@
   flex-shrink: 0;
 }
 
+.ds-due-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: #ee4266;
+  color: #fff;
+  padding: 1px 6px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px #ee426666;
+  line-height: 1.6;
+}
+
 .ds-active-dot {
   width: 6px;
   height: 6px;
@@ -230,8 +269,8 @@
 
 /* ── Topbar ── */
 .ds-topbar {
-  background: #ffffff;
-  border-bottom: 1px solid #e8ddef;
+  background: var(--ds-topbar-bg);
+  border-bottom: 1px solid var(--ds-topbar-border);
   padding: 0 28px;
   height: 64px;
   display: flex;
@@ -255,14 +294,14 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #2e2532;
+  color: var(--ds-page-title);
   padding: 6px;
   border-radius: 8px;
   transition: background 0.15s ease;
 }
 
 .ds-menu-btn:hover {
-  background: #f0eaf5;
+  background: var(--ds-topbar-btn-bg);
 }
 
 .ds-topbar-title-block {
@@ -275,7 +314,7 @@
   margin: 0;
   font-size: 1.05rem;
   font-weight: 800;
-  color: #2e2532;
+  color: var(--ds-page-title);
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
@@ -283,7 +322,7 @@
 .ds-breadcrumb {
   margin: 0;
   font-size: 0.73rem;
-  color: #a094aa;
+  color: var(--ds-breadcrumb);
   line-height: 1.2;
 }
 
@@ -300,9 +339,9 @@
   width: 34px;
   height: 34px;
   border-radius: 9px;
-  background: #f4eef8;
-  color: #631d76;
-  border: 1px solid #dcc8e4;
+  background: var(--ds-topbar-btn-bg);
+  color: var(--ds-topbar-btn-color);
+  border: 1px solid var(--ds-topbar-btn-border);
   text-decoration: none;
   transition:
     background 0.15s ease,
@@ -310,7 +349,7 @@
 }
 
 .ds-topbar-home-btn:hover {
-  background: #ead8f4;
+  background: var(--ds-topbar-btn-hover);
   transform: scale(1.05);
 }
 
@@ -334,7 +373,7 @@
 .ds-content {
   flex: 1;
   padding: 28px;
-  background: #f0eaf5;
+  background: var(--ds-content-bg);
 }
 
 /* ── Mobile overlay ── */
@@ -345,6 +384,29 @@
   background: rgba(46, 37, 50, 0.55);
   z-index: 199;
   backdrop-filter: blur(2px);
+}
+
+/* ── Theme toggle button ── */
+.ds-theme-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--ds-topbar-btn-bg);
+  color: var(--ds-topbar-btn-color);
+  border: 1px solid var(--ds-topbar-btn-border);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.ds-theme-btn:hover {
+  background: var(--ds-topbar-btn-hover);
+  transform: scale(1.05);
 }
 
 /* ── Responsive ── */

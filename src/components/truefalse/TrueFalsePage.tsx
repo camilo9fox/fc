@@ -1,10 +1,19 @@
 ﻿import React, { useEffect, useState } from "react";
-import { CheckSquare, Pencil, Sparkles, X } from "lucide-react";
+import {
+  CheckSquare,
+  Pencil,
+  Sparkles,
+  X,
+  ChevronDown,
+  ChevronUp,
+  Check,
+} from "lucide-react";
 import { useCategories } from "../../hooks/useCategories";
 import NoCategoryBanner from "../layout/NoCategoryBanner";
 import {
   trueFalseApi,
   TrueFalseSet,
+  TrueFalseQuestion,
   CreateTrueFalseSetRequest,
 } from "../../api/trueFalse";
 import { attemptsApi } from "../../api/attempts";
@@ -25,6 +34,16 @@ const TrueFalsePage: React.FC = () => {
   const [draftSet, setDraftSet] = useState<DraftTFState | null>(null);
   const [savingDraft, setSavingDraft] = useState(false);
   const [studyingDraft, setStudyingDraft] = useState(false);
+
+  // Per-card question editing state
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const [editingQuestion, setEditingQuestion] = useState<{
+    setId: string;
+    questionId: string;
+  } | null>(null);
+  const [editForm, setEditForm] = useState<Partial<TrueFalseQuestion>>({});
+  const [savingQuestion, setSavingQuestion] = useState(false);
+
   const { categories, loading: catsLoading } = useCategories();
   const hasCategories = catsLoading || categories.length > 0;
 
@@ -103,6 +122,72 @@ const TrueFalsePage: React.FC = () => {
       setSets((prev) => prev.filter((s) => s.id !== id));
     } catch {
       setError("No se pudo eliminar el set.");
+    }
+  };
+
+  const toggleCardExpand = async (set: TrueFalseSet) => {
+    if (expandedCard === set.id) {
+      setExpandedCard(null);
+      setEditingQuestion(null);
+      return;
+    }
+    if (!set.questions || set.questions.length === 0) {
+      setLoadingDetail(set.id);
+      try {
+        const full = await trueFalseApi.getById(set.id);
+        setSets((prev) => prev.map((s) => (s.id === set.id ? full : s)));
+      } catch {
+        setError("No se pudieron cargar los enunciados.");
+        setLoadingDetail(null);
+        return;
+      }
+      setLoadingDetail(null);
+    }
+    setExpandedCard(set.id);
+    setEditingQuestion(null);
+  };
+
+  const startEditQuestion = (setId: string, q: TrueFalseQuestion) => {
+    setEditingQuestion({ setId, questionId: q.id });
+    setEditForm({
+      statement: q.statement,
+      is_true: q.is_true,
+      explanation: q.explanation ?? "",
+    });
+  };
+
+  const handleSaveQuestion = async () => {
+    if (!editingQuestion || editForm.statement === undefined) return;
+    setSavingQuestion(true);
+    try {
+      const updated = await trueFalseApi.updateQuestion(
+        editingQuestion.setId,
+        editingQuestion.questionId,
+        {
+          statement: editForm.statement,
+          is_true: editForm.is_true,
+          explanation: editForm.explanation || undefined,
+        },
+      );
+      setSets((prev) =>
+        prev.map((set) =>
+          set.id === editingQuestion.setId
+            ? {
+                ...set,
+                questions: set.questions?.map((q) =>
+                  q.id === updated.id ? updated : q,
+                ),
+              }
+            : set,
+        ),
+      );
+      setEditingQuestion(null);
+    } catch (err: any) {
+      setError(
+        err?.response?.data?.error || "No se pudo guardar el enunciado.",
+      );
+    } finally {
+      setSavingQuestion(false);
     }
   };
 
@@ -298,14 +383,127 @@ const TrueFalsePage: React.FC = () => {
                 <span className="tf-card-count">
                   {set.questions?.length ?? "?"} enunciados
                 </span>
-                <button
-                  className="tf-btn-study"
-                  onClick={() => handleStudy(set)}
-                  disabled={loadingDetail === set.id}
-                >
-                  {loadingDetail === set.id ? "Cargando..." : "Estudiar →"}
-                </button>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <button
+                    className="tf-btn-edit-questions"
+                    onClick={() => toggleCardExpand(set)}
+                    disabled={loadingDetail === set.id}
+                    title="Editar enunciados"
+                  >
+                    {expandedCard === set.id ? (
+                      <ChevronUp size={14} />
+                    ) : (
+                      <ChevronDown size={14} />
+                    )}
+                    Editar
+                  </button>
+                  <button
+                    className="tf-btn-study"
+                    onClick={() => handleStudy(set)}
+                    disabled={loadingDetail === set.id}
+                  >
+                    {loadingDetail === set.id ? "Cargando..." : "Estudiar →"}
+                  </button>
+                </div>
               </div>
+
+              {/* Inline question editor */}
+              {expandedCard === set.id && set.questions && (
+                <div className="tf-question-list">
+                  {set.questions.map((q, idx) => (
+                    <div key={q.id} className="tf-question-item">
+                      {editingQuestion?.questionId === q.id ? (
+                        <div className="tf-question-edit-form">
+                          <textarea
+                            className="tf-question-edit-input"
+                            value={editForm.statement ?? ""}
+                            maxLength={2000}
+                            onChange={(e) =>
+                              setEditForm((f) => ({
+                                ...f,
+                                statement: e.target.value,
+                              }))
+                            }
+                            rows={2}
+                          />
+                          <div className="tf-is-true-toggle">
+                            <label>
+                              <input
+                                type="radio"
+                                name={`is_true-${q.id}`}
+                                checked={editForm.is_true === true}
+                                onChange={() =>
+                                  setEditForm((f) => ({ ...f, is_true: true }))
+                                }
+                              />{" "}
+                              Verdadero
+                            </label>
+                            <label>
+                              <input
+                                type="radio"
+                                name={`is_true-${q.id}`}
+                                checked={editForm.is_true === false}
+                                onChange={() =>
+                                  setEditForm((f) => ({ ...f, is_true: false }))
+                                }
+                              />{" "}
+                              Falso
+                            </label>
+                          </div>
+                          <input
+                            type="text"
+                            className="tf-explanation-input"
+                            placeholder="Explicación (opcional)"
+                            value={editForm.explanation ?? ""}
+                            maxLength={2000}
+                            onChange={(e) =>
+                              setEditForm((f) => ({
+                                ...f,
+                                explanation: e.target.value,
+                              }))
+                            }
+                          />
+                          <div className="tf-question-edit-actions">
+                            <button
+                              className="tf-btn-save-question"
+                              onClick={handleSaveQuestion}
+                              disabled={savingQuestion}
+                            >
+                              <Check size={13} />
+                              {savingQuestion ? "Guardando…" : "Guardar"}
+                            </button>
+                            <button
+                              className="tf-btn-cancel-edit"
+                              onClick={() => setEditingQuestion(null)}
+                              disabled={savingQuestion}
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="tf-question-row">
+                          <span
+                            className={`tf-q-badge ${q.is_true ? "tf-q-true" : "tf-q-false"}`}
+                          >
+                            {q.is_true ? "V" : "F"}
+                          </span>
+                          <span className="tf-question-text">
+                            {idx + 1}. {q.statement}
+                          </span>
+                          <button
+                            className="tf-btn-edit-q"
+                            onClick={() => startEditQuestion(set.id, q)}
+                            title="Editar enunciado"
+                          >
+                            <Pencil size={12} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>

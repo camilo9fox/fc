@@ -140,6 +140,19 @@ export const trueFalseApi = {
     await apiClient.delete(`/true-false/${setId}/questions/${questionId}`);
   },
 
+  /** Update a single question in a saved set */
+  updateQuestion: async (
+    setId: string,
+    questionId: string,
+    data: Partial<CreateTrueFalseQuestionRequest>,
+  ): Promise<TrueFalseQuestion> => {
+    const response = await apiClient.patch(
+      `/true-false/${setId}/questions/${questionId}`,
+      data,
+    );
+    return response.data;
+  },
+
   /** Generate true/false statements from a document or text using AI (returns draft, not saved) */
   generate: async (formData: FormData): Promise<GenerateTrueFalseResponse> => {
     const response = await apiClient.post("/true-false/generate", formData, {

@@ -19,7 +19,7 @@ interface AuthContextType {
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, metadata?: any) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   isLoading: boolean;
 }
 
@@ -99,10 +99,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("authToken");
+  const logout = async () => {
+    try {
+      // Tell backend to revoke refresh token cookie
+      await authApi.signout();
+    } catch {
+      // Ignore errors — we clear local state regardless
+    } finally {
+      setUser(null);
+      setToken(null);
+      localStorage.removeItem("authToken");
+    }
   };
 
   const value: AuthContextType = {

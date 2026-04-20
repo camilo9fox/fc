@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useCategories } from "../../hooks/useCategories";
@@ -8,6 +8,7 @@ import {
   QuizSurvivalQuestion,
   TFSurvivalQuestion,
 } from "../../api/games";
+import { attemptsApi } from "../../api/attempts";
 import "./SurvivalModePage.css";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -39,17 +40,39 @@ const SurvivalModePage: React.FC = () => {
   );
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  // Personal best
+  // Personal best — loaded from DB, localStorage used as instant cache
   const bestKey = user ? `survival_best_${user.id}` : "survival_best";
   const [personalBest, setPersonalBest] = useState<number>(() => {
     const stored = localStorage.getItem(bestKey);
     return stored ? parseInt(stored, 10) : 0;
   });
   const [isNewBest, setIsNewBest] = useState(false);
+  // Track whether the score for the current game over was already saved
+  const scoreSavedRef = useRef(false);
 
   const currentQuestion = questions[currentIndex] ?? null;
 
-  // ── Load pool ──────────────────────────────────────────────────────────────
+  // ── Load personal best from DB on mount / category change ──────────────────
+  useEffect(() => {
+    if (!user) return;
+    attemptsApi
+      .getGameBest({
+        gameType: "survival",
+        categoryId: selectedCategory || null,
+      })
+      .then((res) => {
+        if (res.score > personalBest) {
+          setPersonalBest(res.score);
+          localStorage.setItem(bestKey, String(res.score));
+        }
+      })
+      .catch(() => {
+        /* silently fall back to localStorage */
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, selectedCategory]);
+
+  // ── Load pool ──────────────────────erick────────────────────────────────────────
   const startGame = useCallback(async () => {
     setPhase("loading");
     setLoadError(null);
@@ -72,6 +95,7 @@ const SurvivalModePage: React.FC = () => {
       setAnswerState("idle");
       setSelectedAnswer(null);
       setIsNewBest(false);
+      scoreSavedRef.current = false;
       setPhase("playing");
     } catch {
       setLoadError("Error al cargar las preguntas. Inténtalo de nuevo.");
@@ -110,13 +134,26 @@ const SurvivalModePage: React.FC = () => {
       } else {
         setAnswerState("wrong");
         setTimeout(() => {
-          // Check / update personal best
-          if (round > personalBest) {
+          const isNew = round > personalBest;
+          if (isNew) {
             localStorage.setItem(bestKey, String(round));
             setPersonalBest(round);
             setIsNewBest(true);
           }
           setPhase("gameover");
+          // Persist score to DB (fire-and-forget, deduplicated per game session)
+          if (!scoreSavedRef.current && round > 0) {
+            scoreSavedRef.current = true;
+            attemptsApi
+              .recordGame({
+                game_type: "survival",
+                category_id: selectedCategory || null,
+                score: round,
+              })
+              .catch(() => {
+                /* ignore network errors — localStorage already saved */
+              });
+          }
         }, 900);
       }
     },
@@ -128,6 +165,7 @@ const SurvivalModePage: React.FC = () => {
       round,
       personalBest,
       bestKey,
+      selectedCategory,
     ],
   );
 

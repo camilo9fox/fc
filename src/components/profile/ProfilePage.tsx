@@ -15,6 +15,16 @@ const ProfilePage: React.FC = () => {
   >("idle");
   const [pwError, setPwError] = useState("");
 
+  // Profile editing state
+  const [profileName, setProfileName] = useState<string>(
+    user?.metadata?.full_name || "",
+  );
+  const [profileEmail, setProfileEmail] = useState<string>(user?.email || "");
+  const [profileStatus, setProfileStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+  const [profileError, setProfileError] = useState("");
+
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [deleteStatus, setDeleteStatus] = useState<"idle" | "loading">("idle");
   const [deleteError, setDeleteError] = useState("");
@@ -27,6 +37,34 @@ const ProfilePage: React.FC = () => {
         day: "numeric",
       })
     : "—";
+
+  const handleProfileUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setProfileError("");
+    setProfileStatus("loading");
+    try {
+      const updates: { name?: string; email?: string } = {};
+      if (
+        profileName.trim() &&
+        profileName !== (user?.metadata?.full_name || "")
+      )
+        updates.name = profileName.trim();
+      if (profileEmail.trim() && profileEmail !== user?.email)
+        updates.email = profileEmail.trim();
+
+      if (Object.keys(updates).length === 0) {
+        setProfileStatus("idle");
+        return;
+      }
+      await authApi.updateProfile(updates);
+      setProfileStatus("success");
+    } catch (err: any) {
+      setProfileStatus("error");
+      setProfileError(
+        err?.response?.data?.error || "No se pudo actualizar el perfil.",
+      );
+    }
+  };
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -169,6 +207,66 @@ const ProfilePage: React.FC = () => {
               </svg>
             </div>
           </button>
+        </div>
+      </section>
+
+      {/* Profile info edit */}
+      <section className="prf-section">
+        <h3 className="prf-section-title">Editar perfil</h3>
+        <div className="prf-pw-card">
+          <form className="prf-pw-form" onSubmit={handleProfileUpdate}>
+            <div className="prf-field">
+              <label className="prf-label" htmlFor="prf-name">
+                Nombre
+              </label>
+              <input
+                id="prf-name"
+                type="text"
+                className="prf-input"
+                placeholder="Tu nombre"
+                value={profileName}
+                maxLength={100}
+                onChange={(e) => {
+                  setProfileName(e.target.value);
+                  setProfileStatus("idle");
+                }}
+                autoComplete="name"
+              />
+            </div>
+            <div className="prf-field">
+              <label className="prf-label" htmlFor="prf-email">
+                Correo electrónico
+              </label>
+              <input
+                id="prf-email"
+                type="email"
+                className="prf-input"
+                placeholder="tu@correo.com"
+                value={profileEmail}
+                maxLength={255}
+                onChange={(e) => {
+                  setProfileEmail(e.target.value);
+                  setProfileStatus("idle");
+                }}
+                autoComplete="email"
+              />
+            </div>
+
+            {profileError && <p className="prf-pw-error">{profileError}</p>}
+            {profileStatus === "success" && (
+              <p className="prf-pw-success">
+                ¡Perfil actualizado correctamente!
+              </p>
+            )}
+
+            <button
+              type="submit"
+              className="prf-pw-btn"
+              disabled={profileStatus === "loading"}
+            >
+              {profileStatus === "loading" ? "Guardando…" : "Guardar cambios"}
+            </button>
+          </form>
         </div>
       </section>
 

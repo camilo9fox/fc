@@ -284,3 +284,90 @@
     margin-left: 0;
   }
 }
+
+/* ── Dark mode ── */
+[data-theme="dark"] .hp-select,
+[data-theme="dark"] .hp-date-input {
+  background: #231a2c;
+  border-color: #3b2e45;
+  color: #e8ddef;
+}
+[data-theme="dark"] .hp-clear-btn {
+  background: #231a2c;
+  border-color: #3b2e45;
+  color: #9b8aab;
+}
+[data-theme="dark"] .hp-clear-btn:hover {
+  background: #2b1f38;
+  color: #dbc8e8;
+}
+[data-theme="dark"] .hp-export-btn {
+  background: #1e1a3c;
+  border-color: #4a46a0;
+  color: #a5b4fc;
+}
+[data-theme="dark"] .hp-export-btn:hover {
+  background: #262050;
+}
+[data-theme="dark"] .hp-total {
+  color: #9b8aab;
+}
+
+[data-theme="dark"] .hp-table-wrapper {
+  background: #231a2c;
+  border-color: #3b2e45;
+}
+[data-theme="dark"] .hp-thead-row {
+  background: #2b1f38;
+  border-bottom-color: #3b2e45;
+}
+[data-theme="dark"] .hp-th {
+  color: #a89ab8;
+}
+[data-theme="dark"] .hp-row {
+  border-bottom-color: #2b1f38;
+}
+[data-theme="dark"] .hp-row:hover {
+  background: #2b1f38;
+}
+[data-theme="dark"] .hp-cell {
+  color: #dbc8e8;
+}
+[data-theme="dark"] .hp-cell--date {
+  color: #9b8aab;
+}
+
+[data-theme="dark"] .hp-badge--orange {
+  background: #2a1600;
+  color: #fdba74;
+}
+[data-theme="dark"] .hp-badge--pink {
+  background: #2d0a14;
+  color: #fda4af;
+}
+[data-theme="dark"] .hp-badge--purple {
+  background: #241035;
+  color: #d8b4fe;
+}
+
+[data-theme="dark"] .hp-pg-btn {
+  background: #231a2c;
+  border-color: #3b2e45;
+  color: #dbc8e8;
+}
+[data-theme="dark"] .hp-pg-btn:hover:not(:disabled) {
+  background: #2b1f38;
+}
+[data-theme="dark"] .hp-pg-info {
+  color: #9b8aab;
+}
+[data-theme="dark"] .hp-spinner {
+  border-color: #3b2e45;
+  border-top-color: #6366f1;
+}
+[data-theme="dark"] .hp-loading {
+  color: #9b8aab;
+}
+[data-theme="dark"] .hp-empty {
+  color: #9b8aab;
+}

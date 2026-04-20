@@ -441,3 +441,55 @@
 .sg-markdown-body h2:first-child {
   margin-top: 0;
 }
+
+/* ── Dark mode ── */
+[data-theme="dark"] .sg-page {
+  --sg-border: #3b2e45;
+  --sg-surface: #231a2c;
+  --sg-ink: #e8ddef;
+  --sg-muted: #9b8aab;
+}
+
+/* Hardcoded white backgrounds */
+[data-theme="dark"] .sg-card,
+[data-theme="dark"] .sg-detail-panel,
+[data-theme="dark"] .sg-form-panel,
+[data-theme="dark"] .sg-guide-card {
+  background: #231a2c;
+  border-color: #3b2e45;
+}
+[data-theme="dark"] .sg-title {
+  color: #e8ddef;
+}
+[data-theme="dark"] .sg-subtitle {
+  color: #9b8aab;
+}
+
+/* Inputs */
+[data-theme="dark"] .sg-input,
+[data-theme="dark"] .sg-textarea,
+[data-theme="dark"] .sg-select {
+  background: #1a1320;
+  border-color: #3b2e45;
+  color: #e8ddef;
+}
+[data-theme="dark"] .sg-input::placeholder,
+[data-theme="dark"] .sg-textarea::placeholder {
+  color: #5e4b68;
+}
+
+/* Blue info pill */
+[data-theme="dark"] .sg-page .bg-\#e0f2fe {
+  background: #0c2d44;
+  color: #7dd3fc;
+}
+
+/* Markdown rendered content */
+[data-theme="dark"] .sg-markdown-body {
+  color: #dbc8e8;
+}
+[data-theme="dark"] .sg-markdown-body h2,
+[data-theme="dark"] .sg-markdown-body h3 {
+  color: #e8ddef;
+  border-bottom-color: #3b2e45;
+}

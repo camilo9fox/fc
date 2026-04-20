@@ -441,3 +441,98 @@
     text-align: center;
   }
 }
+
+/* ── Dark mode ── */
+[data-theme="dark"] .prf-section-title {
+  color: #c89de0;
+}
+
+[data-theme="dark"] .prf-card {
+  background: #231a2c;
+  border-color: #3b2e45;
+}
+[data-theme="dark"] .prf-card:hover {
+  border-color: #8b44aa;
+  box-shadow: 0 4px 18px rgba(99, 29, 118, 0.22);
+}
+[data-theme="dark"] .prf-card-title {
+  color: #e8ddef;
+}
+[data-theme="dark"] .prf-card-desc {
+  color: #9b8aab;
+}
+[data-theme="dark"] .prf-card-arrow {
+  color: #5e4b68;
+}
+[data-theme="dark"] .prf-card:hover .prf-card-arrow {
+  color: #c89de0;
+}
+[data-theme="dark"] .prf-icon-stats {
+  background: #2b1f38;
+  color: #c89de0;
+}
+[data-theme="dark"] .prf-icon-history {
+  background: #2d0a14;
+  color: #f87171;
+}
+
+[data-theme="dark"] .prf-pw-card {
+  background: #231a2c;
+  border-color: #3b2e45;
+}
+[data-theme="dark"] .prf-label {
+  color: #dbc8e8;
+}
+[data-theme="dark"] .prf-input {
+  background: #1a1320;
+  border-color: #3b2e45;
+  color: #e8ddef;
+}
+[data-theme="dark"] .prf-input:focus {
+  border-color: #8b44aa;
+  background: #231a2c;
+  box-shadow: 0 0 0 3px rgba(139, 68, 170, 0.2);
+}
+[data-theme="dark"] .prf-input::placeholder {
+  color: #5e4b68;
+}
+
+[data-theme="dark"] .prf-action-card {
+  background: #231a2c;
+  border-color: #3b2e45;
+}
+[data-theme="dark"] .prf-action-title {
+  color: #e8ddef;
+}
+[data-theme="dark"] .prf-action-desc {
+  color: #9b8aab;
+}
+[data-theme="dark"] .prf-logout-btn {
+  background: #231a2c;
+  border-color: #3b2e45;
+  color: #dbc8e8;
+}
+[data-theme="dark"] .prf-logout-btn:hover {
+  border-color: #8b44aa;
+  background: #2b1f38;
+  color: #c89de0;
+}
+
+[data-theme="dark"] .prf-danger-title {
+  color: #f87171;
+}
+[data-theme="dark"] .prf-danger-card {
+  background: #231a2c;
+  border-color: #5a1a2a;
+}
+[data-theme="dark"] .prf-delete-warning {
+  color: #dbc8e8;
+}
+[data-theme="dark"] .prf-cancel-btn {
+  background: #231a2c;
+  border-color: #3b2e45;
+  color: #dbc8e8;
+}
+[data-theme="dark"] .prf-cancel-btn:hover:not(:disabled) {
+  background: #2b1f38;
+}

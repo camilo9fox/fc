@@ -156,7 +156,7 @@ const ContrarrelojModePage: React.FC = () => {
       setPersonalBest(score);
       setIsNewBest(true);
     }
-  }, [phase]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [phase, score, personalBest, bestKey]);
 
   // ── Timer color ────────────────────────────────────────────────────────────
   const timerColor =

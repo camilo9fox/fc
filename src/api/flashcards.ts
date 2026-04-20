@@ -252,6 +252,17 @@ export const flashCardsApi = {
     await apiClient.delete(`/flashcards/${id}`);
   },
 
+  /**
+   * Update a flashcard's question and/or answer
+   */
+  updateFlashCard: async (
+    id: string,
+    data: { question: string; answer: string },
+  ): Promise<FlashCard> => {
+    const response = await apiClient.patch(`/flashcards/${id}`, data);
+    return response.data;
+  },
+
   // Categories API
   /**
    * Create a new category
@@ -296,5 +307,74 @@ export const flashCardsApi = {
    */
   deleteCategory: async (id: string): Promise<void> => {
     await apiClient.delete(`/categories/${id}`);
+  },
+
+  // ── Spaced repetition ───────────────────────────────────────────────────────
+
+  /** Cards due for review today (SM-2) */
+  getDueCards: async (params?: {
+    limit?: number;
+    categoryId?: string;
+  }): Promise<{ flashcards: FlashCard[]; count: number }> => {
+    const response = await apiClient.get("/flashcards/due", { params });
+    return response.data;
+  },
+
+  /** Review stats: due, new, learned, total */
+  getReviewStats: async (): Promise<{
+    due: number;
+    newCards: number;
+    learned: number;
+    total: number;
+  }> => {
+    const response = await apiClient.get("/flashcards/review-stats");
+    return response.data;
+  },
+
+  /**
+   * Submit SM-2 quality rating after reviewing a card.
+   * quality: 1=Again | 2=Hard | 3=Good | 4=Easy
+   */
+  submitReview: async (
+    flashcardId: string,
+    quality: 1 | 2 | 3 | 4,
+  ): Promise<{
+    flashcardId: string;
+    quality: number;
+    easeFactor: number;
+    intervalDays: number;
+    repetitions: number;
+    nextReviewAt: string;
+  }> => {
+    const response = await apiClient.post(`/flashcards/${flashcardId}/review`, {
+      quality,
+    });
+    return response.data;
+  },
+
+  /** Search flashcards by text */
+  searchFlashCards: async (params: {
+    q: string;
+    categoryId?: string;
+    limit?: number;
+  }): Promise<{ flashcards: FlashCard[]; count: number }> => {
+    const response = await apiClient.get("/flashcards/search", { params });
+    return response.data;
+  },
+
+  /** Download all flashcards as CSV */
+  exportFlashCards: async (categoryId?: string): Promise<void> => {
+    const response = await apiClient.get("/flashcards/export", {
+      params: categoryId ? { categoryId } : undefined,
+      responseType: "blob",
+    });
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "flashcards.csv");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
   },
 };

@@ -184,7 +184,7 @@ const MemoryModePage: React.FC = () => {
                     : `memory_best_${difficulty}`;
                   const stored = localStorage.getItem(bk);
                   const prev = stored ? parseInt(stored, 10) : 0;
-                  const newScore = finalAttempts + 1; // +1 for this attempt
+                  const newScore = finalAttempts; // attempts already incremented above
                   if (prev === 0 || newScore < prev) {
                     localStorage.setItem(bk, String(newScore));
                     setPersonalBest(newScore);
