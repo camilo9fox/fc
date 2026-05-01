@@ -45,15 +45,15 @@ const AppRoutes: React.FC = () => {
     <Routes>
       <Route
         path="/"
-        element={user ? <Navigate to="/categories" /> : <LandingPage />}        
+        element={user ? <Navigate to="/dashboard" /> : <LandingPage />}        
       />
       <Route
         path="/login"
-        element={user ? <Navigate to="/categories" /> : <Login />}
+        element={user ? <Navigate to="/dashboard" /> : <Login />}
       />
       <Route
         path="/signup"
-        element={user ? <Navigate to="/categories" /> : <Signup />}
+        element={user ? <Navigate to="/dashboard" /> : <Signup />}
       />
       <Route
         path="/flashcards"

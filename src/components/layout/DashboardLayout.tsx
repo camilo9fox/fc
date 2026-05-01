@@ -51,29 +51,6 @@ const navSections: NavSection[] = [
         ),
       },
       {
-        id: "dashboard",
-        label: "Panel de estadísticas",
-        path: "/dashboard",
-        exact: true,
-        icon: (
-          <svg
-            width="17"
-            height="17"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <rect x="3" y="3" width="7" height="7" />
-            <rect x="14" y="3" width="7" height="7" />
-            <rect x="14" y="14" width="7" height="7" />
-            <rect x="3" y="14" width="7" height="7" />
-          </svg>
-        ),
-      },
-      {
         id: "historial",
         label: "Historial de actividad",
         path: "/historial",
@@ -288,8 +265,8 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
     subtitle: "Gestiona tu cuenta y preferencias",
   },
   "/dashboard": {
-    title: "Panel de estadísticas",
-    subtitle: "Resumen de tu actividad de estudio",
+    title: "Inicio",
+    subtitle: "Tu punto de partida para estudiar",
   },
   "/historial": {
     title: "Historial de actividad",
@@ -408,6 +385,31 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
         {/* Nav */}
         <nav className="ds-nav">
+          {/* Home — always at top */}
+          <Link
+            to="/dashboard"
+            className={`ds-nav-item ds-nav-home ${isActive("/dashboard", true) ? "active" : ""}`}
+            onClick={() => setSidebarOpen(false)}
+          >
+            <span className="ds-nav-icon">
+              <svg
+                width="17"
+                height="17"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+            </span>
+            <span className="ds-nav-label">Inicio</span>
+            {isActive("/dashboard", true) && <span className="ds-active-dot" />}
+          </Link>
+
           {navSections.map((section) => (
             <div key={section.label} className="ds-nav-section">
               <p className="ds-section-label">{section.label}</p>
@@ -550,7 +552,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               )}
             </button>
             <Link
-              to="/categories"
+              to="/dashboard"
               className="ds-topbar-home-btn"
               title="Ir al inicio"
             >

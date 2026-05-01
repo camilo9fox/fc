@@ -993,3 +993,461 @@
   background: linear-gradient(135deg, #4a1559 0%, #6b2487 100%);
   box-shadow: 0 4px 20px -4px rgba(99, 29, 118, 0.6);
 }
+
+
+/* ---------------------------------------------------------------------------
+   DashboardPage v2 — Home / Launchpad  (prefix: db2-*)
+   --------------------------------------------------------------------------- */
+
+/* --- Page -------------------------------------------------------------------- */
+.db2-page {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 960px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+  animation: db2FadeIn 0.28s ease;
+}
+
+@keyframes db2FadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Greeting bar ------------------------------------------------------------- */
+.db2-greeting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.db2-greeting-title {
+  margin: 0;
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 800;
+  color: #2e2532;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.db2-greeting-name {
+  background: linear-gradient(90deg, #631d76, #ee4266);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.db2-greeting-date {
+  margin: 4px 0 0;
+  font-size: 0.82rem;
+  color: #8a7892;
+}
+
+.db2-greeting-stats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.db2-mini-stat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: #6b5a75;
+  background: #f4eef8;
+  border: 1px solid #e8ddea;
+  border-radius: 20px;
+  padding: 5px 12px;
+}
+
+.db2-mini-stat svg { color: #8a7892; }
+
+.db2-mini-stat--urgent {
+  background: #fff0f3;
+  border-color: rgba(238, 66, 102, 0.35);
+  color: #c81a42;
+}
+
+.db2-mini-stat--urgent svg { color: #ee4266; }
+
+/* --- Priority card ------------------------------------------------------------- */
+.db2-priority {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-radius: 18px;
+  padding: 22px 24px;
+  flex-wrap: wrap;
+}
+
+.db2-priority--purple {
+  background: linear-gradient(135deg, #f8f2fb 0%, #f0e4f7 100%);
+  border: 1px solid rgba(99, 29, 118, 0.18);
+}
+
+.db2-priority--pink {
+  background: linear-gradient(135deg, #fff0f3 0%, #ffe4eb 100%);
+  border: 1px solid rgba(238, 66, 102, 0.25);
+}
+
+.db2-priority--orange {
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+}
+
+.db2-priority--blue {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.db2-priority-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #631d76 0%, #ee4266 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px -4px rgba(99, 29, 118, 0.4);
+}
+
+.db2-priority--pink .db2-priority-icon {
+  background: linear-gradient(135deg, #ee4266 0%, #f97316 100%);
+  box-shadow: 0 6px 18px -4px rgba(238, 66, 102, 0.4);
+}
+
+.db2-priority--orange .db2-priority-icon {
+  background: linear-gradient(135deg, #f97316 0%, #eab308 100%);
+  box-shadow: 0 6px 18px -4px rgba(249, 115, 22, 0.4);
+}
+
+.db2-priority--blue .db2-priority-icon {
+  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+  box-shadow: 0 6px 18px -4px rgba(99, 102, 241, 0.4);
+}
+
+.db2-priority-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.db2-priority-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 20px;
+  padding: 2px 9px;
+  margin-bottom: 6px;
+}
+
+.db2-tag--purple { background: rgba(99, 29, 118, 0.1); color: #631d76; }
+.db2-tag--pink   { background: rgba(238, 66, 102, 0.12); color: #c81a42; }
+.db2-tag--orange { background: rgba(249, 115, 22, 0.12); color: #c2410c; }
+.db2-tag--blue   { background: rgba(59, 130, 246, 0.12); color: #1d4ed8; }
+
+.db2-priority-title {
+  margin: 0 0 4px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #2e2532;
+  line-height: 1.25;
+}
+
+.db2-priority-desc {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b5a75;
+  line-height: 1.5;
+}
+
+.db2-priority-cta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 22px;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #631d76 0%, #ee4266 100%);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 0.15s, transform 0.15s;
+  box-shadow: 0 4px 14px -4px rgba(99, 29, 118, 0.5);
+}
+
+.db2-priority-cta:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* --- Section title ------------------------------------------------------------ */
+.db2-section-title {
+  margin: 0 0 14px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8a7892;
+}
+
+/* --- Tools grid --------------------------------------------------------------- */
+.db2-tools-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.db2-tool-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e8ddea;
+  border-radius: 14px;
+  padding: 14px 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+
+.db2-tool-card:hover {
+  background: #faf6fc;
+  box-shadow: 0 4px 16px rgba(99, 29, 118, 0.09);
+  transform: translateX(3px);
+}
+
+.db2-tool-card--urgent {
+  border-color: rgba(238, 66, 102, 0.35);
+  background: #fff8fa;
+}
+
+.db2-tool-card--urgent:hover {
+  background: #fff0f3;
+}
+
+.db2-tool-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.db2-tool-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.db2-tool-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #2e2532;
+  line-height: 1.2;
+}
+
+.db2-tool-sub {
+  font-size: 0.77rem;
+  color: #8a7892;
+}
+
+.db2-tool-count {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.db2-tool-count strong {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #2e2532;
+  line-height: 1;
+}
+
+.db2-tool-count span {
+  font-size: 0.68rem;
+  color: #8a7892;
+  white-space: nowrap;
+}
+
+.db2-tool-arrow {
+  color: #c8b8d8;
+  flex-shrink: 0;
+  transition: color 0.15s, transform 0.15s;
+}
+
+.db2-tool-card:hover .db2-tool-arrow {
+  color: #631d76;
+  transform: translateX(2px);
+}
+
+/* --- Bottom two-col grid ------------------------------------------------------ */
+.db2-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* --- Panel -------------------------------------------------------------------- */
+.db2-panel {
+  background: #fff;
+  border: 1px solid #e8ddea;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.db2-panel-title {
+  margin: 0 0 16px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #2e2532;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.db2-panel-empty {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #8a7892;
+  line-height: 1.5;
+}
+
+/* --- Progress list ------------------------------------------------------------ */
+.db2-progress-list { display: flex; flex-direction: column; gap: 0; }
+
+.db2-progress-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid #f2eaf5;
+}
+
+.db2-progress-row:last-child { border-bottom: none; }
+
+.db2-progress-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.83rem;
+  color: #6b5a75;
+}
+
+.db2-progress-label svg { color: #8a7892; flex-shrink: 0; }
+
+.db2-progress-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #2e2532;
+}
+
+.db2-value--urgent { color: #ee4266; }
+
+/* --- Recent list -------------------------------------------------------------- */
+.db2-recent-list { display: flex; flex-direction: column; gap: 0; }
+
+.db2-recent-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f2eaf5;
+}
+
+.db2-recent-row:last-child { border-bottom: none; }
+
+.db2-recent-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.db2-recent-type {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #8a7892;
+}
+
+.db2-recent-cat {
+  font-size: 0.83rem;
+  color: #2e2532;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.db2-recent-score {
+  font-size: 0.9rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.db2-score--good { color: #16a34a; }
+.db2-score--bad  { color: #ee4266; }
+
+/* --- Dark mode ---------------------------------------------------------------- */
+[data-theme="dark"] .db2-greeting-title { color: #e8ddef; }
+[data-theme="dark"] .db2-greeting-date  { color: #6b5a75; }
+[data-theme="dark"] .db2-mini-stat      { background: #2e2448; border-color: #4a3558; color: #c8b8d8; }
+[data-theme="dark"] .db2-mini-stat svg  { color: #7a6b82; }
+
+[data-theme="dark"] .db2-priority--purple { background: linear-gradient(135deg, #2a1c33 0%, #3a2050 100%); border-color: rgba(99,29,118,0.4); }
+[data-theme="dark"] .db2-priority--pink   { background: linear-gradient(135deg, #2e1a22 0%, #3d1a2a 100%); border-color: rgba(238,66,102,0.35); }
+[data-theme="dark"] .db2-priority--orange { background: linear-gradient(135deg, #2a1e14 0%, #3d2510 100%); border-color: rgba(249,115,22,0.35); }
+[data-theme="dark"] .db2-priority--blue   { background: linear-gradient(135deg, #131b2e 0%, #1a2540 100%); border-color: rgba(59,130,246,0.3); }
+
+[data-theme="dark"] .db2-priority-title  { color: #e8ddef; }
+[data-theme="dark"] .db2-priority-desc   { color: #a090b0; }
+[data-theme="dark"] .db2-tag--purple     { background: rgba(99,29,118,0.2); color: #c084fc; }
+[data-theme="dark"] .db2-tag--pink       { background: rgba(238,66,102,0.15); color: #f472b6; }
+[data-theme="dark"] .db2-tag--orange     { background: rgba(249,115,22,0.15); color: #fb923c; }
+[data-theme="dark"] .db2-tag--blue       { background: rgba(59,130,246,0.15); color: #60a5fa; }
+
+[data-theme="dark"] .db2-tool-card           { background: #231a2c; border-color: #3b2e45; }
+[data-theme="dark"] .db2-tool-card:hover     { background: #2e2448; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+[data-theme="dark"] .db2-tool-card--urgent   { background: #2e1a22; border-color: rgba(238,66,102,0.35); }
+[data-theme="dark"] .db2-tool-label          { color: #e8ddef; }
+[data-theme="dark"] .db2-tool-sub            { color: #7a6b82; }
+[data-theme="dark"] .db2-tool-count strong   { color: #e8ddef; }
+[data-theme="dark"] .db2-tool-arrow          { color: #5e4e6a; }
+[data-theme="dark"] .db2-tool-card:hover .db2-tool-arrow { color: #c084fc; }
+
+[data-theme="dark"] .db2-panel               { background: #231a2c; border-color: #3b2e45; }
+[data-theme="dark"] .db2-panel-title         { color: #c8b8d8; }
+[data-theme="dark"] .db2-panel-empty         { color: #6b5a75; }
+[data-theme="dark"] .db2-progress-row        { border-bottom-color: #3b2e45; }
+[data-theme="dark"] .db2-progress-label      { color: #a090b0; }
+[data-theme="dark"] .db2-progress-label svg  { color: #6b5a75; }
+[data-theme="dark"] .db2-progress-value      { color: #e8ddef; }
+[data-theme="dark"] .db2-recent-row          { border-bottom-color: #3b2e45; }
+[data-theme="dark"] .db2-recent-cat          { color: #e8ddef; }
+
+/* --- Responsive --------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .db2-bottom-grid { grid-template-columns: 1fr; }
+  .db2-priority    { flex-direction: column; align-items: flex-start; }
+  .db2-priority-cta { width: 100%; justify-content: center; }
+  .db2-greeting    { flex-direction: column; align-items: flex-start; }
+}
