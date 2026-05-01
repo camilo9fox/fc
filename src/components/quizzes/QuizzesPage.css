@@ -1,14 +1,15 @@
 /* ─── Variables ─────────────────────────────────────────────────────────────── */
 .qz-page {
-  --qz-primary: #2563eb;
-  --qz-primary-dark: #1d4ed8;
+  --qz-primary: #631d76;
+  --qz-primary-dark: #4a1260;
+  --qz-accent: #ee4266;
   --qz-success: #16a34a;
   --qz-danger: #dc2626;
   --qz-warning: #d97706;
-  --qz-border: #e2e8f0;
-  --qz-surface: #f8fafc;
-  --qz-ink: #1e293b;
-  --qz-muted: #64748b;
+  --qz-border: #e8ddea;
+  --qz-surface: #f6eef8;
+  --qz-ink: #2e2532;
+  --qz-muted: #8a7892;
 
   display: grid;
   gap: 24px;
@@ -30,10 +31,33 @@
 /* ─── Page Header ────────────────────────────────────────────────────────────── */
 .qz-page-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
+}
+
+.qz-page-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.qz-page-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #631d76, #ee4266);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(99, 29, 118, 0.25);
+}
+
+.qz-page-icon--sg {
+  background: linear-gradient(135deg, #631d76, #4a1260);
 }
 
 .qz-page-title {
@@ -167,7 +191,7 @@
 }
 
 .qz-card-category {
-  background: #eff6ff;
+  background: #f2e9f6;
   color: var(--qz-primary);
   border-radius: 6px;
   padding: 3px 10px;
@@ -322,7 +346,7 @@
 .qz-field select:focus {
   outline: none;
   border-color: var(--qz-primary);
-  box-shadow: 0 0 0 3px #2563eb18;
+  box-shadow: 0 0 0 3px #631d7618;
 }
 
 .qz-questions-list {
@@ -641,12 +665,12 @@
   transition: all 0.2s;
 }
 .qz-mode-btn:hover {
-  border-color: #6366f1;
+  border-color: #631d76;
   color: #e2e8f0;
 }
 .qz-mode-btn.active {
-  border-color: #6366f1;
-  background: #6366f1;
+  border-color: #631d76;
+  background: #631d76;
   color: #fff;
 }
 
@@ -664,11 +688,11 @@
 
 /* --- Generating message ---------------------------------------------------- */
 .qz-generating-msg {
-  background: rgba(99, 102, 241, 0.12);
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  background: rgba(99, 29, 118, 0.1);
+  border: 1px solid rgba(99, 29, 118, 0.25);
   border-radius: 8px;
   padding: 10px 14px;
-  color: #a5b4fc;
+  color: #a855b5;
   font-size: 0.9rem;
   text-align: center;
 }
@@ -676,26 +700,26 @@
 .qz-progress-bar {
   margin-top: 8px;
   height: 6px;
-  background: rgba(99, 102, 241, 0.2);
+  background: rgba(99, 29, 118, 0.15);
   border-radius: 99px;
   overflow: hidden;
 }
 
 .qz-progress-fill {
   height: 100%;
-  background: #818cf8;
+  background: linear-gradient(90deg, #631d76, #ee4266);
   border-radius: 99px;
   transition: width 0.4s ease;
 }
 
 /* --- Draft panel ----------------------------------------------------------- */
 .qz-draft-panel {
-  background: #fff;
-  border: 2px solid rgba(37, 99, 235, 0.3);
+  background: #fffbf0;
+  border: 2px solid rgba(217, 119, 6, 0.35);
   border-radius: 12px;
   padding: 20px 24px;
-  margin-bottom: 28px;
-  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
+  margin-bottom: 4px;
+  box-shadow: 0 2px 16px rgba(217, 119, 6, 0.1);
 }
 .qz-draft-header {
   display: flex;
@@ -711,13 +735,21 @@
   color: #1e293b;
   margin: 0 0 4px;
 }
+.qz-draft-eyebrow {
+  margin: 0 0 6px;
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #92400e;
+  text-transform: uppercase;
+}
 .qz-draft-badge {
   font-size: 0.78rem;
-  background: rgba(37, 99, 235, 0.1);
-  color: #1d4ed8;
+  background: rgba(217, 119, 6, 0.12);
+  color: #92400e;
   padding: 2px 8px;
   border-radius: 20px;
-  font-weight: 500;
+  font-weight: 600;
 }
 .qz-draft-actions {
   display: flex;
@@ -761,7 +793,7 @@
 
 /* ─── Study Draft Button ─────────────────────────────────────────────────────── */
 .qz-btn-study-draft {
-  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  background: linear-gradient(135deg, #631d76, #ee4266);
   color: #fff;
   border: none;
   border-radius: 10px;

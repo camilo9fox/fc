@@ -371,9 +371,14 @@ ${rows}
   return (
     <div className="qz-page">
       <div className="qz-page-header">
-        <div>
-          <h1 className="qz-page-title">Flashcards</h1>
-          <p className="qz-page-sub">Crea y estudia tus tarjetas de repaso</p>
+        <div className="qz-page-header-left">
+          <div className="qz-page-icon">
+            <Layers size={20} />
+          </div>
+          <div>
+            <h1 className="qz-page-title">Flashcards</h1>
+            <p className="qz-page-sub">Crea y estudia tus tarjetas de repaso</p>
+          </div>
         </div>
         <div
           style={{
@@ -479,6 +484,9 @@ ${rows}
         <section className="qz-draft-panel">
           <div className="qz-draft-header">
             <div>
+              <p className="qz-draft-eyebrow">
+                ⚠️ Borrador pendiente — sin guardar
+              </p>
               <h2 className="qz-draft-title">Borrador</h2>
               <span className="qz-draft-badge">
                 {draftFlashcards.length} flashcard

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Brain } from "lucide-react";
 import { flashCardsApi, FlashCard } from "../../api/flashcards";
 import { useCategories } from "../../hooks/useCategories";
 import "./SpacedRepetitionPage.css";
@@ -104,9 +105,14 @@ const SpacedRepetitionPage: React.FC = () => {
     <div className="sr-page">
       {/* Header */}
       <div className="sr-header">
-        <div>
-          <h1 className="sr-title">Repaso con SM-2</h1>
-          <p className="sr-sub">Algoritmo de repetición espaciada</p>
+        <div className="sr-header-left">
+          <div className="sr-page-icon">
+            <Brain size={20} />
+          </div>
+          <div>
+            <h1 className="sr-title">Repaso con SM-2</h1>
+            <p className="sr-sub">Algoritmo de repetición espaciada</p>
+          </div>
         </div>
 
         <select

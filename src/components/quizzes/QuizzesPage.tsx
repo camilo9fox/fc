@@ -275,11 +275,16 @@ const QuizzesPage: React.FC = () => {
   return (
     <div className="qz-page">
       <div className="qz-page-header">
-        <div>
-          <h1 className="qz-page-title">Cuestionarios</h1>
-          <p className="qz-page-sub">
-            Crea y practica cuestionarios de múltiple opción
-          </p>
+        <div className="qz-page-header-left">
+          <div className="qz-page-icon">
+            <FileText size={20} />
+          </div>
+          <div>
+            <h1 className="qz-page-title">Cuestionarios</h1>
+            <p className="qz-page-sub">
+              Crea y practica cuestionarios de múltiple opción
+            </p>
+          </div>
         </div>
         <button
           className="qz-btn-primary"
@@ -298,7 +303,10 @@ const QuizzesPage: React.FC = () => {
         <section className="qz-draft-panel">
           <div className="qz-draft-header">
             <div>
-              <h2 className="qz-draft-title">Borrador: {draftQuiz.title}</h2>
+              <p className="qz-draft-eyebrow">
+                ⚠️ Borrador pendiente — lista para estudiar
+              </p>
+              <h2 className="qz-draft-title">{draftQuiz.title}</h2>
               <span className="qz-draft-badge">
                 {draftQuiz.questions.length} pregunta
                 {draftQuiz.questions.length !== 1 ? "s" : ""}

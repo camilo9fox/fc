@@ -12,6 +12,25 @@
   margin-bottom: 2rem;
 }
 
+.ghub-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ghub-page-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #631d76 0%, #ee4266 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px -4px rgba(99, 29, 118, 0.45);
+}
+
 .ghub-title {
   font-size: 1.75rem;
   font-weight: 800;

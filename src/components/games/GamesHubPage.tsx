@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { Gamepad2 } from "lucide-react";
 import "./GamesHubPage.css";
 
 interface GameCard {
@@ -78,10 +79,17 @@ const GamesHubPage: React.FC = () => {
   return (
     <div className="ghub-page">
       <div className="ghub-header">
-        <h1 className="ghub-title">Juegos de estudio</h1>
-        <p className="ghub-subtitle">
-          Aprende jugando. Elige un modo y pon a prueba tu conocimiento.
-        </p>
+        <div className="ghub-header-left">
+          <div className="ghub-page-icon">
+            <Gamepad2 size={20} />
+          </div>
+          <div>
+            <h1 className="ghub-title">Juegos de estudio</h1>
+            <p className="ghub-subtitle">
+              Aprende jugando. Elige un modo y pon a prueba tu conocimiento.
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="ghub-grid">

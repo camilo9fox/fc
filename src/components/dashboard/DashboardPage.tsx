@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  ArrowRight,
+  BookOpen,
+  Brain,
+  CheckCircle2,
+  CircleHelp,
+  Clock3,
+  Layers3,
+  Sparkles,
+  Target,
+} from "lucide-react";
 import { useStats } from "../../hooks/useStats";
 import { flashCardsApi } from "../../api/flashcards";
 import {
@@ -18,6 +29,16 @@ interface StatCardConfig {
   label: string;
   path: string;
   colorClass: string;
+  icon: React.ReactNode;
+}
+
+interface QuickAction {
+  id: string;
+  title: string;
+  subtitle: string;
+  cta: string;
+  path: string;
+  toneClass: string;
   icon: React.ReactNode;
 }
 
@@ -173,6 +194,22 @@ const EmptyBreakdown: React.FC<{ onNavigate: () => void }> = ({
   </div>
 );
 
+const QuickActionCard: React.FC<{ item: QuickAction; onClick: () => void }> = ({
+  item,
+  onClick,
+}) => (
+  <button className={`db-quick-card ${item.toneClass}`} onClick={onClick}>
+    <div className="db-quick-icon">{item.icon}</div>
+    <div className="db-quick-info">
+      <h3 className="db-quick-title">{item.title}</h3>
+      <p className="db-quick-subtitle">{item.subtitle}</p>
+      <span className="db-quick-cta">
+        {item.cta} <ArrowRight size={14} />
+      </span>
+    </div>
+  </button>
+);
+
 // ─── Activity sub-components ─────────────────────────────────────────────────
 
 const ActivityCard: React.FC<{
@@ -260,127 +297,232 @@ const DashboardPage: React.FC = () => {
     totals.quizzes +
     totals.trueFalseSets +
     totals.studyGuides;
+  const hasAnyResource = totalResources > 0;
+  const recentAttempt = attemptStats.recentAttempts[0] || null;
+
+  const primaryFlow = (() => {
+    if (totals.categories === 0) {
+      return {
+        title: "Crea tu primer tema para empezar",
+        description:
+          "Tu flujo comienza en Temas: crea uno y luego añade flashcards, quizzes o V/F.",
+        cta: "Crear primer tema",
+        path: "/categories",
+      };
+    }
+
+    if (dueCount > 0) {
+      return {
+        title: "Tu repaso de hoy está listo",
+        description:
+          "Tienes material pendiente y este es el mejor punto de inicio para retener más.",
+        cta: "Ir a repaso SM-2",
+        path: "/repaso",
+      };
+    }
+
+    if (recentAttempt?.type === "quiz") {
+      return {
+        title: "Continúa con cuestionarios",
+        description:
+          "Tu última práctica fue en quizzes. Mantén el ritmo con otra ronda rápida.",
+        cta: "Continuar práctica",
+        path: "/quizzes",
+      };
+    }
+
+    if (recentAttempt?.type === "true_false") {
+      return {
+        title: "Retoma Verdadero/Falso",
+        description:
+          "Ya venías practicando V/F. Una sesión breve hoy mantiene la racha.",
+        cta: "Practicar V/F",
+        path: "/truefalse",
+      };
+    }
+
+    return {
+      title: "Empieza con una sesión rápida",
+      description:
+        "Tu espacio está listo. Un bloque corto de flashcards te pone en marcha.",
+      cta: "Estudiar flashcards",
+      path: "/flashcards",
+    };
+  })();
+
+  const quickActions: QuickAction[] = [
+    {
+      id: "review",
+      title: dueCount > 0 ? "Repaso pendiente" : "Repaso inteligente",
+      subtitle:
+        dueCount > 0
+          ? `${dueCount} ${dueCount === 1 ? "flashcard espera" : "flashcards esperan"} hoy`
+          : "No hay pendientes ahora, pero puedes reforzar memoria.",
+      cta: "Abrir repaso",
+      path: "/repaso",
+      toneClass: "db-quick--purple",
+      icon: <Clock3 size={18} />,
+    },
+    {
+      id: "flashcards",
+      title: "Sesión de flashcards",
+      subtitle: "Ideal para entrar en flujo en menos de 5 minutos.",
+      cta: "Ir a flashcards",
+      path: "/flashcards",
+      toneClass: "db-quick--blue",
+      icon: <Layers3 size={18} />,
+    },
+    {
+      id: "quiz",
+      title: "Practicar evaluación",
+      subtitle: "Cuestionarios y V/F para medir comprensión real.",
+      cta: "Abrir cuestionarios",
+      path: "/quizzes",
+      toneClass: "db-quick--orange",
+      icon: <CircleHelp size={18} />,
+    },
+    {
+      id: "generate",
+      title: "Generar con IA",
+      subtitle: "Convierte material en recursos listos para estudiar.",
+      cta: "Crear contenido",
+      path: "/study-guides",
+      toneClass: "db-quick--pink",
+      icon: <Sparkles size={18} />,
+    },
+  ];
 
   return (
     <div className="db-page">
-      {/* ── SM-2 review reminder ── */}
-      {dueCount > 0 && (
-        <div className="db-sm2-banner">
-          <div className="db-sm2-icon">
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+      <section className="db-start-card">
+        <div className="db-start-main">
+          <p className="db-start-kicker">INICIO RAPIDO</p>
+          <h2 className="db-start-title">{primaryFlow.title}</h2>
+          <p className="db-start-subtitle">{primaryFlow.description}</p>
+
+          <div className="db-start-actions">
+            <button
+              className="db-btn-primary db-start-btn"
+              onClick={() => navigate(primaryFlow.path)}
             >
-              <path d="M12 20h9" />
-              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-            </svg>
+              {primaryFlow.cta}
+              <ArrowRight size={15} />
+            </button>
+            <button
+              className="db-btn-secondary db-start-btn-secondary"
+              onClick={() => navigate("/categories")}
+            >
+              Ver temas
+            </button>
           </div>
-          <div className="db-sm2-body">
-            <p className="db-sm2-title">
-              Tienes <strong>{dueCount}</strong>{" "}
-              {dueCount === 1 ? "flashcard pendiente" : "flashcards pendientes"}{" "}
-              de repaso
-            </p>
-            <p className="db-sm2-sub">
-              Repasar ahora maximiza tu retención a largo plazo.
-            </p>
+
+          <p className="db-start-footnote">
+            {hasAnyResource
+              ? "Tip: sesiones cortas y frecuentes mejoran retención más que maratones largas."
+              : "Aún no tienes recursos; comienza creando un tema y genera tu primer contenido."}
+          </p>
+        </div>
+
+        <div className="db-start-side">
+          <div className="db-focus-card db-focus--purple">
+            <span className="db-focus-label">Pendientes hoy</span>
+            <strong className="db-focus-value">{dueCount}</strong>
+            <Clock3 size={16} />
           </div>
-          <button
-            className="db-sm2-btn"
-            onClick={() => navigate("/spaced-repetition")}
-          >
-            Repasar ahora →
-          </button>
-        </div>
-      )}
 
-      {/* ── Summary banner ── */}
-      {mostActive && (
-        <div className="db-banner">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-          </svg>
-          Tema más activo: <strong>{mostActive.title}</strong>
-          {" · "}
-          {totalResources} recursos en total
-        </div>
-      )}
+          <div className="db-focus-card db-focus--orange">
+            <span className="db-focus-label">Racha actual</span>
+            <strong className="db-focus-value">
+              {attemptStats.currentStreak}
+            </strong>
+            <Target size={16} />
+          </div>
 
-      {/* ── Streak banner ── */}
-      {attemptStats.currentStreak >= 3 && (
-        <div className="db-streak-banner">
-          <span className="db-streak-fire">🔥</span>
-          <span>
-            ¡Llevas <strong>{attemptStats.currentStreak} días seguidos</strong>{" "}
-            estudiando. ¡Sigue así!
-          </span>
-        </div>
-      )}
+          <div className="db-focus-card db-focus--green">
+            <span className="db-focus-label">Promedio</span>
+            <strong className="db-focus-value">{attemptStats.avgScore}%</strong>
+            <CheckCircle2 size={16} />
+          </div>
 
-      {/* ── Stat cards ── */}
+          <div className="db-focus-card db-focus--blue">
+            <span className="db-focus-label">Tema activo</span>
+            <strong className="db-focus-value db-focus-topic">
+              {mostActive?.title || "Sin actividad"}
+            </strong>
+            <BookOpen size={16} />
+          </div>
+        </div>
+      </section>
+
       <section className="db-section">
-        <h2 className="db-section-title">Resumen general</h2>
-        <div className="db-cards-grid">
-          {STAT_CARDS.map((cfg) => (
-            <StatCard
-              key={cfg.key}
-              config={cfg}
-              value={totals[cfg.key]}
-              onClick={() => navigate(cfg.path)}
+        <h2 className="db-section-title">Inicio rápido</h2>
+        <div className="db-quick-grid">
+          {quickActions.map((item) => (
+            <QuickActionCard
+              key={item.id}
+              item={item}
+              onClick={() => navigate(item.path)}
             />
           ))}
         </div>
       </section>
 
-      {/* ── Activity stats ── */}
       <section className="db-section">
-        <h2 className="db-section-title">Actividad de estudio</h2>
-        <div className="db-activity-grid">
-          <ActivityCard
-            value={attemptStats.totalAttempts}
-            label="Intentos (Quiz / V·F)"
-            colorClass="db-activity--blue"
-          />
-          <ActivityCard
-            value={attemptStats.totalFlashcardSessions}
-            label="Sesiones de flashcards"
-            colorClass="db-activity--purple"
-          />
-          <ActivityCard
-            value={`${attemptStats.avgScore}%`}
-            label="Promedio de aciertos"
-            colorClass="db-activity--green"
-          />
-          <ActivityCard
-            value={attemptStats.currentStreak}
-            label={`Día${attemptStats.currentStreak !== 1 ? "s" : ""} de racha`}
-            colorClass="db-activity--orange"
-          />
+        <h2 className="db-section-title">Panorama general</h2>
+        <div className="db-overview-grid">
+          <div className="db-panel">
+            <div className="db-panel-head">
+              <h3 className="db-panel-title">Recursos creados</h3>
+              <span className="db-panel-meta">Total: {totalResources}</span>
+            </div>
+            <div className="db-cards-grid">
+              {STAT_CARDS.map((cfg) => (
+                <StatCard
+                  key={cfg.key}
+                  config={cfg}
+                  value={totals[cfg.key]}
+                  onClick={() => navigate(cfg.path)}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="db-panel">
+            <div className="db-panel-head">
+              <h3 className="db-panel-title">Actividad de estudio</h3>
+              <span className="db-panel-meta">Últimos avances</span>
+            </div>
+            <div className="db-activity-grid">
+              <ActivityCard
+                value={attemptStats.totalAttempts}
+                label="Intentos (Quiz / V·F)"
+                colorClass="db-activity--blue"
+              />
+              <ActivityCard
+                value={attemptStats.totalFlashcardSessions}
+                label="Sesiones de flashcards"
+                colorClass="db-activity--purple"
+              />
+              <ActivityCard
+                value={`${attemptStats.avgScore}%`}
+                label="Promedio de aciertos"
+                colorClass="db-activity--green"
+              />
+              <ActivityCard
+                value={attemptStats.currentStreak}
+                label={`Día${attemptStats.currentStreak !== 1 ? "s" : ""} de racha`}
+                colorClass="db-activity--orange"
+              />
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* -- Charts -- */}
       <section className="db-section">
         <h2 className="db-section-title">Progreso de estudio</h2>
         <DashboardCharts />
       </section>
 
-      {/* -- Recent attempts -- */}
       {attemptStats.recentAttempts.length > 0 && (
         <section className="db-section">
           <h2 className="db-section-title">Últimos intentos</h2>
@@ -405,7 +547,6 @@ const DashboardPage: React.FC = () => {
         </section>
       )}
 
-      {/* ── Category breakdown ── */}
       <section className="db-section">
         <h2 className="db-section-title">Detalle por tema</h2>
 

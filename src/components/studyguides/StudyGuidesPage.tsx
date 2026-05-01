@@ -243,11 +243,16 @@ const StudyGuidesPage: React.FC = () => {
   return (
     <div className="sg-page">
       <div className="sg-page-header">
-        <div>
-          <h1 className="sg-page-title">Guías de Estudio</h1>
-          <p className="sg-page-sub">
-            Genera y consulta guías estructuradas con IA
-          </p>
+        <div className="qz-page-header-left">
+          <div className="qz-page-icon qz-page-icon--sg">
+            <BookOpen size={20} />
+          </div>
+          <div>
+            <h1 className="sg-page-title">Guías de Estudio</h1>
+            <p className="sg-page-sub">
+              Genera y consulta guías estructuradas con IA
+            </p>
+          </div>
         </div>
         <button
           className="sg-btn-primary"

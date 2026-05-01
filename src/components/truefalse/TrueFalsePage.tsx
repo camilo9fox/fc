@@ -276,11 +276,16 @@ const TrueFalsePage: React.FC = () => {
   return (
     <div className="tf-page">
       <div className="tf-page-header">
-        <div>
-          <h1 className="tf-page-title">Verdadero o Falso</h1>
-          <p className="tf-page-sub">
-            Crea y practica sets de enunciados verdadero/falso
-          </p>
+        <div className="qz-page-header-left">
+          <div className="qz-page-icon">
+            <CheckSquare size={20} />
+          </div>
+          <div>
+            <h1 className="tf-page-title">Verdadero o Falso</h1>
+            <p className="tf-page-sub">
+              Crea y practica sets de enunciados verdadero/falso
+            </p>
+          </div>
         </div>
         <button
           className="tf-btn-primary"
@@ -299,7 +304,10 @@ const TrueFalsePage: React.FC = () => {
         <section className="tf-draft-panel">
           <div className="tf-draft-header">
             <div>
-              <h2 className="tf-draft-title">Borrador: {draftSet.title}</h2>
+              <p className="qz-draft-eyebrow">
+                ⚠️ Borrador pendiente — listo para estudiar
+              </p>
+              <h2 className="tf-draft-title">{draftSet.title}</h2>
               <span className="tf-draft-badge">
                 {draftSet.questions.length} enunciado
                 {draftSet.questions.length !== 1 ? "s" : ""}
