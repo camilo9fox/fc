@@ -65,7 +65,8 @@ const GenerateStudyGuideForm: React.FC<GenerateStudyGuideFormProps> = ({
               clearInterval(interval);
               reject(
                 new Error(
-                  "Ocurrió un error al generar la guía. Inténtalo de nuevo más tarde.",
+                  updated.error ||
+                    "Ocurrió un error al generar la guía. Inténtalo de nuevo más tarde.",
                 ),
               );
             }

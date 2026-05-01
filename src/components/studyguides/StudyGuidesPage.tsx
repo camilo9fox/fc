@@ -1,6 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { BookOpen, Plus, Trash2, X } from "lucide-react";
+import {
+  BookOpen,
+  Clock3,
+  ListTree,
+  Plus,
+  Sparkles,
+  Trash2,
+  X,
+} from "lucide-react";
 import { useCategories } from "../../hooks/useCategories";
 import NoCategoryBanner from "../layout/NoCategoryBanner";
 import { studyGuideApi, StudyGuide } from "../../api/studyGuides";
@@ -8,6 +16,35 @@ import GenerateStudyGuideForm from "./GenerateStudyGuideForm";
 import "./StudyGuidesPage.css";
 
 type View = "list" | "generate" | "detail";
+
+const normalizePreview = (markdown: string) =>
+  markdown
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`[^`]*`/g, " ")
+    .replace(/[>#*_~\-|\[\]()]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const extractSections = (markdown: string) => {
+  const lines = markdown.split("\n");
+  const sections: { level: 2 | 3; title: string }[] = [];
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    const h2 = line.match(/^##\s+(.+)$/);
+    const h3 = line.match(/^###\s+(.+)$/);
+
+    if (h3) {
+      sections.push({ level: 3, title: h3[1].trim() });
+      continue;
+    }
+    if (h2) {
+      sections.push({ level: 2, title: h2[1].trim() });
+    }
+  }
+
+  return sections;
+};
 
 const StudyGuidesPage: React.FC = () => {
   const { categories, loading: catsLoading } = useCategories();
@@ -19,6 +56,23 @@ const StudyGuidesPage: React.FC = () => {
   const [selectedGuide, setSelectedGuide] = useState<StudyGuide | null>(null);
   const [filterCategoryId, setFilterCategoryId] = useState<string>("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const detailStats = useMemo(() => {
+    if (!selectedGuide) {
+      return {
+        words: 0,
+        readMinutes: 0,
+        sections: [] as { level: 2 | 3; title: string }[],
+      };
+    }
+
+    const plainText = normalizePreview(selectedGuide.content);
+    const words = plainText ? plainText.split(/\s+/).filter(Boolean).length : 0;
+    const readMinutes = Math.max(1, Math.ceil(words / 180));
+    const sections = extractSections(selectedGuide.content);
+
+    return { words, readMinutes, sections };
+  }, [selectedGuide]);
 
   const fetchGuides = useCallback(async () => {
     setLoading(true);
@@ -77,38 +131,98 @@ const StudyGuidesPage: React.FC = () => {
   if (view === "detail" && selectedGuide) {
     return (
       <div className="sg-page">
-        <div className="sg-detail">
-          <div className="sg-detail-header">
-            <div>
-              <h2 className="sg-detail-title">{selectedGuide.title}</h2>
-              {selectedGuide.category && (
-                <p className="sg-detail-category">
-                  {selectedGuide.category.title}
-                </p>
-              )}
-            </div>
-            <div className="sg-detail-actions">
+        <div className="sg-detail sg-detail--immersive">
+          <section className="sg-detail-hero">
+            <div className="sg-detail-hero-top">
               <button
-                className="sg-btn-danger"
-                onClick={() => handleDelete(selectedGuide.id)}
-                disabled={deletingId === selectedGuide.id}
-              >
-                <Trash2 size={14} />
-                Eliminar
-              </button>
-              <button
-                className="sg-close-btn"
+                className="sg-btn-secondary"
                 onClick={() => {
                   setSelectedGuide(null);
                   setView("list");
                 }}
               >
-                <X size={16} />
+                <X size={14} /> Volver a guías
               </button>
+              <div className="sg-detail-actions">
+                <button
+                  className="sg-btn-danger"
+                  onClick={() => handleDelete(selectedGuide.id)}
+                  disabled={deletingId === selectedGuide.id}
+                >
+                  <Trash2 size={14} />
+                  Eliminar
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="sg-markdown-body">
-            <ReactMarkdown>{selectedGuide.content}</ReactMarkdown>
+
+            <h2 className="sg-detail-title">{selectedGuide.title}</h2>
+
+            <div className="sg-detail-meta-strip">
+              {selectedGuide.category && (
+                <span className="sg-detail-category">
+                  <Sparkles size={13} />
+                  {selectedGuide.category.title}
+                </span>
+              )}
+              <span className="sg-detail-chip">
+                <Clock3 size={13} />
+                {detailStats.readMinutes} min lectura
+              </span>
+              <span className="sg-detail-chip">
+                <ListTree size={13} />
+                {Math.max(1, detailStats.sections.length)} secciones
+              </span>
+              <span className="sg-detail-chip">
+                {detailStats.words} palabras
+              </span>
+            </div>
+
+            <p className="sg-detail-intro">
+              Guía optimizada para repaso activo: identifica los conceptos
+              clave, conecta ideas y vuelve a esta vista para reforzar puntos
+              críticos.
+            </p>
+          </section>
+
+          <div className="sg-detail-shell">
+            <aside className="sg-detail-aside">
+              <div className="sg-aside-card">
+                <p className="sg-aside-eyebrow">Mapa rápido</p>
+                {detailStats.sections.length === 0 ? (
+                  <p className="sg-aside-muted">
+                    Esta guía no incluye encabezados markdown. Agrega ## títulos
+                    para mejorar la navegación visual.
+                  </p>
+                ) : (
+                  <ul className="sg-section-list">
+                    {detailStats.sections.slice(0, 8).map((section, idx) => (
+                      <li
+                        key={`${section.title}-${idx}`}
+                        className={
+                          section.level === 3
+                            ? "sg-section-item sg-section-item--nested"
+                            : "sg-section-item"
+                        }
+                      >
+                        {section.title}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="sg-aside-card sg-aside-card--tip">
+                <p className="sg-aside-eyebrow">Sugerencia de estudio</p>
+                <p className="sg-aside-muted">
+                  Lee una sección, pausa y explícatela en voz alta sin mirar. Si
+                  no puedes hacerlo, vuelve al bloque y resume en 2 frases.
+                </p>
+              </div>
+            </aside>
+
+            <article className="sg-markdown-body">
+              <ReactMarkdown>{selectedGuide.content}</ReactMarkdown>
+            </article>
           </div>
         </div>
       </div>
