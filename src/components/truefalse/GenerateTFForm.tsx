@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Paperclip, Sparkles, X } from "lucide-react";
+import { Paperclip, X } from "lucide-react";
 import { useCategories } from "../../hooks/useCategories";
 import {
   ALLOWED_UPLOAD_FORMATS,
@@ -7,6 +7,7 @@ import {
 } from "../../constants";
 import { trueFalseApi } from "../../api/trueFalse";
 import { DraftTFState } from "../../types/trueFalse.types";
+import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
 import "./TrueFalsePage.css";
 
 interface GenerateTFFormProps {
@@ -14,20 +15,15 @@ interface GenerateTFFormProps {
   onCancel: () => void;
 }
 
-const GenerateTFForm: React.FC<GenerateTFFormProps> = ({
-  onDrafted,
-  onCancel,
-}) => {
+const GenerateTFForm: React.FC<GenerateTFFormProps> = ({ onCancel }) => {
   const { categories } = useCategories();
+  const { enqueue, isModuleQueued } = useGenerationQueue();
   const [title, setTitle] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [quantity, setQuantity] = useState(10);
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
-  const [generating, setGenerating] = useState(false);
-  const [generatingStage, setGeneratingStage] =
-    useState<string>("Generando...");
-  const [generatingPercent, setGeneratingPercent] = useState<number>(0);
+  const [queued, setQueued] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -44,53 +40,51 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({
     if (!file && !text.trim())
       return setError("Proporciona un archivo o texto de estudio.");
 
-    setGenerating(true);
-    try {
-      const formData = new FormData();
-      formData.append("title", title.trim());
-      formData.append("categoryId", categoryId);
-      formData.append("quantity", String(quantity));
-      if (file) formData.append("file", file);
-      if (text.trim()) formData.append("text", text.trim());
+    const capturedTitle = title.trim();
+    const capturedCategoryId = categoryId;
+    const capturedQuantity = quantity;
+    const capturedFile = file;
+    const capturedText = text.trim();
+    const categoryLabel =
+      categories.find((c) => c.id === capturedCategoryId)?.title ?? "";
 
-      const job = await trueFalseApi.startGenerateJob(formData);
+    const result = enqueue({
+      moduleType: "truefalse",
+      label: `V/F${categoryLabel ? ` · ${categoryLabel}` : ""}`,
+      startFn: async () => {
+        const formData = new FormData();
+        formData.append("title", capturedTitle);
+        formData.append("categoryId", capturedCategoryId);
+        formData.append("quantity", String(capturedQuantity));
+        if (capturedFile) formData.append("file", capturedFile);
+        if (capturedText) formData.append("text", capturedText);
+        const job = await trueFalseApi.startGenerateJob(formData);
+        return job.id;
+      },
+      pollFn: async (jobId) => {
+        const job = await trueFalseApi.getGenerationJob(jobId);
+        return {
+          status: job.status as any,
+          progress: job.progress,
+          result: job.result
+            ? ({
+                title: capturedTitle,
+                categoryId: capturedCategoryId,
+                questions: job.result.statements,
+              } as DraftTFState)
+            : null,
+          error: job.error,
+        };
+      },
+    });
 
-      const POLL_INTERVAL = 2500;
-      await new Promise<void>((resolve, reject) => {
-        const interval = setInterval(async () => {
-          try {
-            const updated = await trueFalseApi.getGenerationJob(job.id);
-            setGeneratingStage(updated.progress.stage);
-            setGeneratingPercent(updated.progress.percent);
-
-            if (updated.status === "completed" && updated.result) {
-              clearInterval(interval);
-              onDrafted({
-                title: title.trim(),
-                categoryId,
-                questions: updated.result.statements,
-              });
-              resolve();
-            } else if (updated.status === "failed") {
-              clearInterval(interval);
-              reject(
-                new Error(updated.error || "Error al generar el set V/F."),
-              );
-            }
-          } catch (pollErr) {
-            clearInterval(interval);
-            reject(pollErr);
-          }
-        }, POLL_INTERVAL);
-      });
-    } catch (err: any) {
-      setError(
-        err?.response?.data?.error ||
-          "Error al generar el set de verdadero/falso.",
-      );
-    } finally {
-      setGenerating(false);
+    if (!result.success) {
+      setError(result.reason ?? "No se pudo agregar a la cola.");
+      return;
     }
+
+    setQueued(true);
+    setTimeout(() => onCancel(), 1800);
   };
 
   return (
@@ -196,31 +190,22 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({
 
       {error && <p className="tf-error">{error}</p>}
 
-      {generating && (
-        <div className="tf-generating-msg">
-          <p>
-            <Sparkles size={14} /> {generatingStage}
-          </p>
-          <div className="tf-progress-bar">
-            <div
-              className="tf-progress-fill"
-              style={{ width: `${generatingPercent}%` }}
-            />
-          </div>
-        </div>
+      {queued && (
+        <p className="tf-generating-msg" aria-live="polite">
+          ✓ Generación en cola. Recibirás una notificación al terminar.
+        </p>
       )}
 
       <div className="tf-form-actions">
-        <button
-          type="button"
-          className="tf-btn-secondary"
-          onClick={onCancel}
-          disabled={generating}
-        >
+        <button type="button" className="tf-btn-secondary" onClick={onCancel}>
           Cancelar
         </button>
-        <button type="submit" className="tf-btn-primary" disabled={generating}>
-          {generating ? "Generando..." : "Generar set"}
+        <button
+          type="submit"
+          className="tf-btn-primary"
+          disabled={queued || isModuleQueued("truefalse")}
+        >
+          {queued || isModuleQueued("truefalse") ? "En cola..." : "Generar set"}
         </button>
       </div>
     </form>

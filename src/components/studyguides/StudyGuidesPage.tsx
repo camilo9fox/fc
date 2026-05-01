@@ -12,6 +12,7 @@ import {
 import { useCategories } from "../../hooks/useCategories";
 import NoCategoryBanner from "../layout/NoCategoryBanner";
 import { studyGuideApi, StudyGuide } from "../../api/studyGuides";
+import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
 import GenerateStudyGuideForm from "./GenerateStudyGuideForm";
 import "./StudyGuidesPage.css";
 
@@ -56,6 +57,7 @@ const StudyGuidesPage: React.FC = () => {
   const [selectedGuide, setSelectedGuide] = useState<StudyGuide | null>(null);
   const [filterCategoryId, setFilterCategoryId] = useState<string>("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const { claimResult } = useGenerationQueue();
 
   const detailStats = useMemo(() => {
     if (!selectedGuide) {
@@ -97,6 +99,14 @@ const StudyGuidesPage: React.FC = () => {
     setSelectedGuide(guide);
     setView("detail");
   };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const pending = claimResult("studyguide");
+    if (pending) {
+      handleGenerated(pending);
+    }
+  }, []);
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("¿Eliminar esta guía de estudio?")) return;

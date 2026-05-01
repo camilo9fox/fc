@@ -1,8 +1,9 @@
 import React, { useRef, useState } from "react";
-import { Paperclip, Sparkles, X } from "lucide-react";
+import { Paperclip, X } from "lucide-react";
 import { useCategories } from "../../hooks/useCategories";
 import { ALLOWED_UPLOAD_FORMATS } from "../../constants";
 import { studyGuideApi, StudyGuide } from "../../api/studyGuides";
+import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
 import "./StudyGuidesPage.css";
 
 interface GenerateStudyGuideFormProps {
@@ -11,18 +12,15 @@ interface GenerateStudyGuideFormProps {
 }
 
 const GenerateStudyGuideForm: React.FC<GenerateStudyGuideFormProps> = ({
-  onGenerated,
   onCancel,
 }) => {
   const { categories } = useCategories();
+  const { enqueue, isModuleQueued } = useGenerationQueue();
   const [title, setTitle] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
-  const [generating, setGenerating] = useState(false);
-  const [generatingStage, setGeneratingStage] =
-    useState<string>("Generando...");
-  const [generatingPercent, setGeneratingPercent] = useState<number>(0);
+  const [queued, setQueued] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -39,52 +37,43 @@ const GenerateStudyGuideForm: React.FC<GenerateStudyGuideFormProps> = ({
     if (!file && !text.trim())
       return setError("Proporciona un archivo o texto de estudio.");
 
-    setGenerating(true);
-    try {
-      const formData = new FormData();
-      formData.append("title", title.trim());
-      formData.append("categoryId", categoryId);
-      if (file) formData.append("file", file);
-      if (text.trim()) formData.append("text", text.trim());
+    const capturedTitle = title.trim();
+    const capturedCategoryId = categoryId;
+    const capturedFile = file;
+    const capturedText = text.trim();
+    const categoryLabel =
+      categories.find((c) => c.id === capturedCategoryId)?.title ?? "";
 
-      const job = await studyGuideApi.startGenerateJob(formData);
+    const result = enqueue({
+      moduleType: "studyguide",
+      label: `Guía${categoryLabel ? ` · ${categoryLabel}` : ""}`,
+      startFn: async () => {
+        const formData = new FormData();
+        formData.append("title", capturedTitle);
+        formData.append("categoryId", capturedCategoryId);
+        if (capturedFile) formData.append("file", capturedFile);
+        if (capturedText) formData.append("text", capturedText);
+        const job = await studyGuideApi.startGenerateJob(formData);
+        return job.id;
+      },
+      pollFn: async (jobId) => {
+        const job = await studyGuideApi.getGenerationJob(jobId);
+        return {
+          status: job.status as any,
+          progress: job.progress,
+          result: job.result ?? null,
+          error: job.error,
+        };
+      },
+    });
 
-      const POLL_INTERVAL = 2500;
-      await new Promise<void>((resolve, reject) => {
-        const interval = setInterval(async () => {
-          try {
-            const updated = await studyGuideApi.getGenerationJob(job.id);
-            setGeneratingStage(updated.progress.stage);
-            setGeneratingPercent(updated.progress.percent);
-
-            if (updated.status === "completed" && updated.result) {
-              clearInterval(interval);
-              onGenerated(updated.result);
-              resolve();
-            } else if (updated.status === "failed") {
-              clearInterval(interval);
-              reject(
-                new Error(
-                  updated.error ||
-                    "Ocurrió un error al generar la guía. Inténtalo de nuevo más tarde.",
-                ),
-              );
-            }
-          } catch (pollErr) {
-            clearInterval(interval);
-            reject(pollErr);
-          }
-        }, POLL_INTERVAL);
-      });
-    } catch (err: any) {
-      setError(
-        err?.message?.startsWith("Ocurrió")
-          ? err.message
-          : "Ocurrió un error al generar la guía. Inténtalo de nuevo más tarde.",
-      );
-    } finally {
-      setGenerating(false);
+    if (!result.success) {
+      setError(result.reason ?? "No se pudo agregar a la cola.");
+      return;
     }
+
+    setQueued(true);
+    setTimeout(() => onCancel(), 1800);
   };
 
   return (
@@ -171,31 +160,24 @@ const GenerateStudyGuideForm: React.FC<GenerateStudyGuideFormProps> = ({
 
       {error && <p className="sg-error">{error}</p>}
 
-      {generating && (
-        <div className="sg-generating-msg">
-          <p>
-            <Sparkles size={14} /> {generatingStage}
-          </p>
-          <div className="sg-progress-bar">
-            <div
-              className="sg-progress-fill"
-              style={{ width: `${generatingPercent}%` }}
-            />
-          </div>
-        </div>
+      {queued && (
+        <p className="sg-generating-msg" aria-live="polite">
+          ✓ Generación en cola. Recibirás una notificación al terminar.
+        </p>
       )}
 
       <div className="sg-form-actions">
-        <button
-          type="button"
-          className="sg-btn-secondary"
-          onClick={onCancel}
-          disabled={generating}
-        >
+        <button type="button" className="sg-btn-secondary" onClick={onCancel}>
           Cancelar
         </button>
-        <button type="submit" className="sg-btn-primary" disabled={generating}>
-          {generating ? "Generando…" : "Generar guía"}
+        <button
+          type="submit"
+          className="sg-btn-primary"
+          disabled={queued || isModuleQueued("studyguide")}
+        >
+          {queued || isModuleQueued("studyguide")
+            ? "En cola..."
+            : "Generar guía"}
         </button>
       </div>
     </form>

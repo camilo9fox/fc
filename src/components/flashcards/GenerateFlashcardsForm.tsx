@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Paperclip, X } from "lucide-react";
-import { FlashcardGenerationJob, flashCardsApi } from "../../api/flashcards";
+import { flashCardsApi } from "../../api/flashcards";
 import { useCategories } from "../../hooks/useCategories";
+import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
 import {
   ALLOWED_UPLOAD_FORMATS,
   MAX_FLASHCARDS_GENERATED,
@@ -20,18 +21,18 @@ interface GenerateFlashcardsFormProps {
 }
 
 const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
-  onGenerated,
   onCancel,
 }) => {
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [quantity, setQuantity] = useState(3);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [job, setJob] = useState<FlashcardGenerationJob | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [queued, setQueued] = useState(false);
 
   const { categories } = useCategories();
+  const { enqueue, isModuleQueued } = useGenerationQueue();
+  const isBusy = queued || isModuleQueued("flashcards");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFile(event.target.files?.[0] ?? null);
@@ -49,49 +50,51 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
       return;
     }
     setError(null);
-    setIsLoading(true);
-    setJob(null);
 
-    try {
-      const initialJob = await flashCardsApi.startGenerateFlashCardsJob(
-        file || undefined,
-        text || undefined,
-        quantity,
-      );
-      setJob(initialJob);
+    const capturedFile = file;
+    const capturedText = text;
+    const capturedQuantity = quantity;
+    const capturedCategoryId = selectedCategoryId;
+    const categoryLabel =
+      categories.find((c) => c.id === capturedCategoryId)?.title ?? "";
 
-      let currentJob = initialJob;
-      while (
-        currentJob.status !== "completed" &&
-        currentJob.status !== "failed"
-      ) {
-        await new Promise((resolve) => setTimeout(resolve, 1400));
-        currentJob = await flashCardsApi.getGenerationJob(initialJob.id);
-        setJob(currentJob);
-      }
+    const result = enqueue({
+      moduleType: "flashcards",
+      label: `Flashcards${categoryLabel ? ` · ${categoryLabel}` : ""}`,
+      startFn: async () => {
+        const job = await flashCardsApi.startGenerateFlashCardsJob(
+          capturedFile || undefined,
+          capturedText || undefined,
+          capturedQuantity,
+        );
+        return job.id;
+      },
+      pollFn: async (jobId) => {
+        const job = await flashCardsApi.getGenerationJob(jobId);
+        return {
+          status: job.status as any,
+          progress: job.progress,
+          result: job.result
+            ? {
+                flashcards: (job.result.flashcards || []).map((card) => ({
+                  ...card,
+                  source: "ai" as const,
+                  categoryId: capturedCategoryId || undefined,
+                })),
+              }
+            : null,
+          error: job.error,
+        };
+      },
+    });
 
-      if (currentJob.status === "failed") {
-        throw new Error(currentJob.error || "Error generando las flashcards.");
-      }
-
-      const cards = currentJob.result?.flashcards || [];
-      const normalizedCards = cards.map((card) => ({
-        ...card,
-        source: "ai" as const,
-        categoryId: selectedCategoryId || undefined,
-      }));
-      onGenerated(normalizedCards);
-      setText("");
-      setFile(null);
-      setSelectedCategoryId("");
-      setJob(null);
-    } catch (err: any) {
-      setError(
-        err?.response?.data?.message || "Error generando las flashcards.",
-      );
-    } finally {
-      setIsLoading(false);
+    if (!result.success) {
+      setError(result.reason ?? "No se pudo agregar a la cola.");
+      return;
     }
+
+    setQueued(true);
+    setTimeout(() => onCancel(), 1800);
   };
 
   return (
@@ -110,7 +113,7 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
             id="generateCategory"
             value={selectedCategoryId}
             onChange={(e) => setSelectedCategoryId(e.target.value)}
-            disabled={isLoading}
+            disabled={isBusy}
             required
           >
             <option value="">Selecciona un tema</option>
@@ -133,7 +136,7 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
             max={MAX_FLASHCARDS_GENERATED}
             value={quantity}
             onChange={(e) => setQuantity(Number(e.target.value))}
-            disabled={isLoading}
+            disabled={isBusy}
           />
         </div>
       </div>
@@ -146,7 +149,7 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
           onChange={(e) => setText(e.target.value)}
           rows={6}
           placeholder="Pega aquí el contenido del que quieres generar flashcards..."
-          disabled={isLoading}
+          disabled={isBusy}
         />
       </div>
 
@@ -169,7 +172,7 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
               type="file"
               accept={ALLOWED_UPLOAD_FORMATS}
               onChange={handleFileChange}
-              disabled={isLoading}
+              disabled={isBusy}
               style={{ display: "none" }}
             />
           </label>
@@ -178,7 +181,7 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
               type="button"
               className="qz-remove-btn"
               onClick={() => setFile(null)}
-              disabled={isLoading}
+              disabled={isBusy}
             >
               Quitar
             </button>
@@ -188,44 +191,24 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
 
       {error && <p className="qz-error">{error}</p>}
 
-      {job && (
-        <div className="qz-generating-msg" aria-live="polite">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: 6,
-            }}
-          >
-            <strong>{job.progress.stage}</strong>
-            <span>{job.progress.percent}%</span>
-          </div>
-          <div className="generation-job-progress-track">
-            <div
-              className="generation-job-progress-fill"
-              style={{ width: `${job.progress.percent}%` }}
-            />
-          </div>
-          {job.progress.metadata?.completed && job.progress.metadata?.total && (
-            <p style={{ marginTop: 6, fontSize: "0.85rem" }}>
-              Secciones procesadas: {job.progress.metadata.completed} /{" "}
-              {job.progress.metadata.total}
-            </p>
-          )}
-        </div>
+      {queued && (
+        <p className="qz-generating-msg" aria-live="polite">
+          ✓ Generación en cola. Recibirás una notificación al terminar.
+        </p>
       )}
 
       <div className="qz-form-actions">
-        <button
-          type="button"
-          className="qz-btn-secondary"
-          onClick={onCancel}
-          disabled={isLoading}
-        >
+        <button type="button" className="qz-btn-secondary" onClick={onCancel}>
           Cancelar
         </button>
-        <button className="qz-btn-primary" type="submit" disabled={isLoading}>
-          {isLoading ? "Procesando documento..." : "Generar flashcards"}
+        <button
+          className="qz-btn-primary"
+          type="submit"
+          disabled={queued || isModuleQueued("flashcards")}
+        >
+          {queued || isModuleQueued("flashcards")
+            ? "En cola..."
+            : "Generar flashcards"}
         </button>
       </div>
     </form>

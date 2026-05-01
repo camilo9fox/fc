@@ -17,6 +17,7 @@ import DraftQuizStudySession from "./DraftQuizStudySession";
 import GenerateQuizForm from "./GenerateQuizForm";
 import CreateQuizForm from "./CreateQuizForm";
 import "./QuizzesPage.css";
+import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
 
 const QuizzesPage: React.FC = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
@@ -41,6 +42,14 @@ const QuizzesPage: React.FC = () => {
 
   const { categories, loading: catsLoading } = useCategories();
   const hasCategories = catsLoading || categories.length > 0;
+
+  const { claimResult } = useGenerationQueue();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const pending = claimResult("quiz");
+    if (pending) handleDrafted(pending);
+  }, []);
+
   useEffect(() => {
     const load = async () => {
       try {

@@ -22,6 +22,7 @@ import DraftTFStudySession from "./DraftTFStudySession";
 import GenerateTFForm from "./GenerateTFForm";
 import CreateTFForm from "./CreateTFForm";
 import "./TrueFalsePage.css";
+import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
 
 const TrueFalsePage: React.FC = () => {
   const [sets, setSets] = useState<TrueFalseSet[]>([]);
@@ -46,6 +47,13 @@ const TrueFalsePage: React.FC = () => {
 
   const { categories, loading: catsLoading } = useCategories();
   const hasCategories = catsLoading || categories.length > 0;
+
+  const { claimResult } = useGenerationQueue();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const pending = claimResult("truefalse");
+    if (pending) handleDrafted(pending);
+  }, []);
 
   useEffect(() => {
     const load = async () => {

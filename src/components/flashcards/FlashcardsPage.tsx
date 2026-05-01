@@ -27,6 +27,7 @@ import NoCategoryBanner from "../layout/NoCategoryBanner";
 import CsvImportModal from "./CsvImportModal";
 import { CardRowSkeleton } from "../shared/Skeleton";
 import "./FlashcardsPage.css";
+import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
 
 type DraftFlashcard = {
   question: string;
@@ -77,6 +78,16 @@ const FlashcardsPage: React.FC = () => {
     });
     return grouped;
   }, [savedFlashcards]);
+
+  const { claimResult } = useGenerationQueue();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const pending = claimResult("flashcards");
+    if (pending?.flashcards?.length) {
+      handleAddGenerated(pending.flashcards);
+    }
+  }, []);
 
   useEffect(() => {
     if (!token) return;

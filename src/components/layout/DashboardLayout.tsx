@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import { flashCardsApi } from "../../api/flashcards";
+import { GenerationQueueProvider } from "../../contexts/GenerationQueueContext";
+import { GenerationQueueWidget } from "../shared/GenerationQueueWidget";
 import "./DashboardLayout.css";
 
 interface DashboardLayoutProps {
@@ -575,8 +577,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         {/* Content */}
         <main className="ds-content">{children}</main>
       </div>
+      <GenerationQueueWidget />
     </div>
   );
 };
 
-export default DashboardLayout;
+const DashboardLayoutWithQueue: React.FC<DashboardLayoutProps> = (props) => (
+  <GenerationQueueProvider>
+    <DashboardLayout {...props} />
+  </GenerationQueueProvider>
+);
+
+export default DashboardLayoutWithQueue;
