@@ -66,6 +66,7 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
           capturedFile || undefined,
           capturedText || undefined,
           capturedQuantity,
+          capturedCategoryId || undefined,
         );
         return job.id;
       },

@@ -101,6 +101,7 @@ export const GenerationQueueProvider: React.FC<{
   const [pendingResults, setPendingResults] = useState<
     Partial<Record<ModuleType, any>>
   >({});
+  const pendingResultsRef = useRef<Partial<Record<ModuleType, any>>>({});
 
   // Stable references so the polling loop can always read the latest state
   const jobsRef = useRef<QueueJob[]>([]);
@@ -122,6 +123,11 @@ export const GenerationQueueProvider: React.FC<{
   useEffect(() => {
     jobsRef.current = jobs;
   }, [jobs]);
+
+  // Keep pending results in a ref for atomic claim operations
+  useEffect(() => {
+    pendingResultsRef.current = pendingResults;
+  }, [pendingResults]);
 
   const updateJob = useCallback((localId: string, patch: Partial<QueueJob>) => {
     setJobs((prev) =>
@@ -201,6 +207,10 @@ export const GenerationQueueProvider: React.FC<{
         if (polled.status === "completed") {
           updateJob(pending.localId, { status: "completed" });
           // Store result for the target page to claim
+          pendingResultsRef.current = {
+            ...pendingResultsRef.current,
+            [pending.moduleType]: polled.result,
+          };
           setPendingResults((prev) => ({
             ...prev,
             [pending.moduleType]: polled.result,
@@ -288,26 +298,27 @@ export const GenerationQueueProvider: React.FC<{
     [isModuleQueued],
   );
 
-  const claimResult = useCallback(
-    (moduleType: ModuleType) => {
-      const result = pendingResults[moduleType] ?? null;
-      if (result !== null) {
-        setPendingResults((prev) => {
-          const next = { ...prev };
-          delete next[moduleType];
-          return next;
-        });
-        // Remove completed job from list to keep the queue clean
-        setJobs((prev) =>
-          prev.filter(
-            (j) => !(j.moduleType === moduleType && j.status === "completed"),
-          ),
-        );
-      }
-      return result;
-    },
-    [pendingResults],
-  );
+  const claimResult = useCallback((moduleType: ModuleType) => {
+    const result = pendingResultsRef.current[moduleType] ?? null;
+    if (result !== null) {
+      const next = { ...pendingResultsRef.current };
+      delete next[moduleType];
+      pendingResultsRef.current = next;
+
+      setPendingResults((prev) => {
+        const updated = { ...prev };
+        delete updated[moduleType];
+        return updated;
+      });
+      // Remove completed job from list to keep the queue clean
+      setJobs((prev) =>
+        prev.filter(
+          (j) => !(j.moduleType === moduleType && j.status === "completed"),
+        ),
+      );
+    }
+    return result;
+  }, []);
 
   return (
     <GenerationQueueContext.Provider

@@ -156,6 +156,7 @@ export const flashCardsApi = {
     file?: File,
     text?: string,
     quantity?: number,
+    categoryId?: string,
   ): Promise<FlashcardGenerationJob> => {
     if (!file && !text) {
       throw new Error(
@@ -168,6 +169,9 @@ export const flashCardsApi = {
     if (text) formData.append("text", text);
     if (quantity) {
       formData.append("quantity", quantity.toString());
+    }
+    if (categoryId) {
+      formData.append("categoryId", categoryId);
     }
 
     const response = await apiClient.post(
