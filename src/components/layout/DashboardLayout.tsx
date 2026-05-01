@@ -359,7 +359,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
   const pageInfo = pageTitles[location.pathname] || {
     title: "Dashboard",
-    subtitle: "StudyAI",
+    subtitle: "Flashy",
   };
 
   const isActive = (path: string, exact?: boolean) => {
@@ -403,7 +403,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
             </svg>
           </div>
-          <span className="ds-brand-name">StudyAI</span>
+          <span className="ds-brand-name">Flashy</span>
         </div>
 
         {/* Nav */}
@@ -499,7 +499,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </button>
             <div className="ds-topbar-title-block">
               <h1 className="ds-page-title">{pageInfo.title}</h1>
-              <p className="ds-breadcrumb">StudyAI / {pageInfo.title}</p>
+              <p className="ds-breadcrumb">Flashy / {pageInfo.title}</p>
             </div>
           </div>
           <div className="ds-topbar-right">

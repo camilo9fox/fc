@@ -267,7 +267,7 @@ const FlashcardsPage: React.FC = () => {
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
-<title>Flashcards — StudyAI</title>
+  <title>Flashcards — Flashy</title>
 <style>
   body { font-family: Georgia, serif; color: #1a1a1a; padding: 32px; max-width: 720px; margin: auto; }
   h1 { font-size: 1.5rem; color: #631D76; border-bottom: 2px solid #631D76; padding-bottom: 8px; margin-bottom: 24px; }
@@ -280,7 +280,7 @@ const FlashcardsPage: React.FC = () => {
 </style>
 </head>
 <body>
-<h1>📚 Mis Flashcards — StudyAI</h1>
+          <h1>📚 Mis Flashcards — Flashy</h1>
 ${rows}
 </body>
 </html>`;

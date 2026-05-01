@@ -33,7 +33,7 @@ const Login: React.FC = () => {
         <aside className="auth-showcase" aria-hidden="true">
           <div className="auth-showcase-badge">
             <Sparkles size={14} />
-            <span>StudyFlow</span>
+            <span>Flashy</span>
           </div>
 
           <h1 className="auth-showcase-title">Vuelve a tu ritmo de estudio</h1>
