@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Paperclip, X } from "lucide-react";
 import { flashCardsApi } from "../../api/flashcards";
 import { useCategories } from "../../hooks/useCategories";
 import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
+import { AiUsageStatus, statsApi } from "../../api/stats";
 import {
   ALLOWED_UPLOAD_FORMATS,
   MAX_FLASHCARDS_GENERATED,
@@ -29,10 +30,29 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [queued, setQueued] = useState(false);
+  const [usage, setUsage] = useState<AiUsageStatus | null>(null);
+  const [loadingUsage, setLoadingUsage] = useState(false);
 
   const { categories } = useCategories();
   const { enqueue, isModuleQueued } = useGenerationQueue();
   const isBusy = queued || isModuleQueued("flashcards");
+  const actionCost = usage?.costs?.flashcards ?? 1;
+
+  const loadUsage = useCallback(async () => {
+    setLoadingUsage(true);
+    try {
+      const data = await statsApi.getAiUsage();
+      setUsage(data);
+    } catch {
+      setUsage(null);
+    } finally {
+      setLoadingUsage(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadUsage();
+  }, [loadUsage]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFile(event.target.files?.[0] ?? null);
@@ -49,6 +69,16 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
       setError("Debes seleccionar un tema de estudio.");
       return;
     }
+
+    if (
+      usage?.enabled &&
+      Number.isFinite(usage.creditsRemaining) &&
+      usage.creditsRemaining < actionCost
+    ) {
+      setError("No tienes créditos IA suficientes para generar flashcards.");
+      return;
+    }
+
     setError(null);
 
     const capturedFile = file;
@@ -108,6 +138,24 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
       </div>
 
       <div className="qz-form-meta">
+        <div className="qz-usage-box" aria-live="polite">
+          {loadingUsage ? (
+            <span>Cargando créditos IA...</span>
+          ) : usage?.enabled ? (
+            <>
+              <strong>
+                Créditos IA: {usage.creditsRemaining}/{usage.creditsLimit}
+              </strong>
+              <span>
+                Costo por generación de flashcards: {actionCost} crédito
+                {actionCost === 1 ? "" : "s"}.
+              </span>
+            </>
+          ) : (
+            <span>Créditos IA no disponibles por ahora.</span>
+          )}
+        </div>
+
         <div className="qz-field">
           <label htmlFor="generateCategory">Tema de estudio</label>
           <select

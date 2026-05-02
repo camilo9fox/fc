@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Paperclip, X } from "lucide-react";
 import { useCategories } from "../../hooks/useCategories";
 import {
@@ -8,6 +8,7 @@ import {
 import { trueFalseApi } from "../../api/trueFalse";
 import { DraftTFState } from "../../types/trueFalse.types";
 import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
+import { AiUsageStatus, statsApi } from "../../api/stats";
 import "./TrueFalsePage.css";
 
 interface GenerateTFFormProps {
@@ -25,7 +26,26 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({ onCancel }) => {
   const [file, setFile] = useState<File | null>(null);
   const [queued, setQueued] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [usage, setUsage] = useState<AiUsageStatus | null>(null);
+  const [loadingUsage, setLoadingUsage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const actionCost = usage?.costs?.truefalse ?? 1;
+
+  const loadUsage = useCallback(async () => {
+    setLoadingUsage(true);
+    try {
+      const data = await statsApi.getAiUsage();
+      setUsage(data);
+    } catch {
+      setUsage(null);
+    } finally {
+      setLoadingUsage(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadUsage();
+  }, [loadUsage]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFile(e.target.files?.[0] ?? null);
@@ -39,6 +59,15 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({ onCancel }) => {
     if (!categoryId) return setError("Debes seleccionar una categoría.");
     if (!file && !text.trim())
       return setError("Proporciona un archivo o texto de estudio.");
+    if (
+      usage?.enabled &&
+      Number.isFinite(usage.creditsRemaining) &&
+      usage.creditsRemaining < actionCost
+    ) {
+      return setError(
+        "No tienes créditos IA suficientes para generar un set V/F.",
+      );
+    }
 
     const capturedTitle = title.trim();
     const capturedCategoryId = categoryId;
@@ -97,6 +126,24 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({ onCancel }) => {
       </div>
 
       <div className="tf-form-meta">
+        <div className="tf-usage-box" aria-live="polite">
+          {loadingUsage ? (
+            <span>Cargando créditos IA...</span>
+          ) : usage?.enabled ? (
+            <>
+              <strong>
+                Créditos IA: {usage.creditsRemaining}/{usage.creditsLimit}
+              </strong>
+              <span>
+                Costo por generación V/F: {actionCost} crédito
+                {actionCost === 1 ? "" : "s"}.
+              </span>
+            </>
+          ) : (
+            <span>Créditos IA no disponibles por ahora.</span>
+          )}
+        </div>
+
         <div className="tf-field">
           <label>Título</label>
           <input

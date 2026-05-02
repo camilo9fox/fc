@@ -699,6 +699,23 @@
   text-align: center;
 }
 
+.tf-usage-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #f9f3fb;
+  border: 1px solid #ead9ef;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--tf-ink);
+  font-size: 0.84rem;
+}
+
+.tf-usage-box strong {
+  color: var(--tf-primary);
+  font-size: 0.9rem;
+}
+
 .tf-progress-bar {
   margin-top: 8px;
   height: 6px;

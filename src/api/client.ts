@@ -118,6 +118,13 @@ apiClient.interceptors.response.use(
 
     // 429 — rate limited: respect Retry-After header, then retry once
     if (status === 429) {
+      const quotaCode =
+        error.response?.data?.code || error.response?.data?.details?.reason;
+      const isQuotaLimit =
+        quotaCode === "daily_limit" ||
+        quotaCode === "burst_limit" ||
+        quotaCode === "quota_exceeded";
+
       const retryAfterSeconds = parseInt(
         error.response?.headers?.["retry-after"] ?? "5",
         10,
@@ -127,9 +134,15 @@ apiClient.interceptors.response.use(
       // Attach retry-after info so components can show a message
       const enhancedError = Object.assign(error, {
         isRateLimit: true,
+        isQuotaLimit,
         retryAfterSeconds: retryAfterSeconds,
         retryAfterMs: waitMs,
       });
+
+      // Quota errors are business limits, not transient transport limits.
+      if (isQuotaLimit) {
+        return Promise.reject(enhancedError);
+      }
 
       // Retry once after the indicated wait
       if (!config._retry) {

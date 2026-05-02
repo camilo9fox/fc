@@ -697,6 +697,23 @@
   text-align: center;
 }
 
+.qz-usage-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #f9f3fb;
+  border: 1px solid #ead9ef;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--qz-ink);
+  font-size: 0.84rem;
+}
+
+.qz-usage-box strong {
+  color: var(--qz-primary);
+  font-size: 0.9rem;
+}
+
 .qz-progress-bar {
   margin-top: 8px;
   height: 6px;

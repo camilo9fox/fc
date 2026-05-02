@@ -316,6 +316,23 @@
   font-size: 0.92rem;
 }
 
+.qz-usage-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #f9f3fb;
+  border: 1px solid #ead9ef;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #2e2532;
+  font-size: 0.84rem;
+}
+
+.qz-usage-box strong {
+  color: #631d76;
+  font-size: 0.9rem;
+}
+
 .draft-header {
   display: flex;
   justify-content: space-between;

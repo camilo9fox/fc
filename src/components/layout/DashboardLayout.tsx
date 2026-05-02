@@ -5,6 +5,7 @@ import { useTheme } from "../../contexts/ThemeContext";
 import { flashCardsApi } from "../../api/flashcards";
 import { GenerationQueueProvider } from "../../contexts/GenerationQueueContext";
 import { GenerationQueueWidget } from "../shared/GenerationQueueWidget";
+import { AiUsagePulseBar } from "../shared/AiUsagePulseBar";
 import "./DashboardLayout.css";
 
 interface DashboardLayoutProps {
@@ -570,6 +571,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 <polyline points="9 22 9 12 15 12 15 22" />
               </svg>
             </Link>
+            <AiUsagePulseBar />
             <div className="ds-topbar-avatar" title={user?.email}>
               {userInitials}
             </div>

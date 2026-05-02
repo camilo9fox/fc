@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { formatAiQuotaMessage, parseAiQuotaError } from "../api/stats";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -78,6 +79,14 @@ const MODULE_LABELS: Record<ModuleType, string> = {
   quiz: "Cuestionario",
   truefalse: "Verdadero/Falso",
   studyguide: "Guía de estudio",
+};
+
+const buildStartErrorMessage = (error: unknown): string => {
+  const quota = parseAiQuotaError(error);
+  if (quota) return formatAiQuotaMessage(quota);
+
+  const maybeMessage = (error as { message?: string } | null)?.message;
+  return maybeMessage || "Error al iniciar la generación.";
 };
 
 const MODULE_LINKS: Record<ModuleType, string> = {
@@ -166,14 +175,15 @@ export const GenerationQueueProvider: React.FC<{
         backendJobId = await startFn();
         updateJob(pending.localId, { backendJobId });
       } catch (startErr: any) {
+        const friendlyError = buildStartErrorMessage(startErr);
         updateJob(pending.localId, {
           status: "failed",
-          error: startErr?.message || "Error al iniciar la generación.",
+          error: friendlyError,
         });
         addToast({
           type: "error",
           moduleType: pending.moduleType,
-          message: `Error al iniciar: ${pending.label}`,
+          message: friendlyError,
           link: MODULE_LINKS[pending.moduleType],
         });
         processingRef.current = false;
