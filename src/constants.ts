@@ -3,8 +3,8 @@ export const ALLOWED_UPLOAD_FORMATS = ".pdf,.txt";
 
 // ─── Generation limits ────────────────────────────────────────────────────────
 export const MAX_FLASHCARDS_GENERATED = 10;
-export const MAX_QUIZ_QUESTIONS_GENERATED = 20;
-export const MAX_TF_STATEMENTS_GENERATED = 30;
+export const MAX_QUIZ_QUESTIONS_GENERATED = 10;
+export const MAX_TF_STATEMENTS_GENERATED = 10;
 
 // ─── Study score thresholds ───────────────────────────────────────────────────
 export const SCORE_EXCELLENT_PCT = 80; // >= 80 → trophy emoji / green ring
