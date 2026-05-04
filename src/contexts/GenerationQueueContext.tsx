@@ -10,7 +10,12 @@ import { formatAiQuotaMessage, parseAiQuotaError } from "../api/stats";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-export type ModuleType = "flashcards" | "quiz" | "truefalse" | "studyguide";
+export type ModuleType =
+  | "flashcards"
+  | "quiz"
+  | "truefalse"
+  | "studyguide"
+  | "examsim";
 
 export interface QueueJob {
   localId: string;
@@ -53,6 +58,7 @@ interface GenerationQueueContextValue {
   enqueue: (params: EnqueueParams) => { success: boolean; reason?: string };
   claimResult: (moduleType: ModuleType) => any | null;
   isModuleQueued: (moduleType: ModuleType) => boolean;
+  dismissJob: (localId: string) => void;
   jobs: QueueJob[];
   toasts: QueueToast[];
   dismissToast: (id: string) => void;
@@ -79,6 +85,7 @@ const MODULE_LABELS: Record<ModuleType, string> = {
   quiz: "Cuestionario",
   truefalse: "Verdadero/Falso",
   studyguide: "Guía de estudio",
+  examsim: "Simulación de examen",
 };
 
 const buildStartErrorMessage = (error: unknown): string => {
@@ -94,6 +101,7 @@ const MODULE_LINKS: Record<ModuleType, string> = {
   quiz: "/quizzes",
   truefalse: "/truefalse",
   studyguide: "/study-guides",
+  examsim: "/exam-simulations",
 };
 
 const POLL_INTERVAL_MS = 2500;
@@ -330,12 +338,19 @@ export const GenerationQueueProvider: React.FC<{
     return result;
   }, []);
 
+  const dismissJob = useCallback((localId: string) => {
+    startFnsRef.current.delete(localId);
+    pollFnsRef.current.delete(localId);
+    setJobs((prev) => prev.filter((job) => job.localId !== localId));
+  }, []);
+
   return (
     <GenerationQueueContext.Provider
       value={{
         enqueue,
         claimResult,
         isModuleQueued,
+        dismissJob,
         jobs,
         toasts,
         dismissToast,

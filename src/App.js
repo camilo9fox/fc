@@ -20,6 +20,7 @@ import MemoryModePage from './components/games/MemoryModePage';
 import ContrarrelojModePage from './components/games/ContrarrelojModePage';
 import EscrituraModePage from './components/games/EscrituraModePage';
 import SpacedRepetitionPage from './components/flashcards/SpacedRepetitionPage';
+import ExamSimulationsPage from './components/examsim/ExamSimulationsPage';
 import NotFoundPage from './components/shared/NotFoundPage';
 import LandingPage from './components/landing/LandingPage';
 import DashboardLayout from './components/layout/DashboardLayout';
@@ -201,6 +202,16 @@ const AppRoutes: React.FC = () => {
           <ProtectedRoute>
             <DashboardLayout>
               <SpacedRepetitionPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/exam-simulations"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ExamSimulationsPage />
             </DashboardLayout>
           </ProtectedRoute>
         }

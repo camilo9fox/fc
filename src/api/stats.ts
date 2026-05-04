@@ -49,6 +49,7 @@ export interface AiUsageCosts {
   quizzes: number;
   truefalse: number;
   studyguides?: number;
+  examsimulation?: number;
 }
 
 export interface AiUsageStatus {

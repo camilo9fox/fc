@@ -21,6 +21,7 @@ const MODULE_ICONS: Record<string, string> = {
   quiz: "📝",
   truefalse: "✔️",
   studyguide: "📖",
+  examsim: "🎯",
 };
 
 const MODULE_LINKS: Record<string, string> = {
@@ -28,6 +29,7 @@ const MODULE_LINKS: Record<string, string> = {
   quiz: "/quizzes",
   truefalse: "/truefalse",
   studyguide: "/study-guides",
+  examsim: "/exam-simulations",
 };
 
 function ProgressBar({ percent }: { percent: number }) {
@@ -44,9 +46,11 @@ function ProgressBar({ percent }: { percent: number }) {
 function JobRow({
   job,
   onCompletedClick,
+  onDismissFailed,
 }: {
   job: QueueJob;
   onCompletedClick: (job: QueueJob) => void;
+  onDismissFailed: (job: QueueJob) => void;
 }) {
   const icon = MODULE_ICONS[job.moduleType] ?? "⚙️";
   const isClickable = job.status === "completed";
@@ -95,12 +99,26 @@ function JobRow({
           <AlertCircle size={14} className="gq-err" />
         )}
       </span>
+      {job.status === "failed" && (
+        <button
+          type="button"
+          className="gq-job-remove"
+          title="Quitar error de la cola"
+          aria-label="Quitar error de la cola"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDismissFailed(job);
+          }}
+        >
+          <X size={12} />
+        </button>
+      )}
     </div>
   );
 }
 
 export const GenerationQueueWidget: React.FC = () => {
-  const { jobs, toasts, dismissToast } = useGenerationQueue();
+  const { jobs, toasts, dismissToast, dismissJob } = useGenerationQueue();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
 
@@ -110,6 +128,13 @@ export const GenerationQueueWidget: React.FC = () => {
       navigate(link);
     },
     [navigate],
+  );
+
+  const handleDismissFailedJob = React.useCallback(
+    (job: QueueJob) => {
+      dismissJob(job.localId);
+    },
+    [dismissJob],
   );
 
   // Active jobs (not yet claimed completed ones may linger briefly)
@@ -199,6 +224,7 @@ export const GenerationQueueWidget: React.FC = () => {
                   key={job.localId}
                   job={job}
                   onCompletedClick={handleCompletedJobClick}
+                  onDismissFailed={handleDismissFailedJob}
                 />
               ))}
               {!open && recentJobs.length > 0 && (
