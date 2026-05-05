@@ -140,6 +140,11 @@ export interface ExamSimulationSubmissionResult {
     maxPoints: number;
     points: number;
     criteria?: string | null;
+    aiFeedback?: string | null;
+    missingConcepts?: string[];
+    strengths?: string[];
+    gradingSource?: "ai" | "heuristic";
+    guardrailApplied?: boolean;
   }>;
 }
 

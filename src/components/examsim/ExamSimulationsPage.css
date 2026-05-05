@@ -499,6 +499,66 @@
   color: #5f4f6c;
 }
 
+.es-dev-feedback-wrap {
+  display: grid;
+  gap: 8px;
+}
+
+.es-dev-grade-source {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6e5b7a;
+}
+
+.es-dev-block,
+.es-dev-list-block {
+  border: 1px solid #e3d7ec;
+  border-radius: 10px;
+  background: #fcf9ff;
+  padding: 8px 10px;
+  display: grid;
+  gap: 5px;
+}
+
+.es-dev-block strong,
+.es-dev-list-block strong {
+  font-size: 0.74rem;
+  letter-spacing: 0.01em;
+  color: #5f4f6c;
+}
+
+.es-dev-block p,
+.es-dev-list-block ul {
+  margin: 0;
+  font-size: 0.79rem;
+  color: #3f3246;
+  line-height: 1.4;
+}
+
+.es-dev-list-block ul {
+  padding-left: 16px;
+}
+
+.es-dev-list-block li + li {
+  margin-top: 3px;
+}
+
+.es-dev-block.is-ai {
+  border-color: #cfdaf8;
+  background: #f4f7ff;
+}
+
+.es-dev-list-block.is-ok {
+  border-color: #cce6d5;
+  background: #f1faf4;
+}
+
+.es-dev-list-block.is-warn {
+  border-color: #f5d7c2;
+  background: #fff7ef;
+}
+
 .es-warning {
   margin: 0;
   border: 1px solid #fed7aa;
@@ -694,6 +754,41 @@
   background: #2b2234;
   border-color: #4c3a5c;
   color: #d6c2e5;
+}
+
+[data-theme="dark"] .es-dev-grade-source {
+  color: #cdb8dc;
+}
+
+[data-theme="dark"] .es-dev-block,
+[data-theme="dark"] .es-dev-list-block {
+  background: #2a2133;
+  border-color: #4b3a59;
+}
+
+[data-theme="dark"] .es-dev-block strong,
+[data-theme="dark"] .es-dev-list-block strong {
+  color: #d4c0e4;
+}
+
+[data-theme="dark"] .es-dev-block p,
+[data-theme="dark"] .es-dev-list-block ul {
+  color: #e7dbef;
+}
+
+[data-theme="dark"] .es-dev-block.is-ai {
+  background: #21283a;
+  border-color: #3e4f80;
+}
+
+[data-theme="dark"] .es-dev-list-block.is-ok {
+  background: #1d3128;
+  border-color: #2f5a43;
+}
+
+[data-theme="dark"] .es-dev-list-block.is-warn {
+  background: #36271d;
+  border-color: #6a4934;
 }
 
 [data-theme="dark"] .es-history-item {

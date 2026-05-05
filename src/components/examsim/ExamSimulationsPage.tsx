@@ -577,6 +577,26 @@ const ExamSimulationsPage: React.FC = () => {
               const devFeedback = result?.development.find(
                 (item) => item.questionId === String(question.id),
               );
+              const normalizedReference = String(
+                question.reference_answer || "",
+              ).trim();
+              const normalizedCriteria = String(
+                question.evaluation_criteria || devFeedback?.criteria || "",
+              ).trim();
+              const normalizedAiFeedback = String(
+                devFeedback?.aiFeedback || "",
+              ).trim();
+              const normalizedSubmitted = String(
+                devFeedback?.submittedText || devAnswers[questionKey] || "",
+              ).trim();
+              const missingConcepts = Array.isArray(
+                devFeedback?.missingConcepts,
+              )
+                ? devFeedback?.missingConcepts.filter(Boolean)
+                : [];
+              const strengths = Array.isArray(devFeedback?.strengths)
+                ? devFeedback?.strengths.filter(Boolean)
+                : [];
 
               return (
                 <article key={questionKey} className="es-question-card">
@@ -602,10 +622,75 @@ const ExamSimulationsPage: React.FC = () => {
                     disabled={Boolean(result) || isExpired}
                   />
                   {devFeedback && (
-                    <p className="es-feedback is-neutral">
-                      Puntaje: {devFeedback.points.toFixed(2)} /{" "}
-                      {devFeedback.maxPoints.toFixed(2)}
-                    </p>
+                    <div className="es-dev-feedback-wrap">
+                      <p className="es-feedback is-neutral">
+                        Puntaje: {devFeedback.points.toFixed(2)} /{" "}
+                        {devFeedback.maxPoints.toFixed(2)}
+                      </p>
+
+                      <p className="es-dev-grade-source">
+                        Correccion:{" "}
+                        {devFeedback.gradingSource === "ai"
+                          ? devFeedback.guardrailApplied
+                            ? "IA + verificacion"
+                            : "IA"
+                          : "Heuristica"}
+                      </p>
+
+                      {normalizedSubmitted && (
+                        <div className="es-dev-block">
+                          <strong>Tu respuesta</strong>
+                          <p>{normalizedSubmitted}</p>
+                        </div>
+                      )}
+
+                      {normalizedReference && (
+                        <div className="es-dev-block">
+                          <strong>Respuesta de referencia</strong>
+                          <p>{normalizedReference}</p>
+                        </div>
+                      )}
+
+                      {normalizedCriteria && (
+                        <div className="es-dev-block">
+                          <strong>Explicacion breve</strong>
+                          <p>{normalizedCriteria}</p>
+                        </div>
+                      )}
+
+                      {normalizedAiFeedback && (
+                        <div className="es-dev-block is-ai">
+                          <strong>Feedback de IA</strong>
+                          <p>{normalizedAiFeedback}</p>
+                        </div>
+                      )}
+
+                      {strengths.length > 0 && (
+                        <div className="es-dev-list-block is-ok">
+                          <strong>Fortalezas detectadas</strong>
+                          <ul>
+                            {strengths.map((item, itemIndex) => (
+                              <li key={`${questionKey}-strength-${itemIndex}`}>
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {missingConcepts.length > 0 && (
+                        <div className="es-dev-list-block is-warn">
+                          <strong>Conceptos faltantes</strong>
+                          <ul>
+                            {missingConcepts.map((item, itemIndex) => (
+                              <li key={`${questionKey}-missing-${itemIndex}`}>
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
                   )}
                 </article>
               );
