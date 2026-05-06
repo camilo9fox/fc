@@ -356,6 +356,19 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [dueCount, setDueCount] = useState<number>(0);
 
   useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSidebarOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [sidebarOpen]);
+
+  useEffect(() => {
     if (!user) return;
     flashCardsApi
       .getReviewStats()
@@ -377,7 +390,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
   const handleLogout = () => {
     logout();
-    navigate("/categories");
+    navigate("/login");
   };
 
   const userInitials = user?.email
@@ -388,11 +401,25 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     <div className="ds-shell">
       {/* Mobile overlay */}
       {sidebarOpen && (
-        <div className="ds-overlay" onClick={() => setSidebarOpen(false)} />
+        <div
+          className="ds-overlay"
+          role="button"
+          tabIndex={0}
+          aria-label="Cerrar menu lateral"
+          onClick={() => setSidebarOpen(false)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              setSidebarOpen(false);
+            }
+          }}
+        />
       )}
 
       {/* ── Sidebar ── */}
-      <aside className={`ds-sidebar ${sidebarOpen ? "open" : ""}`}>
+      <aside
+        id="main-sidebar"
+        className={`ds-sidebar ${sidebarOpen ? "open" : ""}`}
+      >
         {/* Brand */}
         <div className="ds-brand">
           <div className="ds-brand-icon">
@@ -413,11 +440,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </div>
 
         {/* Nav */}
-        <nav className="ds-nav">
+        <nav className="ds-nav" aria-label="Navegacion principal">
           {/* Home — always at top */}
           <Link
             to="/dashboard"
             className={`ds-nav-item ds-nav-home ${isActive("/dashboard", true) ? "active" : ""}`}
+            aria-current={isActive("/dashboard", true) ? "page" : undefined}
             onClick={() => setSidebarOpen(false)}
           >
             <span className="ds-nav-icon">
@@ -454,6 +482,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     key={item.id}
                     to={item.path}
                     className={`ds-nav-item ${isActive(item.path, item.exact) ? "active" : ""}`}
+                    aria-current={
+                      isActive(item.path, item.exact) ? "page" : undefined
+                    }
                     onClick={() => setSidebarOpen(false)}
                   >
                     <span className="ds-nav-icon">{item.icon}</span>
@@ -511,7 +542,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             <button
               className="ds-menu-btn"
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              aria-label="Toggle sidebar"
+              aria-label="Alternar menu lateral"
+              aria-expanded={sidebarOpen}
+              aria-controls="main-sidebar"
             >
               <svg
                 width="20"
@@ -530,7 +563,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </button>
             <div className="ds-topbar-title-block">
               <h1 className="ds-page-title">{pageInfo.title}</h1>
-              <p className="ds-breadcrumb">Flashy / {pageInfo.title}</p>
+              <p className="ds-page-subtitle">{pageInfo.subtitle}</p>
             </div>
           </div>
           <div className="ds-topbar-right">
@@ -607,7 +640,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </header>
 
         {/* Content */}
-        <main className="ds-content">{children}</main>
+        <main id="main-content" className="ds-content" tabIndex={-1}>
+          {children}
+        </main>
       </div>
       <GenerationQueueWidget />
     </div>

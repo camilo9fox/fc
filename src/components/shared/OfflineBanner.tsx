@@ -20,6 +20,13 @@ const OfflineBanner: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    document.body.classList.toggle("has-offline-banner", offline);
+    return () => {
+      document.body.classList.remove("has-offline-banner");
+    };
+  }, [offline]);
+
   if (!offline) return null;
 
   return (

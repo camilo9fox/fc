@@ -54,6 +54,11 @@
   transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.ds-sidebar:focus-visible {
+  outline: 2px solid #ee4266;
+  outline-offset: 2px;
+}
+
 /* ── Brand ── */
 .ds-brand {
   display: flex;
@@ -345,6 +350,13 @@
   line-height: 1.2;
 }
 
+.ds-page-subtitle {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--ds-breadcrumb);
+  line-height: 1.2;
+}
+
 .ds-topbar-right {
   display: flex;
   align-items: center;
@@ -428,6 +440,19 @@
   transform: scale(1.05);
 }
 
+.ds-nav-item:focus-visible,
+.ds-logout-btn:focus-visible,
+.ds-theme-btn:focus-visible,
+.ds-topbar-home-btn:focus-visible,
+.ds-menu-btn:focus-visible {
+  outline: 2px solid #ee4266;
+  outline-offset: 2px;
+}
+
+body.has-offline-banner .ds-topbar {
+  top: 42px;
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .ds-sidebar {
@@ -456,5 +481,9 @@
 
   .ds-topbar {
     padding: 0 16px;
+  }
+
+  .ds-page-subtitle {
+    display: none;
   }
 }

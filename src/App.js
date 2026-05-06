@@ -32,7 +32,12 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div className="loading">Cargando...</div>;
+    return (
+      <div className="app-loading-screen" role="status" aria-live="polite">
+        <div className="app-loading-spinner" aria-hidden="true" />
+        <p>Cargando tu espacio de estudio...</p>
+      </div>
+    );
   }
 
   return user ? <>{children}</> : <Navigate to="/login" />;
@@ -229,6 +234,9 @@ function App() {
           <Router>
             <OfflineBanner />
             <div className="App">
+              <a href="#main-content" className="app-skip-link">
+                Saltar al contenido principal
+              </a>
               <AppRoutes />
             </div>
           </Router>
