@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { ConfirmDialogProvider } from './contexts/ConfirmDialogContext';
 import ErrorBoundary from './components/shared/ErrorBoundary';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
@@ -232,13 +233,15 @@ function App() {
       <ThemeProvider>
         <AuthProvider>
           <Router>
-            <OfflineBanner />
-            <div className="App">
-              <a href="#main-content" className="app-skip-link">
-                Saltar al contenido principal
-              </a>
-              <AppRoutes />
-            </div>
+            <ConfirmDialogProvider>
+              <OfflineBanner />
+              <div className="App">
+                <a href="#main-content" className="app-skip-link">
+                  Saltar al contenido principal
+                </a>
+                <AppRoutes />
+              </div>
+            </ConfirmDialogProvider>
           </Router>
         </AuthProvider>
       </ThemeProvider>

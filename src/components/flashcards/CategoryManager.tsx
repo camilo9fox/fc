@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useCategories } from "../../hooks/useCategories";
+import { useConfirmDialog } from "../../contexts/ConfirmDialogContext";
 
 const CategoryManager: React.FC = () => {
   const [isCreating, setIsCreating] = useState(false);
@@ -8,6 +9,7 @@ const CategoryManager: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const { categories, createCategory, deleteCategory } = useCategories();
+  const { confirm } = useConfirmDialog();
 
   const handleCreateCategory = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,12 +33,21 @@ const CategoryManager: React.FC = () => {
   };
 
   const handleDeleteCategory = async (categoryId: string) => {
-    if (window.confirm("¿Estás seguro de que quieres eliminar esta categoría? Las flashcards asociadas no se eliminarán.")) {
-      try {
-        await deleteCategory(categoryId);
-      } catch (err: any) {
-        setError(err.message);
-      }
+    const accepted = await confirm({
+      title: "Eliminar categoría",
+      description:
+        "¿Quieres eliminar esta categoría? El contenido asociado no se eliminará automáticamente.",
+      confirmLabel: "Sí, eliminar",
+      cancelLabel: "Cancelar",
+      tone: "danger",
+    });
+
+    if (!accepted) return;
+
+    try {
+      await deleteCategory(categoryId);
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
@@ -78,7 +89,9 @@ const CategoryManager: React.FC = () => {
           </div>
 
           <div className="form-actions">
-            <button type="submit" className="primary-button">Crear</button>
+            <button type="submit" className="primary-button">
+              Crear
+            </button>
             <button
               type="button"
               className="secondary-button"

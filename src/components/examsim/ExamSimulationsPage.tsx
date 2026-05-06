@@ -20,6 +20,7 @@ import {
   examSimulationApi,
 } from "../../api/examSimulation";
 import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
+import { useConfirmDialog } from "../../contexts/ConfirmDialogContext";
 import { AiUsageStatus, statsApi } from "../../api/stats";
 import { ALLOWED_UPLOAD_FORMATS } from "../../constants";
 import "./ExamSimulationsPage.css";
@@ -56,6 +57,7 @@ const getQuestionKey = (
 const ExamSimulationsPage: React.FC = () => {
   const { categories, loading: categoriesLoading } = useCategories();
   const { enqueue, isModuleQueued, claimResult } = useGenerationQueue();
+  const { confirm } = useConfirmDialog();
 
   const [simulations, setSimulations] = useState<ExamSimulation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -321,7 +323,15 @@ const ExamSimulationsPage: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("¿Eliminar esta simulacion de examen?")) return;
+    const accepted = await confirm({
+      title: "Eliminar simulación de examen",
+      description: "¿Eliminar esta simulación de examen?",
+      confirmLabel: "Sí, eliminar",
+      cancelLabel: "Cancelar",
+      tone: "danger",
+    });
+
+    if (!accepted) return;
 
     try {
       await examSimulationApi.delete(id);

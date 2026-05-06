@@ -18,6 +18,7 @@ import GenerateQuizForm from "./GenerateQuizForm";
 import CreateQuizForm from "./CreateQuizForm";
 import "./QuizzesPage.css";
 import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
+import { useConfirmDialog } from "../../contexts/ConfirmDialogContext";
 
 const QuizzesPage: React.FC = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
@@ -42,6 +43,7 @@ const QuizzesPage: React.FC = () => {
 
   const { categories, loading: catsLoading } = useCategories();
   const hasCategories = catsLoading || categories.length > 0;
+  const { confirm } = useConfirmDialog();
 
   const { claimResult } = useGenerationQueue();
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -122,7 +124,16 @@ const QuizzesPage: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("¿Eliminar este cuestionario?")) return;
+    const accepted = await confirm({
+      title: "Eliminar cuestionario",
+      description: "¿Eliminar este cuestionario?",
+      confirmLabel: "Sí, eliminar",
+      cancelLabel: "Cancelar",
+      tone: "danger",
+    });
+
+    if (!accepted) return;
+
     try {
       await quizApi.delete(id);
       setQuizzes((prev) => prev.filter((q) => q.id !== id));

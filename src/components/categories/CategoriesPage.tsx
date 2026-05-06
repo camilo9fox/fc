@@ -6,6 +6,7 @@ import ThemeCard from "./ThemeCard";
 import ThemeModal from "./ThemeModal";
 import CategoryDetailModal from "./CategoryDetailModal";
 import { ThemeCardSkeleton, SkeletonList } from "../shared/Skeleton";
+import { useConfirmDialog } from "../../contexts/ConfirmDialogContext";
 import "./CategoriesPage.css";
 
 type ModalState =
@@ -33,6 +34,7 @@ const CategoriesPage: React.FC = () => {
   const [modal, setModal] = useState<ModalState>(null);
   const [detailCat, setDetailCat] = useState<Category | null>(null);
   const [pageError, setPageError] = useState<string | null>(null);
+  const { confirm } = useConfirmDialog();
 
   const openCreate = () => setModal({ mode: "create" });
   const openEdit = (
@@ -78,12 +80,16 @@ const CategoriesPage: React.FC = () => {
   };
 
   const handleDelete = async (id: string, title: string) => {
-    if (
-      !window.confirm(
-        `¿Eliminar "${title}"? El contenido asociado no se eliminará.`,
-      )
-    )
-      return;
+    const accepted = await confirm({
+      title: "Eliminar tema",
+      description: `¿Eliminar "${title}"? El contenido asociado no se eliminará.`,
+      confirmLabel: "Sí, eliminar",
+      cancelLabel: "Cancelar",
+      tone: "danger",
+    });
+
+    if (!accepted) return;
+
     try {
       await deleteCategory(id);
     } catch (err: any) {

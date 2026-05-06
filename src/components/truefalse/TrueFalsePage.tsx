@@ -23,6 +23,7 @@ import GenerateTFForm from "./GenerateTFForm";
 import CreateTFForm from "./CreateTFForm";
 import "./TrueFalsePage.css";
 import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
+import { useConfirmDialog } from "../../contexts/ConfirmDialogContext";
 
 const TrueFalsePage: React.FC = () => {
   const [sets, setSets] = useState<TrueFalseSet[]>([]);
@@ -47,6 +48,7 @@ const TrueFalsePage: React.FC = () => {
 
   const { categories, loading: catsLoading } = useCategories();
   const hasCategories = catsLoading || categories.length > 0;
+  const { confirm } = useConfirmDialog();
 
   const { claimResult } = useGenerationQueue();
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -124,7 +126,16 @@ const TrueFalsePage: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("¿Eliminar este set?")) return;
+    const accepted = await confirm({
+      title: "Eliminar set",
+      description: "¿Eliminar este set?",
+      confirmLabel: "Sí, eliminar",
+      cancelLabel: "Cancelar",
+      tone: "danger",
+    });
+
+    if (!accepted) return;
+
     try {
       await trueFalseApi.delete(id);
       setSets((prev) => prev.filter((s) => s.id !== id));

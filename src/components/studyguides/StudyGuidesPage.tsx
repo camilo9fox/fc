@@ -13,6 +13,7 @@ import { useCategories } from "../../hooks/useCategories";
 import NoCategoryBanner from "../layout/NoCategoryBanner";
 import { studyGuideApi, StudyGuide } from "../../api/studyGuides";
 import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
+import { useConfirmDialog } from "../../contexts/ConfirmDialogContext";
 import GenerateStudyGuideForm from "./GenerateStudyGuideForm";
 import "./StudyGuidesPage.css";
 
@@ -58,6 +59,7 @@ const StudyGuidesPage: React.FC = () => {
   const [filterCategoryId, setFilterCategoryId] = useState<string>("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const { claimResult } = useGenerationQueue();
+  const { confirm } = useConfirmDialog();
 
   const detailStats = useMemo(() => {
     if (!selectedGuide) {
@@ -109,7 +111,16 @@ const StudyGuidesPage: React.FC = () => {
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("¿Eliminar esta guía de estudio?")) return;
+    const accepted = await confirm({
+      title: "Eliminar guía de estudio",
+      description: "¿Eliminar esta guía de estudio?",
+      confirmLabel: "Sí, eliminar",
+      cancelLabel: "Cancelar",
+      tone: "danger",
+    });
+
+    if (!accepted) return;
+
     setDeletingId(id);
     try {
       await studyGuideApi.remove(id);

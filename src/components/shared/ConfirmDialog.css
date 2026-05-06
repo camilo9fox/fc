@@ -1,0 +1,155 @@
+.cd-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 12050;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(16, 12, 20, 0.62);
+  backdrop-filter: blur(4px);
+  animation: cdFadeIn 0.18s ease;
+}
+
+.cd-modal {
+  width: min(480px, 100%);
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  border-radius: 18px;
+  border: 1px solid #eadceb;
+  background:
+    radial-gradient(
+      circle at 95% 0%,
+      rgba(238, 66, 102, 0.14),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 0% 100%,
+      rgba(99, 29, 118, 0.14),
+      transparent 38%
+    ),
+    #fff;
+  box-shadow: 0 20px 50px -20px rgba(19, 11, 29, 0.68);
+  animation: cdPopIn 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.cd-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #631d76;
+  background: #f6ecf9;
+}
+
+.cd-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.cd-modal-danger .cd-icon {
+  color: #b42336;
+  background: #fdecef;
+}
+
+.cd-content h3 {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+  line-height: 1.2;
+  color: #2e2532;
+}
+
+.cd-content p {
+  margin: 0;
+  color: #786984;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.cd-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cd-btn {
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    background 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.cd-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.cd-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.cd-btn-cancel {
+  border-color: #ddcfe6;
+  background: #f7f2fa;
+  color: #55485f;
+}
+
+.cd-btn-cancel:hover:not(:disabled) {
+  border-color: #c9b1d7;
+  background: #f1e7f7;
+}
+
+.cd-btn-confirm {
+  background: linear-gradient(135deg, #631d76, #ee4266);
+  color: #fff;
+}
+
+.cd-modal-danger .cd-btn-confirm {
+  background: linear-gradient(135deg, #b42336, #e11d48);
+}
+
+@keyframes cdFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes cdPopIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 560px) {
+  .cd-modal {
+    padding: 18px;
+    gap: 14px;
+    border-radius: 14px;
+  }
+
+  .cd-actions {
+    justify-content: stretch;
+  }
+
+  .cd-btn {
+    flex: 1;
+  }
+}
