@@ -209,6 +209,14 @@ const QuizzesPage: React.FC = () => {
     }
   };
 
+  const editingQuestionData = editingQuestion
+    ? quizzes
+        .find((quiz) => quiz.id === editingQuestion.quizId)
+        ?.questions?.find(
+          (question) => question.id === editingQuestion.questionId,
+        )
+    : null;
+
   if (studyQuiz) {
     return (
       <DraftQuizStudySession
@@ -437,105 +445,152 @@ const QuizzesPage: React.FC = () => {
                 <div className="qz-question-list">
                   {quiz.questions.map((q, idx) => (
                     <div key={q.id} className="qz-question-item">
-                      {editingQuestion?.questionId === q.id ? (
-                        <div className="qz-question-edit-form">
-                          <textarea
-                            className="qz-question-edit-input"
-                            value={editForm.question ?? ""}
-                            maxLength={2000}
-                            onChange={(e) =>
-                              setEditForm((f) => ({
-                                ...f,
-                                question: e.target.value,
-                              }))
-                            }
-                            rows={2}
-                          />
-                          {(editForm.options ?? []).map((opt, oi) => (
-                            <div key={oi} className="qz-option-row">
-                              <input
-                                type="radio"
-                                name={`correct-${q.id}`}
-                                checked={editForm.correct_answer === opt}
-                                onChange={() =>
-                                  setEditForm((f) => ({
-                                    ...f,
-                                    correct_answer: opt,
-                                  }))
-                                }
-                                title="Marcar como respuesta correcta"
-                              />
-                              <input
-                                type="text"
-                                className="qz-option-input"
-                                value={opt}
-                                maxLength={500}
-                                onChange={(e) => {
-                                  const newOpts = [...(editForm.options ?? [])];
-                                  newOpts[oi] = e.target.value;
-                                  const wasCorrect =
-                                    editForm.correct_answer === opt;
-                                  setEditForm((f) => ({
-                                    ...f,
-                                    options: newOpts,
-                                    correct_answer: wasCorrect
-                                      ? e.target.value
-                                      : f.correct_answer,
-                                  }));
-                                }}
-                              />
-                            </div>
-                          ))}
-                          <input
-                            type="text"
-                            className="qz-explanation-input"
-                            placeholder="Explicación (opcional)"
-                            value={editForm.explanation ?? ""}
-                            maxLength={2000}
-                            onChange={(e) =>
-                              setEditForm((f) => ({
-                                ...f,
-                                explanation: e.target.value,
-                              }))
-                            }
-                          />
-                          <div className="qz-question-edit-actions">
-                            <button
-                              className="qz-btn-save-question"
-                              onClick={handleSaveQuestion}
-                              disabled={savingQuestion}
-                            >
-                              <Check size={13} />
-                              {savingQuestion ? "Guardando…" : "Guardar"}
-                            </button>
-                            <button
-                              className="qz-btn-cancel-edit"
-                              onClick={() => setEditingQuestion(null)}
-                              disabled={savingQuestion}
-                            >
-                              Cancelar
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="qz-question-row">
-                          <span className="qz-question-num">{idx + 1}.</span>
-                          <span className="qz-question-text">{q.question}</span>
-                          <button
-                            className="qz-btn-edit-q"
-                            onClick={() => startEditQuestion(quiz.id, q)}
-                            title="Editar pregunta"
-                          >
-                            <Pencil size={12} />
-                          </button>
-                        </div>
-                      )}
+                      <div className="qz-question-row">
+                        <span className="qz-question-num">{idx + 1}.</span>
+                        <span className="qz-question-text">{q.question}</span>
+                        <button
+                          className="qz-btn-edit-q"
+                          onClick={() => startEditQuestion(quiz.id, q)}
+                          title="Editar pregunta"
+                        >
+                          <Pencil size={12} />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {editingQuestion && editingQuestionData && (
+        <div
+          className="qz-edit-modal-backdrop"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !savingQuestion) {
+              setEditingQuestion(null);
+            }
+          }}
+        >
+          <div className="qz-edit-modal" role="dialog" aria-modal="true">
+            <div className="qz-edit-modal-header">
+              <div>
+                <p className="qz-edit-modal-eyebrow">Editar pregunta</p>
+                <h3>Actualiza contenido y respuesta correcta</h3>
+              </div>
+              <button
+                className="qz-edit-modal-close"
+                onClick={() => setEditingQuestion(null)}
+                disabled={savingQuestion}
+                aria-label="Cerrar edición"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="qz-question-edit-form qz-question-edit-form-modal">
+              <label className="qz-edit-field-label" htmlFor="qz-edit-question">
+                Enunciado de la pregunta
+              </label>
+              <textarea
+                id="qz-edit-question"
+                className="qz-question-edit-input"
+                value={editForm.question ?? ""}
+                maxLength={2000}
+                onChange={(e) =>
+                  setEditForm((f) => ({
+                    ...f,
+                    question: e.target.value,
+                  }))
+                }
+                rows={4}
+              />
+              <p className="qz-edit-field-label">
+                Alternativas y respuesta correcta
+              </p>
+              {(editForm.options ?? []).map((opt, oi) => (
+                <div key={oi} className="qz-option-row">
+                  <label className="qz-option-mark-label">Correcta</label>
+                  <input
+                    type="radio"
+                    name={`correct-modal-${editingQuestion.questionId}`}
+                    checked={editForm.correct_answer === opt}
+                    onChange={() =>
+                      setEditForm((f) => ({
+                        ...f,
+                        correct_answer: opt,
+                      }))
+                    }
+                    title="Marcar como respuesta correcta"
+                  />
+                  <label
+                    className="qz-edit-field-sublabel"
+                    htmlFor={`qz-edit-option-${oi}`}
+                  >
+                    Alternativa {oi + 1}
+                  </label>
+                  <input
+                    id={`qz-edit-option-${oi}`}
+                    type="text"
+                    className="qz-option-input"
+                    value={opt}
+                    maxLength={500}
+                    onChange={(e) => {
+                      const newOpts = [...(editForm.options ?? [])];
+                      newOpts[oi] = e.target.value;
+                      const wasCorrect = editForm.correct_answer === opt;
+                      setEditForm((f) => ({
+                        ...f,
+                        options: newOpts,
+                        correct_answer: wasCorrect
+                          ? e.target.value
+                          : f.correct_answer,
+                      }));
+                    }}
+                  />
+                </div>
+              ))}
+              <label
+                className="qz-edit-field-label"
+                htmlFor="qz-edit-explanation"
+              >
+                Explicación (opcional)
+              </label>
+              <input
+                id="qz-edit-explanation"
+                type="text"
+                className="qz-explanation-input"
+                placeholder="Agrega una explicación breve para el estudiante"
+                value={editForm.explanation ?? ""}
+                maxLength={2000}
+                onChange={(e) =>
+                  setEditForm((f) => ({
+                    ...f,
+                    explanation: e.target.value,
+                  }))
+                }
+              />
+              <div className="qz-question-edit-actions">
+                <button
+                  className="qz-btn-save-question"
+                  onClick={handleSaveQuestion}
+                  disabled={savingQuestion}
+                >
+                  <Check size={13} />
+                  {savingQuestion ? "Guardando..." : "Guardar cambios"}
+                </button>
+                <button
+                  className="qz-btn-cancel-edit"
+                  onClick={() => setEditingQuestion(null)}
+                  disabled={savingQuestion}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

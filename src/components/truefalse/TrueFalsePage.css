@@ -1281,6 +1281,101 @@
   gap: 8px;
 }
 
+.tf-edit-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1250;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(16, 12, 20, 0.62);
+  backdrop-filter: blur(4px);
+}
+
+.tf-edit-modal {
+  width: min(760px, 100%);
+  border: 1px solid var(--tf-border);
+  border-radius: 18px;
+  padding: 22px;
+  display: grid;
+  gap: 16px;
+  background:
+    radial-gradient(circle at 95% 0%, rgba(34, 197, 94, 0.13), transparent 34%),
+    radial-gradient(
+      circle at 0% 100%,
+      rgba(99, 29, 118, 0.14),
+      transparent 38%
+    ),
+    #fff;
+  box-shadow: 0 20px 50px -20px rgba(19, 11, 29, 0.68);
+}
+
+.tf-edit-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.tf-edit-modal-eyebrow {
+  margin: 0 0 4px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #15803d;
+}
+
+.tf-edit-modal-header h3 {
+  margin: 0;
+  font-size: 1.12rem;
+  color: var(--tf-ink);
+}
+
+.tf-edit-modal-close {
+  background: transparent;
+  color: var(--tf-muted);
+  border: 1px solid var(--tf-border);
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.tf-edit-modal-close:hover:not(:disabled) {
+  color: #15803d;
+  border-color: #15803d;
+}
+
+.tf-question-edit-form-modal {
+  gap: 12px;
+}
+
+.tf-edit-field-label {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--tf-ink);
+}
+
+.tf-question-edit-form-modal .tf-question-edit-input {
+  min-height: 110px;
+}
+
+.tf-is-true-toggle-modal {
+  background: #f6f8fb;
+  border: 1px solid var(--tf-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.tf-question-edit-form-modal .tf-explanation-input {
+  min-height: 40px;
+}
+
 .tf-question-edit-input {
   width: 100%;
   border: 1px solid var(--tf-border);
@@ -1432,8 +1527,29 @@
   border-color: #3b2e45;
   color: #e8ddef;
 }
+[data-theme="dark"] .tf-edit-field-label {
+  color: #e8ddef;
+}
+[data-theme="dark"] .tf-edit-modal {
+  background:
+    radial-gradient(circle at 90% 0%, rgba(34, 197, 94, 0.2), transparent 30%),
+    radial-gradient(circle at 0% 100%, rgba(99, 29, 118, 0.2), transparent 34%),
+    #1f1726;
+  border-color: #3b2e45;
+}
+[data-theme="dark"] .tf-edit-modal-close {
+  border-color: #3b2e45;
+  color: #9b8aab;
+}
+[data-theme="dark"] .tf-edit-modal-close:hover:not(:disabled) {
+  color: #e8ddef;
+  border-color: #2ea56b;
+}
 [data-theme="dark"] .tf-is-true-toggle {
   color: #e8ddef;
+}
+[data-theme="dark"] .tf-is-true-toggle-modal {
+  background: #1a1320;
 }
 [data-theme="dark"] .tf-btn-cancel-edit {
   border-color: #3b2e45;

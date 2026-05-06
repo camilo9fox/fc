@@ -210,6 +210,14 @@ const TrueFalsePage: React.FC = () => {
     }
   };
 
+  const editingQuestionData = editingQuestion
+    ? sets
+        .find((set) => set.id === editingQuestion.setId)
+        ?.questions?.find(
+          (question) => question.id === editingQuestion.questionId,
+        )
+    : null;
+
   if (studySet) {
     return (
       <DraftTFStudySession
@@ -439,100 +447,141 @@ const TrueFalsePage: React.FC = () => {
                 <div className="tf-question-list">
                   {set.questions.map((q, idx) => (
                     <div key={q.id} className="tf-question-item">
-                      {editingQuestion?.questionId === q.id ? (
-                        <div className="tf-question-edit-form">
-                          <textarea
-                            className="tf-question-edit-input"
-                            value={editForm.statement ?? ""}
-                            maxLength={2000}
-                            onChange={(e) =>
-                              setEditForm((f) => ({
-                                ...f,
-                                statement: e.target.value,
-                              }))
-                            }
-                            rows={2}
-                          />
-                          <div className="tf-is-true-toggle">
-                            <label>
-                              <input
-                                type="radio"
-                                name={`is_true-${q.id}`}
-                                checked={editForm.is_true === true}
-                                onChange={() =>
-                                  setEditForm((f) => ({ ...f, is_true: true }))
-                                }
-                              />{" "}
-                              Verdadero
-                            </label>
-                            <label>
-                              <input
-                                type="radio"
-                                name={`is_true-${q.id}`}
-                                checked={editForm.is_true === false}
-                                onChange={() =>
-                                  setEditForm((f) => ({ ...f, is_true: false }))
-                                }
-                              />{" "}
-                              Falso
-                            </label>
-                          </div>
-                          <input
-                            type="text"
-                            className="tf-explanation-input"
-                            placeholder="Explicación (opcional)"
-                            value={editForm.explanation ?? ""}
-                            maxLength={2000}
-                            onChange={(e) =>
-                              setEditForm((f) => ({
-                                ...f,
-                                explanation: e.target.value,
-                              }))
-                            }
-                          />
-                          <div className="tf-question-edit-actions">
-                            <button
-                              className="tf-btn-save-question"
-                              onClick={handleSaveQuestion}
-                              disabled={savingQuestion}
-                            >
-                              <Check size={13} />
-                              {savingQuestion ? "Guardando…" : "Guardar"}
-                            </button>
-                            <button
-                              className="tf-btn-cancel-edit"
-                              onClick={() => setEditingQuestion(null)}
-                              disabled={savingQuestion}
-                            >
-                              Cancelar
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="tf-question-row">
-                          <span
-                            className={`tf-q-badge ${q.is_true ? "tf-q-true" : "tf-q-false"}`}
-                          >
-                            {q.is_true ? "V" : "F"}
-                          </span>
-                          <span className="tf-question-text">
-                            {idx + 1}. {q.statement}
-                          </span>
-                          <button
-                            className="tf-btn-edit-q"
-                            onClick={() => startEditQuestion(set.id, q)}
-                            title="Editar enunciado"
-                          >
-                            <Pencil size={12} />
-                          </button>
-                        </div>
-                      )}
+                      <div className="tf-question-row">
+                        <span
+                          className={`tf-q-badge ${q.is_true ? "tf-q-true" : "tf-q-false"}`}
+                        >
+                          {q.is_true ? "V" : "F"}
+                        </span>
+                        <span className="tf-question-text">
+                          {idx + 1}. {q.statement}
+                        </span>
+                        <button
+                          className="tf-btn-edit-q"
+                          onClick={() => startEditQuestion(set.id, q)}
+                          title="Editar enunciado"
+                        >
+                          <Pencil size={12} />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {editingQuestion && editingQuestionData && (
+        <div
+          className="tf-edit-modal-backdrop"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !savingQuestion) {
+              setEditingQuestion(null);
+            }
+          }}
+        >
+          <div className="tf-edit-modal" role="dialog" aria-modal="true">
+            <div className="tf-edit-modal-header">
+              <div>
+                <p className="tf-edit-modal-eyebrow">Editar enunciado</p>
+                <h3>Actualiza contenido y respuesta correcta</h3>
+              </div>
+              <button
+                className="tf-edit-modal-close"
+                onClick={() => setEditingQuestion(null)}
+                disabled={savingQuestion}
+                aria-label="Cerrar edición"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="tf-question-edit-form tf-question-edit-form-modal">
+              <label
+                className="tf-edit-field-label"
+                htmlFor="tf-edit-statement"
+              >
+                Enunciado
+              </label>
+              <textarea
+                id="tf-edit-statement"
+                className="tf-question-edit-input"
+                value={editForm.statement ?? ""}
+                maxLength={2000}
+                onChange={(e) =>
+                  setEditForm((f) => ({
+                    ...f,
+                    statement: e.target.value,
+                  }))
+                }
+                rows={4}
+              />
+              <p className="tf-edit-field-label">Respuesta correcta</p>
+              <div className="tf-is-true-toggle tf-is-true-toggle-modal">
+                <label>
+                  <input
+                    type="radio"
+                    name={`is_true-modal-${editingQuestion.questionId}`}
+                    checked={editForm.is_true === true}
+                    onChange={() =>
+                      setEditForm((f) => ({ ...f, is_true: true }))
+                    }
+                  />{" "}
+                  Verdadero
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name={`is_true-modal-${editingQuestion.questionId}`}
+                    checked={editForm.is_true === false}
+                    onChange={() =>
+                      setEditForm((f) => ({ ...f, is_true: false }))
+                    }
+                  />{" "}
+                  Falso
+                </label>
+              </div>
+              <label
+                className="tf-edit-field-label"
+                htmlFor="tf-edit-explanation"
+              >
+                Explicación (opcional)
+              </label>
+              <input
+                id="tf-edit-explanation"
+                type="text"
+                className="tf-explanation-input"
+                placeholder="Agrega una explicación breve para reforzar el concepto"
+                value={editForm.explanation ?? ""}
+                maxLength={2000}
+                onChange={(e) =>
+                  setEditForm((f) => ({
+                    ...f,
+                    explanation: e.target.value,
+                  }))
+                }
+              />
+              <div className="tf-question-edit-actions">
+                <button
+                  className="tf-btn-save-question"
+                  onClick={handleSaveQuestion}
+                  disabled={savingQuestion}
+                >
+                  <Check size={13} />
+                  {savingQuestion ? "Guardando..." : "Guardar cambios"}
+                </button>
+                <button
+                  className="tf-btn-cancel-edit"
+                  onClick={() => setEditingQuestion(null)}
+                  disabled={savingQuestion}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
