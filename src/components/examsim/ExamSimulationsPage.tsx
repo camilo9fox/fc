@@ -727,16 +727,18 @@ const ExamSimulationsPage: React.FC = () => {
 
   return (
     <div className="es-page">
-      <header className="es-hero">
-        <div className="es-hero-icon">
-          <BrainCircuit size={20} />
-        </div>
-        <div>
-          <h1>Simulacion de Examen</h1>
-          <p>
-            Arma una prueba usando V/F y alternativas ya creadas en la
-            categoria, y genera solo desarrollo con IA.
-          </p>
+      <div className="es-page-header">
+        <div className="es-page-header-left">
+          <div className="es-page-icon es-page-icon--es">
+            <BrainCircuit size={20} />
+          </div>
+          <div>
+            <h1 className="es-page-title">Simulacion de Examen</h1>
+            <p className="es-page-sub">
+              Arma una prueba usando V/F y alternativas ya creadas en la
+              categoria, y genera solo desarrollo con IA.
+            </p>
+          </div>
         </div>
         <button
           className="es-btn-primary"
@@ -745,7 +747,7 @@ const ExamSimulationsPage: React.FC = () => {
         >
           <Sparkles size={15} /> Nueva simulacion IA
         </button>
-      </header>
+      </div>
 
       {!hasCategories && <NoCategoryBanner feature="simulaciones de examen" />}
       {error && <p className="es-error">{error}</p>}

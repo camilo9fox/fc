@@ -1,21 +1,79 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
+
 .es-page {
   --es-primary: #631d76;
+  --es-primary-dark: #4a1260;
   --es-accent: #ee4266;
   --es-ink: #2e2532;
-  --es-muted: #7f6d89;
+  --es-muted: #8a7892;
   --es-border: #e8ddee;
-  --es-bg-soft: #f8f2fb;
+  --es-bg-soft: #f6eef8;
   --es-surface: #ffffff;
 
   display: grid;
-  gap: 18px;
+  gap: 24px;
   color: var(--es-ink);
+  font-family: "Manrope", "Segoe UI", Tahoma, sans-serif;
+  animation: esFadeIn 0.3s ease;
+}
+
+@keyframes esFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.es-page-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.es-page-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.es-page-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(99, 29, 118, 0.25);
+}
+
+.es-page-icon--es {
+  background: linear-gradient(135deg, #631d76, #ee4266);
+}
+
+.es-page-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: var(--es-ink);
+}
+
+.es-page-sub {
+  margin: 0;
+  color: var(--es-muted);
+  font-size: 0.9rem;
 }
 
 .es-hero {
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
+  grid-template-columns: 1fr;
   gap: 14px;
   border: 1px solid var(--es-border);
   border-radius: 16px;
@@ -23,19 +81,11 @@
   background:
     radial-gradient(
       circle at 94% 0%,
-      rgba(238, 66, 102, 0.14),
+      rgba(238, 66, 102, 0.12),
       transparent 38%
     ),
-    radial-gradient(
-      circle at 0% 100%,
-      rgba(99, 29, 118, 0.12),
-      transparent 36%
-    ),
+    radial-gradient(circle at 0% 100%, rgba(99, 29, 118, 0.1), transparent 36%),
     linear-gradient(150deg, #ffffff, #faf5ff);
-}
-
-.es-hero-runner {
-  grid-template-columns: 1fr;
 }
 
 .es-hero h1 {
@@ -67,20 +117,28 @@
 .es-btn-ghost,
 .es-btn-text {
   border-radius: 10px;
-  font-size: 0.86rem;
-  font-weight: 700;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .es-btn-primary {
   border: none;
-  background: linear-gradient(135deg, var(--es-primary), var(--es-accent));
+  background: var(--es-primary);
   color: #fff;
-  padding: 10px 14px;
+  padding: 10px 20px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  transition:
+    background 0.18s,
+    transform 0.1s;
+}
+
+.es-btn-primary:hover:not(:disabled) {
+  background: var(--es-primary-dark);
+  transform: translateY(-1px);
 }
 
 .es-btn-primary:disabled {
@@ -90,9 +148,17 @@
 
 .es-btn-ghost {
   border: 1px solid var(--es-border);
-  background: var(--es-surface);
+  background: transparent;
   color: var(--es-muted);
-  padding: 9px 13px;
+  padding: 10px 20px;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.es-btn-ghost:hover {
+  border-color: var(--es-primary);
+  color: var(--es-primary);
 }
 
 .es-btn-text {
@@ -248,17 +314,26 @@
 
 .es-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
 }
 
 .es-card {
   border: 1px solid var(--es-border);
-  border-radius: 14px;
+  border-radius: 16px;
   background: #fff;
-  padding: 14px;
+  padding: 20px;
   display: grid;
   gap: 10px;
+  box-shadow: 0 2px 12px -6px #1e293b18;
+  transition:
+    transform 0.18s,
+    box-shadow 0.18s;
+}
+
+.es-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px -8px #1e293b28;
 }
 
 .es-card-head {
@@ -311,8 +386,8 @@
 .es-empty,
 .es-loading {
   border: 1px dashed var(--es-border);
-  border-radius: 14px;
-  padding: 30px 16px;
+  border-radius: 16px;
+  padding: 60px 20px;
   text-align: center;
   color: var(--es-muted);
 }
@@ -667,6 +742,11 @@
 }
 
 @media (max-width: 900px) {
+  .es-page-header {
+    grid-template-columns: 1fr;
+    justify-items: flex-start;
+  }
+
   .es-hero {
     grid-template-columns: 1fr;
   }
