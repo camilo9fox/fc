@@ -94,7 +94,8 @@ const MobileLibraryPage: React.FC = () => {
                   totalResources={
                     category.flashcardCount +
                     category.quizCount +
-                    category.trueFalseCount
+                    category.trueFalseCount +
+                    (category.studyGuideCount ?? 0)
                   }
                   onClick={() => navigate("/biblioteca")}
                 />

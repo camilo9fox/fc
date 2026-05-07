@@ -46,7 +46,10 @@ const CategoryPreviewModal: React.FC<Props> = ({
   const totalItems =
     (preview?.flashcards.length ?? 0) +
     (preview?.quizzes.length ?? 0) +
-    (preview?.trueFalseSets.length ?? 0);
+    (preview?.trueFalseSets.length ?? 0) +
+    (preview?.studyGuides?.length ?? 0);
+
+  const studyGuides = preview?.studyGuides ?? [];
 
   return (
     <div className="cpv-overlay" onClick={onClose}>
@@ -152,6 +155,30 @@ const CategoryPreviewModal: React.FC<Props> = ({
                             {t.description}
                           </span>
                         )}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
+              {/* Study guides section */}
+              {studyGuides.length > 0 && (
+                <section className="cpv-section">
+                  <h3 className="cpv-section-title">
+                    <span className="cpv-section-icon">📖</span>
+                    Guías de estudio
+                    <span className="cpv-section-count">
+                      {studyGuides.length} incluida
+                      {studyGuides.length !== 1 ? "s" : ""}
+                    </span>
+                  </h3>
+                  <ul className="cpv-list">
+                    {studyGuides.map((g) => (
+                      <li
+                        key={g.id}
+                        className="cpv-content-item cpv-content-item--guide"
+                      >
+                        <span className="cpv-content-name">{g.title}</span>
                       </li>
                     ))}
                   </ul>

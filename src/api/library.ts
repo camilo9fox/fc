@@ -9,6 +9,7 @@ export interface PublicCategory {
   flashcardCount: number;
   quizCount: number;
   trueFalseCount: number;
+  studyGuideCount?: number;
 }
 
 export interface CategoryPreview {
@@ -18,6 +19,7 @@ export interface CategoryPreview {
   flashcards: { id: string; question: string }[];
   quizzes: { id: string; title: string; description?: string }[];
   trueFalseSets: { id: string; title: string; description?: string }[];
+  studyGuides?: { id: string; title: string }[];
 }
 
 export interface ForkResult {
@@ -25,6 +27,7 @@ export interface ForkResult {
   flashcardCount: number;
   quizCount: number;
   trueFalseCount: number;
+  studyGuideCount?: number;
 }
 
 export const libraryApi = {

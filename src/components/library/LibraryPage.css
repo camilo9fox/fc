@@ -405,6 +405,12 @@
   color: #1a7a4a;
 }
 
+.lib-stat--guide {
+  background: #eef4ff;
+  border-color: #cfe0ff;
+  color: #295cb8;
+}
+
 /* ─── Fork toast ───────────────────────────────────────────────────────────── */
 .lib-fork-toast {
   display: flex;

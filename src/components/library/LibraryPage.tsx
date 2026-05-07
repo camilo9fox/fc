@@ -84,6 +84,10 @@ export const LibraryPage: React.FC = () => {
         parts.push(
           `${res.trueFalseCount} set${res.trueFalseCount !== 1 ? "s" : ""} V/F`,
         );
+      if (res.studyGuideCount)
+        parts.push(
+          `${res.studyGuideCount} guía${res.studyGuideCount !== 1 ? "s" : ""}`,
+        );
       setForkResults((prev) => ({
         ...prev,
         [categoryId]: {
@@ -106,7 +110,12 @@ export const LibraryPage: React.FC = () => {
 
   const totalPages = Math.ceil(total / LIMIT);
   const totalContent = categories.reduce(
-    (acc, c) => acc + c.flashcardCount + c.quizCount + c.trueFalseCount,
+    (acc, c) =>
+      acc +
+      c.flashcardCount +
+      c.quizCount +
+      c.trueFalseCount +
+      (c.studyGuideCount ?? 0),
     0,
   );
 
@@ -306,6 +315,16 @@ export const LibraryPage: React.FC = () => {
                           }
                           icon="✅"
                           colorClass="lib-stat--tf"
+                        />
+                      )}
+                      {(cat.studyGuideCount ?? 0) > 0 && (
+                        <ContentStat
+                          count={cat.studyGuideCount ?? 0}
+                          label={
+                            (cat.studyGuideCount ?? 0) !== 1 ? "guías" : "guía"
+                          }
+                          icon="📖"
+                          colorClass="lib-stat--guide"
                         />
                       )}
                     </div>

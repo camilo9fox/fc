@@ -257,6 +257,11 @@
   border-color: #b8e8d0;
 }
 
+.cpv-content-item--guide {
+  background: #eef4ff;
+  border-color: #cfe0ff;
+}
+
 .cpv-content-name {
   font-size: 0.87rem;
   font-weight: 600;
