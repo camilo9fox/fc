@@ -6,6 +6,7 @@ import {
   BookOpen,
   Brain,
   CheckSquare,
+  Compass,
   FileText,
   Flame,
   Layers,
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 import { useStats } from "../../hooks/useStats";
 import { flashCardsApi } from "../../api/flashcards";
+import { authApi, OnboardingProfile } from "../../api";
 import { useAuth } from "../../contexts/AuthContext";
 import { RecentAttempt, StatTotals } from "../../api/stats";
 import "./DashboardPage.css";
@@ -59,6 +61,8 @@ const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [dueCount, setDueCount] = useState<number>(0);
+  const [onboardingProfile, setOnboardingProfile] =
+    useState<OnboardingProfile | null>(null);
 
   useEffect(() => {
     flashCardsApi
@@ -66,6 +70,29 @@ const DashboardPage: React.FC = () => {
       .then((s) => setDueCount(s.due))
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadOnboardingProfile = async () => {
+      if (!user?.id) return;
+
+      try {
+        const { profile } = await authApi.getOnboardingProfile();
+        if (!active) return;
+        setOnboardingProfile(profile || null);
+      } catch {
+        if (!active) return;
+        setOnboardingProfile(null);
+      }
+    };
+
+    loadOnboardingProfile();
+
+    return () => {
+      active = false;
+    };
+  }, [user?.id]);
 
   const userInitials = user?.email
     ? user.email.slice(0, 2).toUpperCase()
@@ -126,6 +153,47 @@ const DashboardPage: React.FC = () => {
         cardClass: "db2-priority--orange",
       };
     }
+
+    const preferredPath = onboardingProfile?.recommendedPath;
+    if (preferredPath === "/quizzes") {
+      return {
+        icon: <FileText size={22} />,
+        tag: "SUGERIDO PARA TI",
+        tagClass: "db2-tag--blue",
+        title: "Empieza hoy con cuestionarios",
+        desc: "Tu perfil sugiere práctica tipo examen. Una sesión corta te pone en ritmo.",
+        cta: "Ir a cuestionarios",
+        path: "/quizzes",
+        cardClass: "db2-priority--blue",
+      };
+    }
+
+    if (preferredPath === "/exam-simulations") {
+      return {
+        icon: <Target size={22} />,
+        tag: "SUGERIDO PARA TI",
+        tagClass: "db2-tag--blue",
+        title: "Haz una simulación de examen",
+        desc: "Tu objetivo principal es rendir mejor en evaluaciones. Entrena en formato real.",
+        cta: "Ir a simulaciones",
+        path: "/exam-simulations",
+        cardClass: "db2-priority--blue",
+      };
+    }
+
+    if (preferredPath === "/study-guides") {
+      return {
+        icon: <BookOpen size={22} />,
+        tag: "SUGERIDO PARA TI",
+        tagClass: "db2-tag--blue",
+        title: "Comienza con una guía de estudio",
+        desc: "Tu perfil prioriza comprensión profunda. Arranca con una guía y consolida base.",
+        cta: "Ir a guías",
+        path: "/study-guides",
+        cardClass: "db2-priority--blue",
+      };
+    }
+
     return {
       icon: <Layers size={22} />,
       tag: "SUGERIDO",
@@ -140,6 +208,16 @@ const DashboardPage: React.FC = () => {
 
   // Tool cards
   const tools: ToolCard[] = [
+    {
+      id: "intro",
+      label: "Guía de la app",
+      sublabel: "Conoce el flujo y sistema de créditos",
+      path: "/intro",
+      count: 1,
+      countLabel: "módulo",
+      gradient: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+      icon: <Compass size={20} />,
+    },
     {
       id: "repaso",
       label: "Repaso SM-2",
@@ -219,9 +297,13 @@ const DashboardPage: React.FC = () => {
             <Flame size={13} />
             <span>{attemptStats?.currentStreak ?? 0} dias de racha</span>
           </div>
-          <div className={`db2-mini-stat${dueCount > 0 ? " db2-mini-stat--urgent" : ""}`}>
+          <div
+            className={`db2-mini-stat${dueCount > 0 ? " db2-mini-stat--urgent" : ""}`}
+          >
             <Zap size={13} />
-            <span>{dueCount > 0 ? `${dueCount} pendientes` : "Al dia con el repaso"}</span>
+            <span>
+              {dueCount > 0 ? `${dueCount} pendientes` : "Al dia con el repaso"}
+            </span>
           </div>
           <div className="db2-mini-stat">
             <TrendingUp size={13} />
@@ -234,11 +316,16 @@ const DashboardPage: React.FC = () => {
       <div className={`db2-priority ${priority.cardClass}`}>
         <div className="db2-priority-icon">{priority.icon}</div>
         <div className="db2-priority-body">
-          <span className={`db2-priority-tag ${priority.tagClass}`}>{priority.tag}</span>
+          <span className={`db2-priority-tag ${priority.tagClass}`}>
+            {priority.tag}
+          </span>
           <h2 className="db2-priority-title">{priority.title}</h2>
           <p className="db2-priority-desc">{priority.desc}</p>
         </div>
-        <button className="db2-priority-cta" onClick={() => navigate(priority.path)}>
+        <button
+          className="db2-priority-cta"
+          onClick={() => navigate(priority.path)}
+        >
           {priority.cta}
           <ArrowRight size={16} />
         </button>
@@ -254,7 +341,10 @@ const DashboardPage: React.FC = () => {
               className={`db2-tool-card${tool.urgent ? " db2-tool-card--urgent" : ""}`}
               onClick={() => navigate(tool.path)}
             >
-              <div className="db2-tool-icon" style={{ background: tool.gradient }}>
+              <div
+                className="db2-tool-icon"
+                style={{ background: tool.gradient }}
+              >
                 {tool.icon}
               </div>
               <div className="db2-tool-info">
@@ -277,20 +367,38 @@ const DashboardPage: React.FC = () => {
           <h3 className="db2-panel-title">Tu progreso</h3>
           <div className="db2-progress-list">
             <div className="db2-progress-row">
-              <span className="db2-progress-label"><Flame size={14} /> Racha actual</span>
-              <strong className="db2-progress-value">{attemptStats?.currentStreak ?? 0} dias</strong>
+              <span className="db2-progress-label">
+                <Flame size={14} /> Racha actual
+              </span>
+              <strong className="db2-progress-value">
+                {attemptStats?.currentStreak ?? 0} dias
+              </strong>
             </div>
             <div className="db2-progress-row">
-              <span className="db2-progress-label"><Brain size={14} /> Pendientes hoy</span>
-              <strong className={`db2-progress-value${dueCount > 0 ? " db2-value--urgent" : ""}`}>{dueCount}</strong>
+              <span className="db2-progress-label">
+                <Brain size={14} /> Pendientes hoy
+              </span>
+              <strong
+                className={`db2-progress-value${dueCount > 0 ? " db2-value--urgent" : ""}`}
+              >
+                {dueCount}
+              </strong>
             </div>
             <div className="db2-progress-row">
-              <span className="db2-progress-label"><Target size={14} /> Promedio de aciertos</span>
-              <strong className="db2-progress-value">{attemptStats?.avgScore ?? 0}%</strong>
+              <span className="db2-progress-label">
+                <Target size={14} /> Promedio de aciertos
+              </span>
+              <strong className="db2-progress-value">
+                {attemptStats?.avgScore ?? 0}%
+              </strong>
             </div>
             <div className="db2-progress-row">
-              <span className="db2-progress-label"><TrendingUp size={14} /> Total de intentos</span>
-              <strong className="db2-progress-value">{attemptStats?.totalAttempts ?? 0}</strong>
+              <span className="db2-progress-label">
+                <TrendingUp size={14} /> Total de intentos
+              </span>
+              <strong className="db2-progress-value">
+                {attemptStats?.totalAttempts ?? 0}
+              </strong>
             </div>
           </div>
         </div>
@@ -311,9 +419,13 @@ const DashboardPage: React.FC = () => {
                   <div key={i} className="db2-recent-row">
                     <div className="db2-recent-meta">
                       <span className="db2-recent-type">{typeLabel}</span>
-                      <span className="db2-recent-cat">{a.categoryTitle ?? "—"}</span>
+                      <span className="db2-recent-cat">
+                        {a.categoryTitle ?? "—"}
+                      </span>
                     </div>
-                    <span className={`db2-recent-score${good ? " db2-score--good" : " db2-score--bad"}`}>
+                    <span
+                      className={`db2-recent-score${good ? " db2-score--good" : " db2-score--bad"}`}
+                    >
                       {pct}%
                     </span>
                   </div>

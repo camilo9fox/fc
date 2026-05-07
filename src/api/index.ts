@@ -5,7 +5,13 @@ export { flashCardsApi } from "./flashcards";
 export { examSimulationApi } from "./examSimulation";
 
 // Types
-export type { LoginRequest, SignupRequest, AuthResponse, User } from "./auth";
+export type {
+  LoginRequest,
+  SignupRequest,
+  AuthResponse,
+  User,
+  OnboardingProfile,
+} from "./auth";
 
 export type {
   FlashCard,

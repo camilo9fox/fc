@@ -99,6 +99,28 @@ const navSections: NavSection[] = [
         ),
       },
       {
+        id: "intro",
+        label: "Guía de la app",
+        path: "/intro",
+        exact: true,
+        icon: (
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        ),
+      },
+      {
         id: "flashcards",
         label: "Flashcards",
         path: "/flashcards",
@@ -321,6 +343,14 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
     title: "Temas de estudio",
     subtitle: "Organiza tu material por tema",
   },
+  "/intro": {
+    title: "Guía de la app",
+    subtitle: "Conoce cómo funciona StudyAI y cómo aprovechar tus créditos",
+  },
+  "/m/intro": {
+    title: "Guía de la app",
+    subtitle: "Conoce cómo funciona StudyAI y cómo aprovechar tus créditos",
+  },
   "/biblioteca": {
     title: "Biblioteca pública",
     subtitle: "Explora e importa temas compartidos por la comunidad",
@@ -411,7 +441,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   ) => {
     const path = location.pathname;
     if (tab === "home") {
-      return path === "/m/home" || path === "/dashboard";
+      return (
+        path === "/m/home" ||
+        path === "/dashboard" ||
+        path === "/intro" ||
+        path === "/m/intro"
+      );
     }
     if (tab === "create") {
       return (

@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { authApi, OnboardingProfile } from "../../api";
+import { useAuth } from "../../contexts/AuthContext";
 import { useMobileHomeStats } from "./useMobileData";
 import {
   MobileHero,
@@ -78,9 +80,84 @@ const resourceList = [
   },
 ];
 
+const preferredPathByFormat: Record<
+  "flashcards" | "quizzes" | "mixed",
+  string
+> = {
+  flashcards: "/flashcards",
+  quizzes: "/quizzes",
+  mixed: "/categories",
+};
+
+const goalLabels: Record<string, string> = {
+  exams: "preparar exámenes",
+  memorize: "memorizar conceptos",
+  "fast-practice": "practicar rápido",
+  "deep-understanding": "comprender en profundidad",
+};
+
 const MobileHomePage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { loading, stats } = useMobileHomeStats();
+  const [onboardingProfile, setOnboardingProfile] =
+    useState<OnboardingProfile | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadOnboardingProfile = async () => {
+      if (!user?.id) return;
+      try {
+        const { profile } = await authApi.getOnboardingProfile();
+        if (!active) return;
+        setOnboardingProfile(profile || null);
+      } catch {
+        if (!active) return;
+        setOnboardingProfile(null);
+      }
+    };
+
+    loadOnboardingProfile();
+
+    return () => {
+      active = false;
+    };
+  }, [user?.id]);
+
+  const personalizedStartPath = useMemo(() => {
+    if (onboardingProfile?.recommendedPath) {
+      return onboardingProfile.recommendedPath;
+    }
+
+    if (onboardingProfile?.preferredFormat) {
+      return preferredPathByFormat[onboardingProfile.preferredFormat];
+    }
+
+    return "/categories";
+  }, [onboardingProfile?.preferredFormat, onboardingProfile?.recommendedPath]);
+
+  const primaryGoalText = useMemo(() => {
+    const firstGoal = onboardingProfile?.goals?.[0];
+    if (!firstGoal) return null;
+    return goalLabels[firstGoal] || firstGoal;
+  }, [onboardingProfile?.goals]);
+
+  const quickStartOrdered = useMemo(() => {
+    const recommended = quickStartItems.find(
+      (item) => item.path === personalizedStartPath,
+    );
+
+    if (!recommended) return quickStartItems;
+
+    return [
+      {
+        ...recommended,
+        title: `${recommended.title} (Recomendado)`,
+      },
+      ...quickStartItems.filter((item) => item.path !== personalizedStartPath),
+    ];
+  }, [personalizedStartPath]);
 
   const total =
     stats.flashcards +
@@ -97,9 +174,25 @@ const MobileHomePage: React.FC = () => {
         <MobileHero
           eyebrow="¡Bienvenido!"
           title="Tu espacio de estudio inteligente"
-          description="Crea tu primer recurso y empieza a estudiar de forma más eficiente con IA."
+          description={
+            primaryGoalText
+              ? `Configuramos tu ruta para ${primaryGoalText}. Empieza con tu módulo recomendado.`
+              : "Crea tu primer recurso y empieza a estudiar de forma más eficiente con IA."
+          }
           variant="home"
         />
+
+        <div className="mb-chips">
+          <button
+            className="mb-chip"
+            onClick={() => navigate(personalizedStartPath)}
+          >
+            <span className="mb-chip-icon">⭐</span> Ruta recomendada
+          </button>
+          <button className="mb-chip" onClick={() => navigate("/m/intro")}>
+            <span className="mb-chip-icon">🧭</span> Guía de la app
+          </button>
+        </div>
 
         <MobileSection title="Cómo funciona">
           <div className="mb-onboarding-steps">
@@ -138,7 +231,7 @@ const MobileHomePage: React.FC = () => {
 
         <MobileSection title="Empieza ahora">
           <div className="mb-quickstart-grid">
-            {quickStartItems.map((item) => (
+            {quickStartOrdered.map((item) => (
               <button
                 key={item.path}
                 className="mb-quickstart-card"
@@ -204,6 +297,12 @@ const MobileHomePage: React.FC = () => {
 
       {/* Acceso rápido */}
       <div className="mb-chips">
+        <button
+          className="mb-chip"
+          onClick={() => navigate(personalizedStartPath)}
+        >
+          <span className="mb-chip-icon">⭐</span> Recomendado
+        </button>
         <button className="mb-chip" onClick={() => navigate("/repaso")}>
           <span className="mb-chip-icon">🔁</span> Repasar
         </button>
@@ -212,6 +311,9 @@ const MobileHomePage: React.FC = () => {
         </button>
         <button className="mb-chip" onClick={() => navigate("/m/library")}>
           <span className="mb-chip-icon">🌐</span> Biblioteca pública
+        </button>
+        <button className="mb-chip" onClick={() => navigate("/m/intro")}>
+          <span className="mb-chip-icon">🧭</span> Guía app
         </button>
         <button className="mb-chip" onClick={() => navigate("/m/create")}>
           <span className="mb-chip-icon">✨</span> Crear nuevo

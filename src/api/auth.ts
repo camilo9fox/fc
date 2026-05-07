@@ -31,6 +31,22 @@ export interface User {
   metadata?: any;
 }
 
+export interface OnboardingProfile {
+  goals?: string[];
+  dailyTime?: "10-15" | "20-30" | "45+";
+  preferredFormat?: "flashcards" | "quizzes" | "mixed";
+  studyLevel?: "school" | "university" | "professional";
+  weeklyGoalDays?: 3 | 5 | 7;
+  sessionPreference?: "morning" | "afternoon" | "night" | "flexible";
+  challengeAreas?: string[];
+  examDate?: string | null;
+  recommendedPath?: string;
+  introSeen?: boolean;
+  completedAt?: string | null;
+  skipped?: boolean;
+  updatedAt?: string;
+}
+
 export const authApi = {
   /**
    * Sign up a new user
@@ -80,6 +96,26 @@ export const authApi = {
     email?: string;
   }): Promise<{ user: User }> => {
     const response = await apiClient.put("/auth/profile", data);
+    return response.data;
+  },
+
+  /**
+   * Get onboarding profile persisted for current user
+   */
+  getOnboardingProfile: async (): Promise<{
+    profile: OnboardingProfile | null;
+  }> => {
+    const response = await apiClient.get("/auth/onboarding-profile");
+    return response.data;
+  },
+
+  /**
+   * Update onboarding profile persisted for current user
+   */
+  updateOnboardingProfile: async (
+    data: Partial<OnboardingProfile>,
+  ): Promise<{ profile: OnboardingProfile }> => {
+    const response = await apiClient.put("/auth/onboarding-profile", data);
     return response.data;
   },
 

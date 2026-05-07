@@ -27,10 +27,12 @@ import LandingPage from './components/landing/LandingPage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import OfflineBanner from './components/shared/OfflineBanner';
 import PwaInstallPrompt from './components/shared/PwaInstallPrompt';
+import IntroModulePage from './components/intro/IntroModulePage';
 import MobileHomePage from './components/mobile/MobileHomePage';
 import MobileCreatePage from './components/mobile/MobileCreatePage';
 import MobileLibraryPage from './components/mobile/MobileLibraryPage';
 import MobileProfilePage from './components/mobile/MobileProfilePage';
+import { useOnboardingIntroGate } from './hooks/useOnboardingIntroGate';
 import './App.css';
 
 // Protected Route component
@@ -57,6 +59,7 @@ const AppRoutes: React.FC = () => {
     const [isMobileViewport, setIsMobileViewport] = useState(
       typeof window !== 'undefined' ? window.innerWidth <= 900 : false,
     );
+    const { isChecking, shouldShowIntro } = useOnboardingIntroGate();
 
     useEffect(() => {
       const onResize = () => setIsMobileViewport(window.innerWidth <= 900);
@@ -64,9 +67,45 @@ const AppRoutes: React.FC = () => {
       return () => window.removeEventListener('resize', onResize);
     }, []);
 
+    if (isChecking) {
+      return (
+        <div className="app-loading-screen" role="status" aria-live="polite">
+          <div className="app-loading-spinner" aria-hidden="true" />
+          <p>Preparando tu espacio de estudio...</p>
+        </div>
+      );
+    }
+
+    if (shouldShowIntro) {
+      return <Navigate to={isMobileViewport ? '/m/intro' : '/intro'} replace />;
+    }
+
     return (
       <DashboardLayout>
         {isMobileViewport ? <MobileHomePage /> : <DashboardPage />}
+      </DashboardLayout>
+    );
+  };
+
+  const MobileHomeEntry: React.FC = () => {
+    const { isChecking, shouldShowIntro } = useOnboardingIntroGate();
+
+    if (isChecking) {
+      return (
+        <div className="app-loading-screen" role="status" aria-live="polite">
+          <div className="app-loading-spinner" aria-hidden="true" />
+          <p>Preparando tu espacio de estudio...</p>
+        </div>
+      );
+    }
+
+    if (shouldShowIntro) {
+      return <Navigate to="/m/intro" replace />;
+    }
+
+    return (
+      <DashboardLayout>
+        <MobileHomePage />
       </DashboardLayout>
     );
   };
@@ -144,12 +183,30 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route
-        path="/m/home"
+        path="/intro"
         element={
           <ProtectedRoute>
             <DashboardLayout>
-              <MobileHomePage />
+              <IntroModulePage />
             </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/m/intro"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <IntroModulePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/m/home"
+        element={
+          <ProtectedRoute>
+            <MobileHomeEntry />
           </ProtectedRoute>
         }
       />
