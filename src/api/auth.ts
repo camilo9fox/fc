@@ -9,8 +9,10 @@ export interface SignupRequest {
   email: string;
   password: string;
   metadata?: {
-    firstName?: string;
-    lastName?: string;
+    full_name?: string;
+    avatar_url?: string;
+    locale?: string;
+    timezone?: string;
   };
 }
 
@@ -122,8 +124,11 @@ export const authApi = {
   /**
    * Update current user password
    */
-  updatePassword: async (password: string): Promise<{ message: string }> => {
-    const response = await apiClient.put("/auth/password", { password });
+  updatePassword: async (data: {
+    currentPassword: string;
+    newPassword: string;
+  }): Promise<{ message: string }> => {
+    const response = await apiClient.put("/auth/password", data);
     return response.data;
   },
   /**

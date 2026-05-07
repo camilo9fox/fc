@@ -23,17 +23,25 @@ const Signup: React.FC = () => {
       return;
     }
 
-    if (password.length < 6) {
-      setError("La contraseña debe tener al menos 6 caracteres");
+    if (password.length < 8) {
+      setError("La contraseña debe tener al menos 8 caracteres");
+      return;
+    }
+
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    if (!hasUpperCase || !hasLowerCase || !hasNumber) {
+      setError("La contraseña debe incluir mayúscula, minúscula y número");
       return;
     }
 
     setIsLoading(true);
 
     try {
+      const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
       const metadata = {
-        firstName,
-        lastName,
+        ...(fullName ? { full_name: fullName } : {}),
       };
       await signup(email, password, metadata);
     } catch (err: any) {
@@ -140,7 +148,7 @@ const Signup: React.FC = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={isLoading}
-                  placeholder="Minimo 6 caracteres"
+                  placeholder="Minimo 8, con mayuscula, minuscula y numero"
                 />
               </div>
             </div>

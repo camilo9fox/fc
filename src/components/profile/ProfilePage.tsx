@@ -8,6 +8,7 @@ const ProfilePage: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [pwStatus, setPwStatus] = useState<
@@ -70,10 +71,26 @@ const ProfilePage: React.FC = () => {
     e.preventDefault();
     setPwError("");
 
-    if (newPassword.length < 6) {
-      setPwError("La contraseña debe tener al menos 6 caracteres.");
+    if (!currentPassword.trim()) {
+      setPwError("Debes ingresar tu contraseña actual.");
       return;
     }
+
+    if (newPassword.length < 8) {
+      setPwError("La contraseña debe tener al menos 8 caracteres.");
+      return;
+    }
+
+    const hasUpperCase = /[A-Z]/.test(newPassword);
+    const hasLowerCase = /[a-z]/.test(newPassword);
+    const hasNumber = /\d/.test(newPassword);
+    if (!hasUpperCase || !hasLowerCase || !hasNumber) {
+      setPwError(
+        "La nueva contraseña debe incluir mayúscula, minúscula y número.",
+      );
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       setPwError("Las contraseñas no coinciden.");
       return;
@@ -81,8 +98,12 @@ const ProfilePage: React.FC = () => {
 
     setPwStatus("loading");
     try {
-      await authApi.updatePassword(newPassword);
+      await authApi.updatePassword({
+        currentPassword,
+        newPassword,
+      });
       setPwStatus("success");
+      setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (err: any) {
@@ -321,6 +342,23 @@ const ProfilePage: React.FC = () => {
         <div className="prf-pw-card">
           <form className="prf-pw-form" onSubmit={handlePasswordChange}>
             <div className="prf-field">
+              <label className="prf-label" htmlFor="prf-current-pw">
+                Contraseña actual
+              </label>
+              <input
+                id="prf-current-pw"
+                type="password"
+                className="prf-input"
+                placeholder="Ingresa tu contraseña actual"
+                value={currentPassword}
+                onChange={(e) => {
+                  setCurrentPassword(e.target.value);
+                  setPwStatus("idle");
+                }}
+                autoComplete="current-password"
+              />
+            </div>
+            <div className="prf-field">
               <label className="prf-label" htmlFor="prf-new-pw">
                 Nueva contraseña
               </label>
@@ -328,7 +366,7 @@ const ProfilePage: React.FC = () => {
                 id="prf-new-pw"
                 type="password"
                 className="prf-input"
-                placeholder="Mínimo 6 caracteres"
+                placeholder="Mínimo 8 caracteres"
                 value={newPassword}
                 onChange={(e) => {
                   setNewPassword(e.target.value);
