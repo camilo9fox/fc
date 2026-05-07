@@ -24,6 +24,7 @@ import SpacedRepetitionPage from './components/flashcards/SpacedRepetitionPage';
 import ExamSimulationsPage from './components/examsim/ExamSimulationsPage';
 import NotFoundPage from './components/shared/NotFoundPage';
 import LandingPage from './components/landing/LandingPage';
+import MobileLandingPage from './components/mobile/MobileLandingPage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import OfflineBanner from './components/shared/OfflineBanner';
 import PwaInstallPrompt from './components/shared/PwaInstallPrompt';
@@ -55,6 +56,18 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 // App Routes component
 const AppRoutes: React.FC = () => {
   const { user } = useAuth();
+
+  const LandingEntry: React.FC = () => {
+    const [isMobileViewport, setIsMobileViewport] = useState(
+      typeof window !== 'undefined' ? window.innerWidth <= 900 : false,
+    );
+    useEffect(() => {
+      const onResize = () => setIsMobileViewport(window.innerWidth <= 900);
+      window.addEventListener('resize', onResize);
+      return () => window.removeEventListener('resize', onResize);
+    }, []);
+    return isMobileViewport ? <MobileLandingPage /> : <LandingPage />;
+  };
 
   const DashboardEntry: React.FC = () => {
     const [isMobileViewport, setIsMobileViewport] = useState(
@@ -115,7 +128,7 @@ const AppRoutes: React.FC = () => {
     <Routes>
       <Route
         path="/"
-        element={user ? <Navigate to="/dashboard" /> : <LandingPage />}        
+        element={user ? <Navigate to="/dashboard" /> : <LandingEntry />}
       />
       <Route
         path="/login"

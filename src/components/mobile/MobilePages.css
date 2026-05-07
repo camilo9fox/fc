@@ -1219,3 +1219,443 @@
     animation: none;
   }
 }
+
+/* ═══════════════════════════════════════════
+   Mobile Landing Page  (mbl-*)
+   Shown to unauthenticated users on mobile
+═══════════════════════════════════════════ */
+
+@keyframes mbl-fadein {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes mbl-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}
+
+.mbl-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: #f9f6ff;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #1a1325;
+  overflow-x: hidden;
+}
+
+/* ── Header ── */
+.mbl-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 24px 0;
+}
+
+.mbl-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.mbl-brand-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #631d76, #ee4266);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 4px 12px -4px #ee426666;
+}
+
+.mbl-brand-name {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1a1325;
+  letter-spacing: -0.025em;
+}
+
+/* ── Hero ── */
+.mbl-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(160deg, #1a1325 0%, #2d1042 45%, #1f0c34 100%);
+  margin: 16px 16px 0;
+  border-radius: 24px;
+  padding: 32px 24px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 20px 50px -16px rgba(30, 10, 60, 0.6);
+  animation: mbl-fadein 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.mbl-hero-glow {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(99, 29, 118, 0.45) 0%,
+    transparent 70%
+  );
+  top: -80px;
+  right: -60px;
+  pointer-events: none;
+}
+
+.mbl-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  padding: 5px 13px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  width: fit-content;
+}
+
+.mbl-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ee4266;
+  flex-shrink: 0;
+  animation: mbl-pulse 2.2s ease-in-out infinite;
+}
+
+.mbl-hero-h1 {
+  margin: 0;
+  font-size: 2.1rem;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: #fff;
+}
+
+.mbl-hero-accent {
+  background: linear-gradient(135deg, #c46be3, #ee4266);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.mbl-hero-sub {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.mbl-hero-ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mbl-hero-proof {
+  margin: 0;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.38);
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ── Buttons ── */
+.mbl-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 24px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 0.97rem;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+
+.mbl-btn--primary {
+  background: linear-gradient(135deg, #631d76, #8a2b9a 50%, #ee4266);
+  color: #fff;
+  box-shadow: 0 4px 18px -4px rgba(99, 29, 118, 0.55);
+}
+.mbl-btn--primary:active {
+  transform: scale(0.97);
+}
+
+.mbl-btn--ghost {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+}
+.mbl-btn--ghost:active {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.mbl-btn--full {
+  width: 100%;
+}
+
+.mbl-btn--link {
+  background: transparent;
+  color: #8a2b9a;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 10px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── Tools section ── */
+.mbl-tools {
+  padding: 24px 16px 0;
+  animation: mbl-fadein 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+}
+
+.mbl-tools-label {
+  margin: 0 0 14px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #631d76;
+  text-align: center;
+}
+
+.mbl-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.mbl-tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 14px 8px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid rgba(99, 29, 118, 0.1);
+  transition: transform 0.15s ease;
+}
+.mbl-tool:active {
+  transform: scale(0.96);
+}
+
+.mbl-tool-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.mbl-tool-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #3d2060;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* tool accent borders */
+.mbl-tool--purple {
+  border-top: 3px solid #8b5cf6;
+}
+.mbl-tool--rose {
+  border-top: 3px solid #ee4266;
+}
+.mbl-tool--teal {
+  border-top: 3px solid #0ea5e9;
+}
+.mbl-tool--amber {
+  border-top: 3px solid #f59e0b;
+}
+.mbl-tool--indigo {
+  border-top: 3px solid #6366f1;
+}
+.mbl-tool--green {
+  border-top: 3px solid #22c55e;
+}
+
+/* ── Dual approach ── */
+.mbl-dual {
+  padding: 24px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: mbl-fadein 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.11s both;
+}
+
+.mbl-dual-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1.5px solid transparent;
+}
+
+.mbl-dual-card--ai {
+  border-color: rgba(99, 29, 118, 0.18);
+  box-shadow: 0 2px 12px -4px rgba(99, 29, 118, 0.12);
+}
+
+.mbl-dual-card--manual {
+  border-color: rgba(238, 66, 102, 0.18);
+  box-shadow: 0 2px 12px -4px rgba(238, 66, 102, 0.1);
+}
+
+.mbl-dual-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.mbl-dual-body h3 {
+  margin: 0 0 4px;
+  font-size: 0.93rem;
+  font-weight: 700;
+  color: #1a1325;
+  letter-spacing: -0.01em;
+}
+
+.mbl-dual-body p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #6b5a7a;
+  line-height: 1.55;
+}
+
+/* ── Steps ── */
+.mbl-steps {
+  padding: 24px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  animation: mbl-fadein 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.14s both;
+}
+
+.mbl-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(99, 29, 118, 0.07);
+}
+.mbl-step:last-child {
+  border-bottom: none;
+}
+
+.mbl-step-num {
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #ee4266;
+  opacity: 0.7;
+  min-width: 28px;
+  padding-top: 2px;
+}
+
+.mbl-step-body h3 {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a1325;
+  letter-spacing: -0.01em;
+}
+
+.mbl-step-body p {
+  margin: 0;
+  font-size: 0.83rem;
+  color: #6b5a7a;
+  line-height: 1.55;
+}
+
+/* ── CTA section ── */
+.mbl-cta {
+  margin: 24px 16px 0;
+  background: linear-gradient(
+    145deg,
+    #4a1260,
+    #631d76 40%,
+    #8a2b60 80%,
+    #c4284e
+  );
+  border-radius: 22px;
+  padding: 28px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+  box-shadow: 0 16px 40px -12px rgba(99, 29, 118, 0.5);
+  animation: mbl-fadein 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+}
+
+.mbl-cta h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.mbl-cta p {
+  margin: 0;
+  font-size: 0.83rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.55;
+}
+
+.mbl-cta .mbl-btn--primary {
+  background: #fff;
+  color: #631d76;
+  box-shadow: 0 6px 18px -4px rgba(0, 0, 0, 0.25);
+}
+.mbl-cta .mbl-btn--primary:active {
+  background: #f5ebff;
+}
+
+.mbl-cta .mbl-btn--link {
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ── Footer ── */
+.mbl-footer {
+  padding: 20px 24px 32px;
+  text-align: center;
+}
+
+.mbl-footer p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: rgba(26, 19, 37, 0.35);
+}
