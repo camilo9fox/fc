@@ -354,10 +354,19 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [dueCount, setDueCount] = useState<number>(0);
+  const [isMobileViewport, setIsMobileViewport] = useState(
+    typeof window !== "undefined" ? window.innerWidth <= 900 : false,
+  );
 
   useEffect(() => {
     setSidebarOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    const onResize = () => setIsMobileViewport(window.innerWidth <= 900);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   useEffect(() => {
     if (!sidebarOpen) return;
@@ -396,6 +405,95 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const userInitials = user?.email
     ? user.email.slice(0, 2).toUpperCase()
     : "US";
+
+  const isMobileTabActive = (
+    tab: "home" | "create" | "library" | "profile",
+  ) => {
+    const path = location.pathname;
+    if (tab === "home") {
+      return path === "/m/home" || path === "/dashboard";
+    }
+    if (tab === "create") {
+      return (
+        path === "/m/create" ||
+        path.startsWith("/flashcards") ||
+        path.startsWith("/quizzes") ||
+        path.startsWith("/truefalse") ||
+        path.startsWith("/study-guides") ||
+        path.startsWith("/exam-simulations") ||
+        path === "/categories"
+      );
+    }
+    if (tab === "library") {
+      return path === "/m/library" || path === "/biblioteca";
+    }
+    return path === "/m/profile" || path === "/profile";
+  };
+
+  if (isMobileViewport) {
+    return (
+      <div className="mb-shell">
+        <main id="main-content" className="mb-shell-content" tabIndex={-1}>
+          {children}
+        </main>
+
+        <nav className="mb-bottom-nav" aria-label="Navegación móvil principal">
+          <Link
+            to="/m/home"
+            className={`mb-bottom-item ${isMobileTabActive("home") ? "active" : ""}`}
+            aria-current={isMobileTabActive("home") ? "page" : undefined}
+          >
+            <span className="mb-bottom-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1v-10.5Z" />
+              </svg>
+            </span>
+            <span className="mb-bottom-label">Inicio</span>
+          </Link>
+          <Link
+            to="/m/create"
+            className={`mb-bottom-item mb-bottom-item-create ${isMobileTabActive("create") ? "active" : ""}`}
+            aria-current={isMobileTabActive("create") ? "page" : undefined}
+          >
+            <span className="mb-bottom-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </span>
+            <span className="mb-bottom-label">Crear</span>
+          </Link>
+          <Link
+            to="/m/library"
+            className={`mb-bottom-item ${isMobileTabActive("library") ? "active" : ""}`}
+            aria-current={isMobileTabActive("library") ? "page" : undefined}
+          >
+            <span className="mb-bottom-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M6 3h10a2 2 0 0 1 2 2v16H8a2 2 0 0 1-2-2V3Z" />
+                <path d="M8 7h8M8 11h8M8 15h6" />
+              </svg>
+            </span>
+            <span className="mb-bottom-label">Biblioteca</span>
+          </Link>
+          <Link
+            to="/m/profile"
+            className={`mb-bottom-item ${isMobileTabActive("profile") ? "active" : ""}`}
+            aria-current={isMobileTabActive("profile") ? "page" : undefined}
+          >
+            <span className="mb-bottom-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="8" r="4" />
+              </svg>
+            </span>
+            <span className="mb-bottom-label">Perfil</span>
+          </Link>
+        </nav>
+
+        <GenerationQueueWidget />
+      </div>
+    );
+  }
 
   return (
     <div className="ds-shell">

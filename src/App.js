@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -26,6 +26,10 @@ import NotFoundPage from './components/shared/NotFoundPage';
 import LandingPage from './components/landing/LandingPage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import OfflineBanner from './components/shared/OfflineBanner';
+import MobileHomePage from './components/mobile/MobileHomePage';
+import MobileCreatePage from './components/mobile/MobileCreatePage';
+import MobileLibraryPage from './components/mobile/MobileLibraryPage';
+import MobileProfilePage from './components/mobile/MobileProfilePage';
 import './App.css';
 
 // Protected Route component
@@ -47,6 +51,24 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 // App Routes component
 const AppRoutes: React.FC = () => {
   const { user } = useAuth();
+
+  const DashboardEntry: React.FC = () => {
+    const [isMobileViewport, setIsMobileViewport] = useState(
+      typeof window !== 'undefined' ? window.innerWidth <= 900 : false,
+    );
+
+    useEffect(() => {
+      const onResize = () => setIsMobileViewport(window.innerWidth <= 900);
+      window.addEventListener('resize', onResize);
+      return () => window.removeEventListener('resize', onResize);
+    }, []);
+
+    return (
+      <DashboardLayout>
+        {isMobileViewport ? <MobileHomePage /> : <DashboardPage />}
+      </DashboardLayout>
+    );
+  };
 
   return (
     <Routes>
@@ -116,8 +138,46 @@ const AppRoutes: React.FC = () => {
         path="/dashboard"
         element={
           <ProtectedRoute>
+            <DashboardEntry />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/m/home"
+        element={
+          <ProtectedRoute>
             <DashboardLayout>
-              <DashboardPage />
+              <MobileHomePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/m/create"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <MobileCreatePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/m/library"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <MobileLibraryPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/m/profile"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <MobileProfilePage />
             </DashboardLayout>
           </ProtectedRoute>
         }
