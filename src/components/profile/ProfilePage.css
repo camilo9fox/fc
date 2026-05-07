@@ -126,6 +126,11 @@
   color: #ee4266;
 }
 
+.prf-icon-faq {
+  background: #edf4ff;
+  color: #2563eb;
+}
+
 .prf-card-body {
   flex: 1;
   min-width: 0;
@@ -474,6 +479,10 @@
 [data-theme="dark"] .prf-icon-history {
   background: #2d0a14;
   color: #f87171;
+}
+[data-theme="dark"] .prf-icon-faq {
+  background: #0f1f3d;
+  color: #60a5fa;
 }
 
 [data-theme="dark"] .prf-pw-card {

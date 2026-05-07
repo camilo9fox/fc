@@ -11,7 +11,7 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<ChoiceResult>;
 }
 
-const DISMISS_KEY = "studyai:pwa-install-dismissed-at";
+const DISMISS_KEY = "Flashy:pwa-install-dismissed-at";
 const DISMISS_TTL_MS = 3 * 24 * 60 * 60 * 1000;
 
 const isStandaloneMode = () => {
@@ -98,7 +98,7 @@ const PwaInstallPrompt: React.FC = () => {
   return (
     <aside className="pwa-install" role="dialog" aria-label="Instalar app">
       <div className="pwa-install-copy">
-        <strong>Instala StudyAI</strong>
+        <strong>Instala Flashy</strong>
         <p>
           {showInstallButton
             ? "Acceso rapido desde tu pantalla de inicio y mejor experiencia movil."

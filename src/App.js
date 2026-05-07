@@ -28,6 +28,7 @@ import DashboardLayout from './components/layout/DashboardLayout';
 import OfflineBanner from './components/shared/OfflineBanner';
 import PwaInstallPrompt from './components/shared/PwaInstallPrompt';
 import IntroModulePage from './components/intro/IntroModulePage';
+import FaqPage from './components/faq/FaqPage';
 import MobileHomePage from './components/mobile/MobileHomePage';
 import MobileCreatePage from './components/mobile/MobileCreatePage';
 import MobileLibraryPage from './components/mobile/MobileLibraryPage';
@@ -336,6 +337,16 @@ const AppRoutes: React.FC = () => {
           <ProtectedRoute>
             <DashboardLayout>
               <ExamSimulationsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/faq"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <FaqPage />
             </DashboardLayout>
           </ProtectedRoute>
         }

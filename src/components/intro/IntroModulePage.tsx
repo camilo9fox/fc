@@ -634,7 +634,7 @@ const IntroModulePage: React.FC = () => {
     };
 
     localStorage.setItem(
-      `studyai:onboarding-profile:${user.id}`,
+      `Flashy:onboarding-profile:${user.id}`,
       JSON.stringify(payload),
     );
 
@@ -682,7 +682,7 @@ const IntroModulePage: React.FC = () => {
       <section className="intro-onb-shell">
         {/* Top bar */}
         <header className="intro-onb-head">
-          <span className="intro-onb-kicker">StudyAI</span>
+          <span className="intro-onb-kicker">Flashy</span>
           <button
             className="intro-onb-skip"
             onClick={() => void skipOnboarding()}

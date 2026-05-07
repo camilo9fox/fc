@@ -25,7 +25,7 @@ const LandingPage: React.FC = () => {
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
             </svg>
           </div>
-          <span className="landing-brand-name">StudyAI</span>
+          <span className="landing-brand-name">Flashy</span>
         </div>
         <div className="landing-nav-links">
           {user ? (
@@ -400,9 +400,9 @@ const LandingPage: React.FC = () => {
                 <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
               </svg>
             </div>
-            <span className="landing-brand-name">StudyAI</span>
+            <span className="landing-brand-name">Flashy</span>
           </div>
-          <p>© 2026 StudyAI · Aprende más inteligente con IA</p>
+          <p>© 2026 Flashy · Aprende más inteligente con IA</p>
           <div className="footer-links">
             <Link to="/login">Iniciar sesión</Link>
             <Link to="/signup">Registrarse</Link>

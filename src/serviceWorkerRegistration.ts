@@ -1,4 +1,4 @@
-// Registro del Service Worker para StudyAI.
+// Registro del Service Worker para Flashy.
 // CRA 5 expone el SW solo en build de producción (NODE_ENV === 'production').
 
 type Config = {

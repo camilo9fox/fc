@@ -270,6 +270,51 @@ const ProfilePage: React.FC = () => {
         </div>
       </section>
 
+      {/* Soporte */}
+      <section className="prf-section">
+        <h3 className="prf-section-title">Soporte</h3>
+        <div className="prf-cards">
+          <button className="prf-card" onClick={() => navigate("/faq")}>
+            <div className="prf-card-icon prf-icon-faq">
+              <svg
+                width="26"
+                height="26"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </div>
+            <div className="prf-card-body">
+              <p className="prf-card-title">Preguntas frecuentes</p>
+              <p className="prf-card-desc">
+                Resuelve dudas sobre la plataforma y sus funciones.
+              </p>
+            </div>
+            <div className="prf-card-arrow">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </div>
+          </button>
+        </div>
+      </section>
+
       {/* Password change */}
       <section className="prf-section">
         <h3 className="prf-section-title">Cambiar contraseña</h3>

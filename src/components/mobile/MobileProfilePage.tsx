@@ -38,6 +38,12 @@ const MobileProfilePage: React.FC = () => {
         </div>
       </MobileSection>
 
+      <MobileSection title="Soporte">
+        <div className="mb-list">
+          <MobileProfileShortcut to="/faq" label="Preguntas frecuentes" />
+        </div>
+      </MobileSection>
+
       <button
         className="mb-logout-btn"
         onClick={() => {

@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-// Service Worker para StudyAI — estrategia Cache-First para assets,
+// Service Worker para Flashy — estrategia Cache-First para assets,
 // Network-First para llamadas de API.
 
 // CRA inyecta __WB_MANIFEST en el build — declararlo para evitar error TS
@@ -56,7 +56,7 @@ registerRoute(
 registerRoute(
   ({ request }) => request.destination === "image",
   new CacheFirst({
-    cacheName: "studyai-images",
+    cacheName: "Flashy-images",
     plugins: [
       new ExpirationPlugin({
         maxEntries: 60,
@@ -71,7 +71,7 @@ registerRoute(
   ({ url }) =>
     url.origin === "https://fonts.googleapis.com" ||
     url.origin === "https://fonts.gstatic.com",
-  new StaleWhileRevalidate({ cacheName: "studyai-fonts" }),
+  new StaleWhileRevalidate({ cacheName: "Flashy-fonts" }),
 );
 
 // API GET (excepto auth) — Network First con fallback a cache.
@@ -83,7 +83,7 @@ registerRoute(
     url.pathname.startsWith(`${apiPathPrefix}/`) &&
     !url.pathname.startsWith(`${apiPathPrefix}/auth/`),
   new NetworkFirst({
-    cacheName: "studyai-api-runtime",
+    cacheName: "Flashy-api-runtime",
     networkTimeoutSeconds: 5,
     plugins: [
       new ExpirationPlugin({ maxEntries: 120, maxAgeSeconds: 24 * 60 * 60 }),

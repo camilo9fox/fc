@@ -345,11 +345,11 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
   },
   "/intro": {
     title: "Guía de la app",
-    subtitle: "Conoce cómo funciona StudyAI y cómo aprovechar tus créditos",
+    subtitle: "Conoce cómo funciona Flashy y cómo aprovechar tus créditos",
   },
   "/m/intro": {
     title: "Guía de la app",
-    subtitle: "Conoce cómo funciona StudyAI y cómo aprovechar tus créditos",
+    subtitle: "Conoce cómo funciona Flashy y cómo aprovechar tus créditos",
   },
   "/biblioteca": {
     title: "Biblioteca pública",

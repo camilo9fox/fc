@@ -4,7 +4,7 @@ import { examSimulationApi } from "../api/examSimulation";
 import { statsApi, UserStats } from "../api/stats";
 import { useAuth } from "../contexts/AuthContext";
 
-const INTRO_SEEN_PREFIX = "studyai:intro-seen";
+const INTRO_SEEN_PREFIX = "Flashy:intro-seen";
 
 const getIntroSeenKey = (userId: string) => `${INTRO_SEEN_PREFIX}:${userId}`;
 
