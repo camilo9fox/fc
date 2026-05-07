@@ -7,7 +7,11 @@ declare const __WB_MANIFEST: Array<{ url: string; revision: string | null }>;
 
 import { clientsClaim } from "workbox-core";
 import { ExpirationPlugin } from "workbox-expiration";
-import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
+import {
+  precacheAndRoute,
+  createHandlerBoundToURL,
+  cleanupOutdatedCaches,
+} from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
 import {
   StaleWhileRevalidate,
@@ -19,6 +23,22 @@ clientsClaim();
 
 // Precachear todos los assets generados por CRA (inyectados por workbox en build)
 precacheAndRoute(__WB_MANIFEST);
+cleanupOutdatedCaches();
+
+const resolvedApiBase =
+  process.env.REACT_APP_API_URL || `${self.location.origin}/api`;
+
+let apiOrigin = self.location.origin;
+let apiPathPrefix = "/api";
+
+try {
+  const parsedApiBase = new URL(resolvedApiBase, self.location.origin);
+  apiOrigin = parsedApiBase.origin;
+  apiPathPrefix = parsedApiBase.pathname.replace(/\/$/, "") || "/api";
+} catch {
+  apiOrigin = self.location.origin;
+  apiPathPrefix = "/api";
+}
 
 // SPA fallback — cualquier GET que no sea API devuelve index.html
 const fileExtensionRegexp = new RegExp("/[^/?]+\\.[^/]+$");
@@ -54,30 +74,19 @@ registerRoute(
   new StaleWhileRevalidate({ cacheName: "studyai-fonts" }),
 );
 
-// API /api/flashcards GET — Network First con fallback a cache (permite repaso offline)
+// API GET (excepto auth) — Network First con fallback a cache.
+// Soporta backend en mismo origen o REACT_APP_API_URL distinto.
 registerRoute(
-  ({ url }) =>
-    url.pathname.startsWith("/api/flashcards") &&
-    location.origin === url.origin,
+  ({ request, url }) =>
+    request.method === "GET" &&
+    url.origin === apiOrigin &&
+    url.pathname.startsWith(`${apiPathPrefix}/`) &&
+    !url.pathname.startsWith(`${apiPathPrefix}/auth/`),
   new NetworkFirst({
-    cacheName: "studyai-api-flashcards",
+    cacheName: "studyai-api-runtime",
     networkTimeoutSeconds: 5,
     plugins: [
-      new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 24 * 60 * 60 }),
-    ],
-  }),
-);
-
-// API /api/categories GET — Network First con fallback a cache
-registerRoute(
-  ({ url }) =>
-    url.pathname.startsWith("/api/categories") &&
-    location.origin === url.origin,
-  new NetworkFirst({
-    cacheName: "studyai-api-categories",
-    networkTimeoutSeconds: 5,
-    plugins: [
-      new ExpirationPlugin({ maxEntries: 20, maxAgeSeconds: 24 * 60 * 60 }),
+      new ExpirationPlugin({ maxEntries: 120, maxAgeSeconds: 24 * 60 * 60 }),
     ],
   }),
 );

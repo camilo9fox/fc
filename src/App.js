@@ -26,6 +26,7 @@ import NotFoundPage from './components/shared/NotFoundPage';
 import LandingPage from './components/landing/LandingPage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import OfflineBanner from './components/shared/OfflineBanner';
+import PwaInstallPrompt from './components/shared/PwaInstallPrompt';
 import MobileHomePage from './components/mobile/MobileHomePage';
 import MobileCreatePage from './components/mobile/MobileCreatePage';
 import MobileLibraryPage from './components/mobile/MobileLibraryPage';
@@ -295,6 +296,7 @@ function App() {
           <Router>
             <ConfirmDialogProvider>
               <OfflineBanner />
+              <PwaInstallPrompt />
               <div className="App">
                 <a href="#main-content" className="app-skip-link">
                   Saltar al contenido principal
