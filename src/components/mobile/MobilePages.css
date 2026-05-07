@@ -730,6 +730,349 @@
   font-size: 1rem;
 }
 
+/* ── Quick action chips ── */
+.mb-chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.mb-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.mb-chip {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1.5px solid rgba(218, 200, 234, 0.8);
+  border-radius: 999px;
+  padding: 9px 14px;
+  background: linear-gradient(160deg, #ffffff, #faf5ff);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #4a1260;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px -8px rgba(72, 37, 90, 0.35);
+  transition:
+    transform 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.mb-chip:active {
+  transform: scale(0.96);
+}
+
+.mb-chip-icon {
+  font-size: 0.9rem;
+}
+
+/* ── Progress banner ── */
+.mb-progress-banner {
+  border-radius: 16px;
+  border: 1px solid rgba(218, 200, 234, 0.8);
+  background: linear-gradient(160deg, #ffffff, #faf5ff);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow:
+    0 8px 20px -14px rgba(60, 36, 76, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.mb-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mb-progress-header span {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #7a6882;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.mb-progress-header strong {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #631d76;
+}
+
+.mb-progress-bar-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(218, 200, 234, 0.5);
+  overflow: hidden;
+}
+
+.mb-progress-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #631d76, #ee4266);
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mb-progress-meta {
+  display: flex;
+  gap: 14px;
+}
+
+.mb-progress-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.mb-progress-meta-item span {
+  font-size: 0.7rem;
+  color: #9280a0;
+  font-weight: 500;
+}
+
+.mb-progress-meta-item strong {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #2e1a3e;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+[data-theme="dark"] .mb-chip {
+  background: linear-gradient(160deg, #231a2c, #1c1424);
+  border-color: #3b2e45;
+  color: #c49de6;
+}
+
+[data-theme="dark"] .mb-progress-banner {
+  background: linear-gradient(160deg, #231a2c, #1c1424);
+  border-color: #3b2e45;
+}
+
+[data-theme="dark"] .mb-progress-header span {
+  color: #6a5a78;
+}
+
+[data-theme="dark"] .mb-progress-header strong {
+  color: #c49de6;
+}
+
+[data-theme="dark"] .mb-progress-bar-track {
+  background: rgba(60, 45, 75, 0.7);
+}
+
+[data-theme="dark"] .mb-progress-meta-item span {
+  color: #7a6882;
+}
+
+[data-theme="dark"] .mb-progress-meta-item strong {
+  color: #f0e8ff;
+}
+
+/* ── Onboarding steps ── */
+.mb-onboarding-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid rgba(220, 205, 234, 0.8);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow:
+    0 8px 20px -14px rgba(60, 36, 76, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.mb-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  border-bottom: 1px solid rgba(230, 215, 242, 0.6);
+}
+
+.mb-step:last-child {
+  border-bottom: none;
+}
+
+.mb-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #631d76, #ee4266);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 6px 12px -8px rgba(99, 29, 118, 0.65);
+}
+
+.mb-step-body strong {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1e1528;
+  margin-bottom: 3px;
+}
+
+.mb-step-body p {
+  margin: 0;
+  font-size: 0.77rem;
+  color: #9a8aa8;
+  line-height: 1.4;
+}
+
+/* ── Due review alert strip ── */
+.mb-due-alert {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #631d76 0%, #ee4266 100%);
+  color: #fff;
+  cursor: pointer;
+  border: none;
+  text-align: left;
+  box-shadow:
+    0 16px 28px -18px rgba(99, 29, 118, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition: transform 0.16s ease;
+  width: 100%;
+}
+
+.mb-due-alert:active {
+  transform: scale(0.98);
+}
+
+.mb-due-alert-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.mb-due-alert-text strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.mb-due-alert-text span {
+  font-size: 0.78rem;
+  opacity: 0.85;
+}
+
+.mb-due-alert-arrow {
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* ── Quick start grid (2-col) ── */
+.mb-quickstart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.mb-quickstart-card {
+  border: 1px solid rgba(220, 205, 234, 0.8);
+  border-radius: 16px;
+  padding: 16px 14px;
+  background: linear-gradient(160deg, #ffffff, #faf5ff);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  border: none;
+  text-align: left;
+  box-shadow:
+    0 8px 18px -14px rgba(72, 37, 90, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(220, 205, 234, 0.8);
+  transition: transform 0.16s ease;
+}
+
+.mb-quickstart-card:active {
+  transform: scale(0.97);
+}
+
+.mb-quickstart-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  box-shadow: 0 6px 14px -8px rgba(40, 10, 54, 0.45);
+}
+
+.mb-quickstart-card strong {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1e1528;
+  line-height: 1.2;
+}
+
+.mb-quickstart-card p {
+  margin: 0;
+  font-size: 0.73rem;
+  color: #9a8aa8;
+  line-height: 1.35;
+}
+
+/* dark mode for new components */
+[data-theme="dark"] .mb-onboarding-steps {
+  background: #1e1528;
+  border-color: #3b2e45;
+}
+
+[data-theme="dark"] .mb-step {
+  border-bottom-color: rgba(60, 45, 75, 0.8);
+}
+
+[data-theme="dark"] .mb-step-body strong {
+  color: #e8ddef;
+}
+
+[data-theme="dark"] .mb-step-body p {
+  color: #8878a0;
+}
+
+[data-theme="dark"] .mb-quickstart-card {
+  background: linear-gradient(160deg, #231a2c, #1c1424);
+  border-color: #3b2e45;
+}
+
+[data-theme="dark"] .mb-quickstart-card strong {
+  color: #e8ddef;
+}
+
+[data-theme="dark"] .mb-quickstart-card p {
+  color: #8878a0;
+}
+
 /* ── Responsive ── */
 @media (min-width: 901px) {
   .mb-page {
