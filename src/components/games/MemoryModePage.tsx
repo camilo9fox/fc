@@ -147,79 +147,85 @@ const MemoryModePage: React.FC = () => {
     (uid: string) => {
       if (isChecking) return;
 
-      setTiles((prev) => {
-        const tile = prev.find((t) => t.uid === uid);
-        if (!tile || tile.isFlipped || tile.isMatched) return prev;
-        return prev.map((t) => (t.uid === uid ? { ...t, isFlipped: true } : t));
-      });
+      const tile = tiles.find((t) => t.uid === uid);
+      if (!tile || tile.isFlipped || tile.isMatched) return;
 
-      setFlippedUids((prev) => {
-        if (prev.length === 0) return [uid];
+      // First card of the pair
+      if (flippedUids.length === 0) {
+        setTiles((prev) =>
+          prev.map((t) => (t.uid === uid ? { ...t, isFlipped: true } : t)),
+        );
+        setFlippedUids([uid]);
+        return;
+      }
 
-        // Second flip
-        const firstUid = prev[0];
+      const firstUid = flippedUids[0];
+      // Guard: same tile clicked twice — do not count as an attempt
+      if (firstUid === uid) return;
 
-        setTiles((prevTiles) => {
-          const first = prevTiles.find((t) => t.uid === firstUid);
-          const second = prevTiles.find((t) => t.uid === uid);
-          if (!first || !second) return prevTiles;
+      const first = tiles.find((t) => t.uid === firstUid);
+      if (!first) return;
 
-          setAttempts((a) => a + 1);
+      // Second card of the pair — flip it and evaluate immediately
+      const nextAttempts = attempts + 1;
+      setAttempts(nextAttempts);
+      setFlippedUids([]);
 
-          if (first.cardId === second.cardId && first.uid !== second.uid) {
-            // Match!
-            const newMatched = prevTiles.filter((t) => t.isMatched).length + 2;
-            const totalPairs = diffConfig.pairs;
-            const updated = prevTiles.map((t) =>
-              t.uid === firstUid || t.uid === uid
-                ? { ...t, isMatched: true }
-                : t,
-            );
-            if (newMatched === totalPairs * 2) {
-              // Win — check best after state settles
-              setTimeout(() => {
-                setAttempts((finalAttempts) => {
-                  const bk = user
-                    ? `memory_best_${user.id}_${difficulty}`
-                    : `memory_best_${difficulty}`;
-                  const stored = localStorage.getItem(bk);
-                  const prev = stored ? parseInt(stored, 10) : 0;
-                  const newScore = finalAttempts; // attempts already incremented above
-                  if (prev === 0 || newScore < prev) {
-                    localStorage.setItem(bk, String(newScore));
-                    setPersonalBest(newScore);
-                    setIsNewBest(true);
-                  }
-                  return finalAttempts;
-                });
-                setPhase("win");
-              }, 400);
+      if (first.cardId === tile.cardId) {
+        // Match
+        setTiles((prev) =>
+          prev.map((t) =>
+            t.uid === firstUid || t.uid === uid
+              ? { ...t, isFlipped: true, isMatched: true }
+              : t,
+          ),
+        );
+        const newMatchedCount = matchedCount + 1;
+        setMatchedCount(newMatchedCount);
+
+        if (newMatchedCount === diffConfig.pairs) {
+          setTimeout(() => {
+            const bk = user
+              ? `memory_best_${user.id}_${difficulty}`
+              : `memory_best_${difficulty}`;
+            const stored = localStorage.getItem(bk);
+            const prevBest = stored ? parseInt(stored, 10) : 0;
+            if (prevBest === 0 || nextAttempts < prevBest) {
+              localStorage.setItem(bk, String(nextAttempts));
+              setPersonalBest(nextAttempts);
+              setIsNewBest(true);
             }
-            setMatchedCount(newMatched / 2);
-            return updated;
-          } else {
-            // No match — flip back after delay
-            setIsChecking(true);
-            setTimeout(() => {
-              setTiles((t) =>
-                t.map((tile) =>
-                  tile.uid === firstUid || tile.uid === uid
-                    ? { ...tile, isFlipped: false }
-                    : tile,
-                ),
-              );
-              setIsChecking(false);
-            }, 900);
-            return prevTiles.map((t) =>
-              t.uid === uid ? { ...t, isFlipped: true } : t,
-            );
-          }
-        });
-
-        return []; // reset flipped
-      });
+            setPhase("win");
+          }, 400);
+        }
+      } else {
+        // No match — show both briefly then flip back
+        setTiles((prev) =>
+          prev.map((t) => (t.uid === uid ? { ...t, isFlipped: true } : t)),
+        );
+        setIsChecking(true);
+        setTimeout(() => {
+          setTiles((prev) =>
+            prev.map((t) =>
+              t.uid === firstUid || t.uid === uid
+                ? { ...t, isFlipped: false }
+                : t,
+            ),
+          );
+          setIsChecking(false);
+        }, 900);
+      }
     },
-    [isChecking, diffConfig.pairs, difficulty, user],
+    [
+      isChecking,
+      tiles,
+      flippedUids,
+      attempts,
+      matchedCount,
+      diffConfig.pairs,
+      difficulty,
+      user,
+    ],
   );
 
   // ── Format time ────────────────────────────────────────────────────────────
