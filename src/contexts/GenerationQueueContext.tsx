@@ -62,6 +62,7 @@ interface GenerationQueueContextValue {
   jobs: QueueJob[];
   toasts: QueueToast[];
   dismissToast: (id: string) => void;
+  pendingResults: Partial<Record<ModuleType, any>>;
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -354,6 +355,7 @@ export const GenerationQueueProvider: React.FC<{
         jobs,
         toasts,
         dismissToast,
+        pendingResults,
       }}
     >
       {children}

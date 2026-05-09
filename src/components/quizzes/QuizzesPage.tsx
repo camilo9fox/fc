@@ -45,12 +45,12 @@ const QuizzesPage: React.FC = () => {
   const hasCategories = catsLoading || categories.length > 0;
   const { confirm } = useConfirmDialog();
 
-  const { claimResult } = useGenerationQueue();
+  const { claimResult, pendingResults } = useGenerationQueue();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const pending = claimResult("quiz");
     if (pending) handleDrafted(pending);
-  }, []);
+  }, [pendingResults]);
 
   useEffect(() => {
     const load = async () => {

@@ -56,7 +56,8 @@ const getQuestionKey = (
 
 const ExamSimulationsPage: React.FC = () => {
   const { categories, loading: categoriesLoading } = useCategories();
-  const { enqueue, isModuleQueued, claimResult } = useGenerationQueue();
+  const { enqueue, isModuleQueued, claimResult, pendingResults } =
+    useGenerationQueue();
   const { confirm } = useConfirmDialog();
 
   const [simulations, setSimulations] = useState<ExamSimulation[]>([]);
@@ -134,7 +135,8 @@ const ExamSimulationsPage: React.FC = () => {
       setShowGenerator(false);
       setQueued(false);
     }
-  }, [claimResult]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingResults]);
 
   useEffect(() => {
     const load = async () => {

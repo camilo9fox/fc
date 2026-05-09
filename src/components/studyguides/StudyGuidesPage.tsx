@@ -58,7 +58,7 @@ const StudyGuidesPage: React.FC = () => {
   const [selectedGuide, setSelectedGuide] = useState<StudyGuide | null>(null);
   const [filterCategoryId, setFilterCategoryId] = useState<string>("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const { claimResult } = useGenerationQueue();
+  const { claimResult, pendingResults } = useGenerationQueue();
   const { confirm } = useConfirmDialog();
 
   const detailStats = useMemo(() => {
@@ -108,7 +108,7 @@ const StudyGuidesPage: React.FC = () => {
     if (pending) {
       handleGenerated(pending);
     }
-  }, []);
+  }, [pendingResults]);
 
   const handleDelete = async (id: string) => {
     const accepted = await confirm({

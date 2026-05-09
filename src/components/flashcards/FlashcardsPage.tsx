@@ -79,7 +79,7 @@ const FlashcardsPage: React.FC = () => {
     return grouped;
   }, [savedFlashcards]);
 
-  const { claimResult } = useGenerationQueue();
+  const { claimResult, pendingResults } = useGenerationQueue();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
@@ -87,7 +87,7 @@ const FlashcardsPage: React.FC = () => {
     if (pending?.flashcards?.length) {
       handleAddGenerated(pending.flashcards);
     }
-  }, []);
+  }, [pendingResults]);
 
   useEffect(() => {
     if (!token) return;
