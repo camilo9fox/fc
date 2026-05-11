@@ -142,11 +142,6 @@ export const GenerationQueueProvider: React.FC<{
     jobsRef.current = jobs;
   }, [jobs]);
 
-  // Keep pending results in a ref for atomic claim operations
-  useEffect(() => {
-    pendingResultsRef.current = pendingResults;
-  }, [pendingResults]);
-
   const updateJob = useCallback((localId: string, patch: Partial<QueueJob>) => {
     setJobs((prev) =>
       prev.map((j) => (j.localId === localId ? { ...j, ...patch } : j)),
