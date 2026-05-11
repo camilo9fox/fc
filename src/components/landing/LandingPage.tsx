@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import "./LandingPage.css";
+import Logo from "../logo/Logo";
 
 /* tiny intersection-observer hook for scroll animations */
 function useInView(threshold = 0.15) {
@@ -64,8 +65,7 @@ const LandingPage: React.FC = () => {
       <nav className="lp-nav">
         <div className="lp-nav-inner">
           <div className="lp-brand">
-            <div className="lp-brand-icon">
-              <svg
+            {/* <svg
                 width="18"
                 height="18"
                 viewBox="0 0 24 24"
@@ -76,8 +76,9 @@ const LandingPage: React.FC = () => {
                 strokeLinejoin="round"
               >
                 <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-              </svg>
-            </div>
+              </svg> */}
+            <Logo />
+
             <span className="lp-brand-name">Flashy</span>
           </div>
           <div className="lp-nav-actions">

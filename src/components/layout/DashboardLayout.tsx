@@ -7,6 +7,7 @@ import { GenerationQueueProvider } from "../../contexts/GenerationQueueContext";
 import { GenerationQueueWidget } from "../shared/GenerationQueueWidget";
 import { AiUsagePulseBar } from "../shared/AiUsagePulseBar";
 import "./DashboardLayout.css";
+import Logo from "../logo/Logo";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -628,7 +629,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       >
         {/* Brand */}
         <div className="ds-brand">
-          <div className="ds-brand-icon">
+          {/* <div className="ds-brand-icon">
             <svg
               width="16"
               height="16"
@@ -641,7 +642,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             >
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
             </svg>
-          </div>
+          </div> */}
+          <Logo />
           <span className="ds-brand-name">Flashy</span>
         </div>
 

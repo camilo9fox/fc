@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./MobilePages.css";
+import Logo from "../logo/Logo";
 
 const MobileLandingPage: React.FC = () => {
   return (
@@ -8,20 +9,8 @@ const MobileLandingPage: React.FC = () => {
       {/* Header */}
       <header className="mbl-header">
         <div className="mbl-brand">
-          <div className="mbl-brand-icon">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-            </svg>
-          </div>
+          <Logo />
+
           <span className="mbl-brand-name">Flashy</span>
         </div>
       </header>

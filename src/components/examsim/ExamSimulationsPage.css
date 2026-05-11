@@ -789,6 +789,18 @@
     linear-gradient(150deg, #241b2d, #1d1624);
 }
 
+[data-theme="dark"] .es-question-title {
+  color: white;
+}
+
+[data-theme="dark"] .es-choice-btn {
+  color: white;
+}
+
+[data-theme="dark"] .es-points-tag {
+  color: white;
+}
+
 [data-theme="dark"] .es-generator input,
 [data-theme="dark"] .es-generator select,
 [data-theme="dark"] .es-generator textarea,
