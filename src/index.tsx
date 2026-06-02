@@ -5,17 +5,21 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  throw new Error("El elemento raíz 'root' no existe en el DOM.");
+}
+
+const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
 );
 
-// Activar Service Worker para soporte offline y caché de flashcards
 serviceWorkerRegistration.register({
   onUpdate: (registration) => {
-    // Notificar al SW que active la nueva versión al recargar
     if (registration.waiting) {
       registration.waiting.postMessage({ type: "SKIP_WAITING" });
     }

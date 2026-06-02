@@ -35,10 +35,6 @@ export interface QueueToast {
   link: string;
 }
 
-interface PendingResult {
-  moduleType: ModuleType;
-  result: any;
-}
 
 interface EnqueueParams {
   moduleType: ModuleType;

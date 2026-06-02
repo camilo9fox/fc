@@ -1,8 +1,6 @@
-/* eslint-disable no-restricted-globals */
-// Service Worker para Flashy — estrategia Cache-First para assets,
-// Network-First para llamadas de API.
+/* eslint-disable no-restricted-globals, import/first, @typescript-eslint/no-unused-vars */
+// Service Worker para Flashy
 
-// CRA inyecta __WB_MANIFEST en el build — declararlo para evitar error TS
 declare const __WB_MANIFEST: Array<{ url: string; revision: string | null }>;
 
 import { clientsClaim } from "workbox-core";
@@ -21,8 +19,7 @@ import {
 
 clientsClaim();
 
-// Precachear todos los assets generados por CRA (inyectados por workbox en build)
-precacheAndRoute(__WB_MANIFEST);
+precacheAndRoute((self as any).__WB_MANIFEST);
 cleanupOutdatedCaches();
 
 const resolvedApiBase =
@@ -40,7 +37,6 @@ try {
   apiPathPrefix = "/api";
 }
 
-// SPA fallback — cualquier GET que no sea API devuelve index.html
 const fileExtensionRegexp = new RegExp("/[^/?]+\\.[^/]+$");
 registerRoute(
   ({ request, url }) => {
@@ -52,7 +48,6 @@ registerRoute(
   createHandlerBoundToURL(process.env.PUBLIC_URL + "/index.html"),
 );
 
-// Imágenes — Cache First (30 días)
 registerRoute(
   ({ request }) => request.destination === "image",
   new CacheFirst({
@@ -66,7 +61,6 @@ registerRoute(
   }),
 );
 
-// Google Fonts / fuentes externas — Stale While Revalidate
 registerRoute(
   ({ url }) =>
     url.origin === "https://fonts.googleapis.com" ||
@@ -74,8 +68,6 @@ registerRoute(
   new StaleWhileRevalidate({ cacheName: "Flashy-fonts" }),
 );
 
-// API GET (excepto auth) — Network First con fallback a cache.
-// Soporta backend en mismo origen o REACT_APP_API_URL distinto.
 registerRoute(
   ({ request, url }) =>
     request.method === "GET" &&
@@ -91,8 +83,7 @@ registerRoute(
   }),
 );
 
-// Escuchar mensaje SKIP_WAITING para activar nueva versión inmediatamente
-(self as any).addEventListener("message", (event: MessageEvent) => {
+self.addEventListener("message", (event: MessageEvent) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
     (self as any).skipWaiting();
   }

@@ -601,13 +601,13 @@ const ExamSimulationsPage: React.FC = () => {
               const normalizedSubmitted = String(
                 devFeedback?.submittedText || devAnswers[questionKey] || "",
               ).trim();
-              const missingConcepts = Array.isArray(
+              const missingConcepts: string[] = Array.isArray(
                 devFeedback?.missingConcepts,
               )
-                ? devFeedback?.missingConcepts.filter(Boolean)
+                ? devFeedback!.missingConcepts!.filter(Boolean) as string[]
                 : [];
-              const strengths = Array.isArray(devFeedback?.strengths)
-                ? devFeedback?.strengths.filter(Boolean)
+              const strengths: string[] = Array.isArray(devFeedback?.strengths)
+                ? devFeedback!.strengths!.filter(Boolean) as string[]
                 : [];
 
               return (
