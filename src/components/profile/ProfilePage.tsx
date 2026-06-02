@@ -295,6 +295,42 @@ const ProfilePage: React.FC = () => {
       <section className="prf-section">
         <h3 className="prf-section-title">Soporte</h3>
         <div className="prf-cards">
+          <button className="prf-card" onClick={() => navigate("/soporte")}>
+            <div className="prf-card-icon prf-icon-support">
+              <svg
+                width="26"
+                height="26"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+            </div>
+            <div className="prf-card-body">
+              <p className="prf-card-title">Tickets de soporte</p>
+              <p className="prf-card-desc">
+                Crea y gestiona tus solicitudes de ayuda y consultas.
+              </p>
+            </div>
+            <div className="prf-card-arrow">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </div>
+          </button>
           <button className="prf-card" onClick={() => navigate("/faq")}>
             <div className="prf-card-icon prf-icon-faq">
               <svg
