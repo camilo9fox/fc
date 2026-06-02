@@ -19,7 +19,16 @@ const Login: React.FC = () => {
     try {
       await login(email, password);
     } catch (err: any) {
-      setError(err.response?.data?.error || "Error al iniciar sesión");
+      const status = err.response?.status;
+      if (status === 401) {
+        setError("Usuario o contraseña incorrectos. Verifica tus credenciales.");
+      } else if (status && status >= 500) {
+        setError("Error del servidor. Inténtalo de nuevo más tarde.");
+      } else if (!err.response) {
+        setError("Error de conexión. Revisa tu conexión a internet.");
+      } else {
+        setError(err.response?.data?.error || "Error al iniciar sesión");
+      }
     } finally {
       setIsLoading(false);
     }

@@ -45,7 +45,16 @@ const Signup: React.FC = () => {
       };
       await signup(email, password, metadata);
     } catch (err: any) {
-      setError(err.response?.data?.error || "Error al crear cuenta");
+      const status = err.response?.status;
+      if (status === 401 || status === 409) {
+        setError("El correo ya está registrado o las credenciales no son válidas.");
+      } else if (status && status >= 500) {
+        setError("Error del servidor. Inténtalo de nuevo más tarde.");
+      } else if (!err.response) {
+        setError("Error de conexión. Revisa tu conexión a internet.");
+      } else {
+        setError(err.response?.data?.error || "Error al crear cuenta");
+      }
     } finally {
       setIsLoading(false);
     }
