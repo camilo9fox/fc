@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
-import Logo from "../logo/Logo";
-import "./Terms.css";;
+import Logo from "../logo/Logo";;
 
 interface ITermsPolicies {
   title: string;

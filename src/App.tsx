@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ConfirmDialogProvider } from "./contexts/ConfirmDialogContext";
@@ -40,7 +45,9 @@ import Policies from "./components/terms/Policies";
 import { useOnboardingIntroGate } from "./hooks/useOnboardingIntroGate";
 import "./App.css";
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
@@ -92,7 +99,9 @@ const AppRoutes: React.FC = () => {
     }
 
     if (shouldShowIntro) {
-      return <Navigate to={isMobileViewport ? "/m/intro" : "/intro"} replace />;
+      return (
+        <Navigate to={isMobileViewport ? "/m/intro" : "/intro"} replace />
+      );
     }
 
     return (
@@ -141,6 +150,232 @@ const AppRoutes: React.FC = () => {
       />
       <Route path="/terms" element={<Terms />} />
       <Route path="/policies" element={<Policies />} />
+      <Route
+        path="/flashcards"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <FlashcardsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/quizzes/*"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <QuizzesPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/truefalse/*"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <TrueFalsePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/categories"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <CategoriesPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/study-guides"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <StudyGuidesPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardEntry />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/intro"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <IntroModulePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/m/intro"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <IntroModulePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/m/home"
+        element={
+          <ProtectedRoute>
+            <MobileHomeEntry />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/m/create"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <MobileCreatePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/m/library"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <MobileLibraryPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/m/profile"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <MobileProfilePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/historial"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <HistorialPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/biblioteca"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <LibraryPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ProfilePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/games"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <GamesHubPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/games/survival"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <SurvivalModePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/games/memoria"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <MemoryModePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/games/contrarreloj"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ContrarrelojModePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/games/escritura"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <EscrituraModePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/repaso"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <SpacedRepetitionPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/exam-simulations"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ExamSimulationsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/faq"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <FaqPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
