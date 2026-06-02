@@ -9,6 +9,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -108,7 +109,22 @@ const Login: React.FC = () => {
               </div>
             )}
 
-            <button type="submit" className="auth-submit" disabled={isLoading}>
+            <label className="auth-checkbox">
+              <input
+                type="checkbox"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                disabled={isLoading}
+              />
+              <span>
+                He leído y acepto los{" "}
+                <Link to="/terms" target="_blank" tabIndex={-1}>Términos y condiciones</Link>{" "}
+                y las{" "}
+                <Link to="/policies" target="_blank" tabIndex={-1}>Políticas de privacidad</Link>.
+              </span>
+            </label>
+
+            <button type="submit" className="auth-submit" disabled={isLoading || !acceptedTerms}>
               <span>
                 {isLoading ? "Iniciando sesion..." : "Entrar a mi cuenta"}
               </span>

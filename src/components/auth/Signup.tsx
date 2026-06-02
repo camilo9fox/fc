@@ -12,6 +12,7 @@ const Signup: React.FC = () => {
   const [lastName, setLastName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const { signup } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -185,7 +186,22 @@ const Signup: React.FC = () => {
               </div>
             )}
 
-            <button type="submit" className="auth-submit" disabled={isLoading}>
+            <label className="auth-checkbox">
+              <input
+                type="checkbox"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                disabled={isLoading}
+              />
+              <span>
+                He leído y acepto los{" "}
+                <Link to="/terms" target="_blank" tabIndex={-1}>Términos y condiciones</Link>{" "}
+                y las{" "}
+                <Link to="/policies" target="_blank" tabIndex={-1}>Políticas de privacidad</Link>.
+              </span>
+            </label>
+
+            <button type="submit" className="auth-submit" disabled={isLoading || !acceptedTerms}>
               <span>{isLoading ? "Creando cuenta..." : "Crear mi cuenta"}</span>
               <ArrowRight size={16} />
             </button>
