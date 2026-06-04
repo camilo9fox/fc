@@ -10,6 +10,7 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ConfirmDialogProvider } from "./contexts/ConfirmDialogContext";
 import ErrorBoundary from "./components/shared/ErrorBoundary";
+import ContentSafetyToast from "./components/shared/ContentSafetyToast";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import FlashcardsPage from "./components/flashcards/FlashcardsPage";
@@ -401,6 +402,7 @@ function App() {
             <ConfirmDialogProvider>
               <OfflineBanner />
               <PwaInstallPrompt />
+              <ContentSafetyToast />
               <div className="App">
                 <a href="#main-content" className="app-skip-link">
                   Saltar al contenido principal

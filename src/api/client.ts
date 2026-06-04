@@ -116,6 +116,19 @@ apiClient.interceptors.response.use(
 
     const status = error.response?.status;
 
+    // 400 with category — ContentSafetyError from backend
+    if (status === 400 && error.response?.data?.category) {
+      window.dispatchEvent(
+        new CustomEvent("content-safety-violation", {
+          detail: {
+            message: error.response.data.error,
+            category: error.response.data.category,
+          },
+        }),
+      );
+      return Promise.reject(error);
+    }
+
     // 429 — rate limited: respect Retry-After header, then retry once
     if (status === 429) {
       const quotaCode =
