@@ -20,12 +20,21 @@ const GenerateStudyGuideForm: React.FC<GenerateStudyGuideFormProps> = ({
   const [categoryId, setCategoryId] = useState("");
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string>("");
   const [queued, setQueued] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(e.target.files?.[0] ?? null);
+    const selected = e.target.files?.[0] ?? null;
+    setFile(selected);
+    if (selected) {
+      const reader = new FileReader();
+      reader.onload = () => setFilePreview(String(reader.result ?? ""));
+      reader.readAsText(selected);
+    } else {
+      setFilePreview("");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -141,7 +150,7 @@ const GenerateStudyGuideForm: React.FC<GenerateStudyGuideFormProps> = ({
               type="button"
               className="sg-remove-btn"
               onClick={() => {
-                setFile(null);
+                setFile(null); setFilePreview("");
                 if (fileInputRef.current) fileInputRef.current.value = "";
               }}
             >
@@ -157,6 +166,16 @@ const GenerateStudyGuideForm: React.FC<GenerateStudyGuideFormProps> = ({
           onChange={handleFileChange}
         />
       </div>
+
+      {filePreview && !text && (
+        <div className="sg-file-preview">
+          <p className="sg-file-preview-label">Vista previa del texto extraido:</p>
+          <pre className="sg-file-preview-text">
+            {filePreview.slice(0, 300)}
+            {filePreview.length > 300 ? "..." : ""}
+          </pre>
+        </div>
+      )}
 
       {error && <p className="sg-error">{error}</p>}
 

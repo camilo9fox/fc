@@ -26,6 +26,7 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
 }) => {
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string>("");
   const [quantity, setQuantity] = useState(3);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -55,7 +56,15 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
   }, [loadUsage]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(event.target.files?.[0] ?? null);
+    const selected = event.target.files?.[0] ?? null;
+    setFile(selected);
+    if (selected) {
+      const reader = new FileReader();
+      reader.onload = () => setFilePreview(String(reader.result ?? ""));
+      reader.readAsText(selected);
+    } else {
+      setFilePreview("");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -229,7 +238,7 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
             <button
               type="button"
               className="qz-remove-btn"
-              onClick={() => setFile(null)}
+              onClick={() => { setFile(null); setFilePreview(""); }}
               disabled={isBusy}
             >
               Quitar
@@ -237,6 +246,16 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
           )}
         </div>
       </div>
+
+      {filePreview && !text && (
+        <div className="qz-file-preview">
+          <p className="qz-file-preview-label">Vista previa del texto extraido:</p>
+          <pre className="qz-file-preview-text">
+            {filePreview.slice(0, 300)}
+            {filePreview.length > 300 ? "..." : ""}
+          </pre>
+        </div>
+      )}
 
       {error && <p className="qz-error">{error}</p>}
 

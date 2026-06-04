@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DraftQuizState } from "../../types/quiz.types";
 import { StudyScoreResult } from "../shared/StudyScoreResult";
 import SessionReview, { WrongQuizQuestion } from "../shared/SessionReview";
@@ -71,6 +71,25 @@ const DraftQuizStudySession: React.FC<DraftQuizStudySessionProps> = ({
     setFinished(false);
     setShowReview(false);
   };
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (finished || showReview) return;
+
+      if (selected === null) {
+        const num = Number(e.key);
+        if (num >= 1 && num <= 4 && num - 1 < current.options.length) {
+          e.preventDefault();
+          handleAnswer(current.options[num - 1]);
+        }
+      } else if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        handleNext();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [index, selected, finished, showReview]);
 
   if (showReview) {
     return (
@@ -165,6 +184,12 @@ const DraftQuizStudySession: React.FC<DraftQuizStudySessionProps> = ({
                 : "Siguiente →"}
             </button>
           )}
+
+          <p className="dqs-kbd-hint">
+            {selected === null
+              ? `${current.options.map((_, i) => `${i + 1}`).join(" / ")} → elegir opción`
+              : "Enter / Espacio → siguiente"}
+          </p>
         </div>
       </div>
     </div>

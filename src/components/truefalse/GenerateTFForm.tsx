@@ -24,6 +24,7 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({ onCancel }) => {
   const [quantity, setQuantity] = useState(10);
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string>("");
   const [queued, setQueued] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [usage, setUsage] = useState<AiUsageStatus | null>(null);
@@ -48,7 +49,15 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({ onCancel }) => {
   }, [loadUsage]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(e.target.files?.[0] ?? null);
+    const selected = e.target.files?.[0] ?? null;
+    setFile(selected);
+    if (selected) {
+      const reader = new FileReader();
+      reader.onload = () => setFilePreview(String(reader.result ?? ""));
+      reader.readAsText(selected);
+    } else {
+      setFilePreview("");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -218,7 +227,7 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({ onCancel }) => {
               type="button"
               className="tf-remove-btn"
               onClick={() => {
-                setFile(null);
+                setFile(null); setFilePreview("");
                 if (fileInputRef.current) fileInputRef.current.value = "";
               }}
             >
@@ -234,6 +243,16 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({ onCancel }) => {
           onChange={handleFileChange}
         />
       </div>
+
+      {filePreview && !text && (
+        <div className="tf-file-preview">
+          <p className="tf-file-preview-label">Vista previa del texto extraido:</p>
+          <pre className="tf-file-preview-text">
+            {filePreview.slice(0, 300)}
+            {filePreview.length > 300 ? "..." : ""}
+          </pre>
+        </div>
+      )}
 
       {error && <p className="tf-error">{error}</p>}
 

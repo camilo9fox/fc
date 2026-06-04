@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   BookOpenCheck,
   Brain,
@@ -128,6 +128,30 @@ const SpacedRepetitionPage: React.FC = () => {
     setSelectedCategory(val);
     loadData(val || undefined);
   };
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (loading || sessionComplete || submitting) return;
+
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        if (!flipped) {
+          setFlipped(true);
+        }
+        return;
+      }
+
+      if (!flipped) return;
+
+      const num = Number(e.key);
+      if (num >= 1 && num <= 4) {
+        e.preventDefault();
+        handleRate(num as 1 | 2 | 3 | 4);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [loading, sessionComplete, submitting, flipped, currentCard, cards.length]);
 
   const handleRestart = () => {
     loadData(selectedCategory || undefined);
@@ -311,9 +335,23 @@ const SpacedRepetitionPage: React.FC = () => {
             )}
 
             {!flipped && (
-              <button className="sr-flip-hint" onClick={() => setFlipped(true)}>
-                Ver respuesta
-              </button>
+              <>
+                <button className="sr-flip-hint" onClick={() => setFlipped(true)}>
+                  Ver respuesta
+                </button>
+                <p className="sr-kbd-hint">
+                  <kbd>Espacio</kbd> voltear
+                </p>
+              </>
+            )}
+
+            {flipped && (
+              <p className="sr-kbd-hint">
+                <kbd>1</kbd> No lo sé{" "}
+                <kbd>2</kbd> Difícil{" "}
+                <kbd>3</kbd> Bien{" "}
+                <kbd>4</kbd> Fácil
+              </p>
             )}
           </div>
         )}

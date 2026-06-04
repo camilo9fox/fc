@@ -77,6 +77,7 @@ const ExamSimulationsPage: React.FC = () => {
   const [quizCount, setQuizCount] = useState(5);
   const [developmentCount, setDevelopmentCount] = useState(3);
   const [file, setFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string>("");
   const [supportText, setSupportText] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -956,7 +957,7 @@ const ExamSimulationsPage: React.FC = () => {
                 type="button"
                 className="es-btn-text"
                 onClick={() => {
-                  setFile(null);
+                  setFile(null); setFilePreview("");
                   if (fileInputRef.current) fileInputRef.current.value = "";
                 }}
               >
@@ -968,9 +969,29 @@ const ExamSimulationsPage: React.FC = () => {
               type="file"
               accept={ALLOWED_UPLOAD_FORMATS}
               style={{ display: "none" }}
-              onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+              onChange={(event) => {
+                const selected = event.target.files?.[0] ?? null;
+                setFile(selected);
+                if (selected) {
+                  const reader = new FileReader();
+                  reader.onload = () => setFilePreview(String(reader.result ?? ""));
+                  reader.readAsText(selected);
+                } else {
+                  setFilePreview("");
+                }
+              }}
             />
           </div>
+
+          {filePreview && !supportText && (
+            <div className="es-file-preview">
+              <p className="es-file-preview-label">Vista previa del texto extraido:</p>
+              <pre className="es-file-preview-text">
+                {filePreview.slice(0, 300)}
+                {filePreview.length > 300 ? "..." : ""}
+              </pre>
+            </div>
+          )}
 
           {queued && (
             <p className="es-queued-msg">

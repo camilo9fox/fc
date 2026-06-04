@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DraftTFState } from "../../types/trueFalse.types";
 import { StudyScoreResult } from "../shared/StudyScoreResult";
 import SessionReview, { WrongTFQuestion } from "../shared/SessionReview";
@@ -71,6 +71,29 @@ const DraftTFStudySession: React.FC<DraftTFStudySessionProps> = ({
     setShowReview(false);
   };
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (finished || showReview) return;
+
+      const answered = selected !== null;
+
+      if (!answered) {
+        if (e.key === "v" || e.key === "V" || e.key === "1") {
+          e.preventDefault();
+          handleAnswer(true);
+        } else if (e.key === "f" || e.key === "F" || e.key === "2") {
+          e.preventDefault();
+          handleAnswer(false);
+        }
+      } else if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        handleNext();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [index, selected, finished, showReview]);
+
   if (showReview) {
     return (
       <SessionReview
@@ -134,20 +157,25 @@ const DraftTFStudySession: React.FC<DraftTFStudySessionProps> = ({
           <p className="dtf-statement-text">{current.statement}</p>
 
           {!showFeedback && (
-            <div className="dtf-answer-row">
-              <button
-                className="dtf-btn-true"
-                onClick={() => handleAnswer(true)}
-              >
-                ✓ Verdadero
-              </button>
-              <button
-                className="dtf-btn-false"
-                onClick={() => handleAnswer(false)}
-              >
-                ✗ Falso
-              </button>
-            </div>
+            <>
+              <div className="dtf-answer-row">
+                <button
+                  className="dtf-btn-true"
+                  onClick={() => handleAnswer(true)}
+                >
+                  ✓ Verdadero
+                </button>
+                <button
+                  className="dtf-btn-false"
+                  onClick={() => handleAnswer(false)}
+                >
+                  ✗ Falso
+                </button>
+              </div>
+              <p className="dtf-kbd-hint">
+                <kbd>V</kbd> / <kbd>1</kbd> Verdadero · <kbd>F</kbd> / <kbd>2</kbd> Falso
+              </p>
+            </>
           )}
 
           {showFeedback && (
@@ -176,6 +204,10 @@ const DraftTFStudySession: React.FC<DraftTFStudySessionProps> = ({
                   ? "Ver resultado →"
                   : "Siguiente →"}
               </button>
+
+              <p className="dtf-kbd-hint">
+                Enter / Espacio → siguiente
+              </p>
             </>
           )}
         </div>
