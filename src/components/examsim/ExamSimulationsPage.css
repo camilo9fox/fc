@@ -911,3 +911,16 @@
   word-break: break-word;
   font-family: inherit;
 }
+
+/* --- DARK MODE FIXES --- */
+[data-theme="dark"] .es-history { background: #1b1322; border-color: #302838; }
+[data-theme="dark"] .es-error { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.25); }
+[data-theme="dark"] .es-warning { background: rgba(249,115,22,0.1); border-color: rgba(249,115,22,0.25); color: #fdba74; }
+[data-theme="dark"] .es-generator label { color: #bba8c8; }
+[data-theme="dark"] .es-usage-box { background: #241a2e; border-color: #3b2e45; color: #cbaedf; }
+[data-theme="dark"] .es-category-pill { background: #302838; color: #c89de0; }
+[data-theme="dark"] .es-delete-btn { color: #c89de0; }
+[data-theme="dark"] .es-delete-btn:hover { color: #f0e6f5; }
+[data-theme="dark"] .es-file-preview { background: #1a1223; border-color: #3b2e45; }
+[data-theme="dark"] .es-file-preview-label { color: #9d89ae; }
+[data-theme="dark"] .es-file-preview-text { color: #cbaedf; }

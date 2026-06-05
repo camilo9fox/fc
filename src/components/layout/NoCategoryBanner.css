@@ -85,3 +85,10 @@
     justify-content: center;
   }
 }
+
+/* --- DARK MODE --- */
+[data-theme="dark"] .ncb-banner { background: linear-gradient(135deg, #1e1528 0%, #241a2e 100%); border-color: rgba(99,29,118,0.35); }
+[data-theme="dark"] .ncb-icon { background: #2b1f38; }
+[data-theme="dark"] .ncb-text strong { color: #e8ddef; }
+[data-theme="dark"] .ncb-text p { color: #9b8aab; }
+[data-theme="dark"] .ncb-btn { background: linear-gradient(135deg, #631d76, #ee4266); }

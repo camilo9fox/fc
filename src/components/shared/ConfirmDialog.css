@@ -153,3 +153,21 @@
     flex: 1;
   }
 }
+
+@media (max-width: 400px) {
+  .cd-actions {
+    flex-direction: column;
+  }
+  .cd-btn {
+    width: 100%;
+  }
+}
+
+/* --- DARK MODE --- */
+[data-theme="dark"] .cd-backdrop { background: rgba(0,0,0,0.58); }
+[data-theme="dark"] .cd-modal { background: #1b1322; border-color: #302838; }
+[data-theme="dark"] .cd-content h3 { color: #f0e6f5; }
+[data-theme="dark"] .cd-content p { color: #b9a6c6; }
+[data-theme="dark"] .cd-actions { border-color: #3b2e45; }
+[data-theme="dark"] .cd-btn-cancel { border-color: #4e3a5d; background: #231a2c; color: #cbaedf; }
+[data-theme="dark"] .cd-btn-confirm { background: linear-gradient(135deg, #631d76, #ee4266); }

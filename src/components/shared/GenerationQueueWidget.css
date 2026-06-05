@@ -261,3 +261,30 @@
     transform: rotate(360deg);
   }
 }
+
+/* --- RESPONSIVE --- */
+@media (max-width: 640px) {
+  .gq-root {
+    right: 10px;
+    bottom: calc(80px + env(safe-area-inset-bottom));
+    align-items: flex-start;
+  }
+  .gq-panel {
+    min-width: 220px;
+    max-width: calc(100vw - 20px);
+  }
+  .gq-toast {
+    max-width: calc(100vw - 20px);
+  }
+}
+
+/* --- DARK MODE --- */
+[data-theme="dark"] .gqw-widget { background: #1b1322; border-color: #302838; }
+[data-theme="dark"] .gqw-panel { background: #1b1322; border-color: #302838; }
+[data-theme="dark"] .gqw-job { background: #1a1223; border-color: #3b2e45; }
+[data-theme="dark"] .gqw-job-label { color: #cbaedf; }
+[data-theme="dark"] .gqw-toast { background: #1b1322; border-color: #302838; color: #e8ddef; }
+[data-theme="dark"] .gqw-toast--error { border-left-color: #ef4444; }
+[data-theme="dark"] .gqw-toast--success { border-left-color: #22c55e; }
+[data-theme="dark"] .gqw-toggle { background: #231a2c; }
+[data-theme="dark"] .gqw-toggle:hover { background: #2b1f38; }

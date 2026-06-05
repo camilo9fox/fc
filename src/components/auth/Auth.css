@@ -356,6 +356,68 @@
   opacity: 0.6;
 }
 
+/* ── Dark mode overrides ─────────────────────────────────────────────────── */
+[data-theme="dark"] .auth-shell {
+  background:
+    radial-gradient(circle at 8% 18%, rgba(120, 40, 80, 0.22) 0%, transparent 42%),
+    radial-gradient(circle at 84% 88%, rgba(80, 50, 120, 0.18) 0%, transparent 48%),
+    linear-gradient(160deg, var(--auth-bg) 0%, var(--auth-bg-layer) 100%);
+}
+
+[data-theme="dark"] .auth-backdrop {
+  background:
+    linear-gradient(
+      115deg,
+      rgba(238, 66, 102, 0.08) 0%,
+      rgba(99, 29, 118, 0.08) 50%,
+      rgba(255, 255, 255, 0.04) 100%
+    ),
+    repeating-linear-gradient(
+      -35deg,
+      transparent 0,
+      transparent 18px,
+      rgba(255, 255, 255, 0.03) 18px,
+      rgba(255, 255, 255, 0.03) 20px
+    );
+}
+
+[data-theme="dark"] .auth-showcase {
+  background:
+    linear-gradient(
+      165deg,
+      rgba(99, 29, 118, 0.22) 0%,
+      rgba(238, 66, 102, 0.18) 100%
+    ),
+    var(--auth-surface-soft);
+}
+
+[data-theme="dark"] .auth-showcase-badge {
+  background: rgba(196, 142, 224, 0.15);
+  border-color: rgba(196, 142, 224, 0.35);
+}
+
+[data-theme="dark"] .auth-showcase-pills span {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(196, 142, 224, 0.25);
+}
+
+[data-theme="dark"] .auth-input-wrap:focus-within {
+  border-color: color-mix(in srgb, var(--auth-accent) 80%, #fff);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--auth-accent) 25%, transparent);
+}
+
+[data-theme="dark"] .auth-error {
+  border-color: color-mix(in srgb, var(--auth-danger) 55%, transparent);
+}
+
+[data-theme="dark"] .auth-submit {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="dark"] .auth-submit:hover:not(:disabled) {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+}
+
 @keyframes auth-pan {
   0% {
     transform: translate3d(0, 0, 0);

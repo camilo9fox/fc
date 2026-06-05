@@ -273,6 +273,17 @@
   gap: 10px;
 }
 
+@media (max-width: 480px) {
+  .csv-modal-footer {
+    flex-direction: column-reverse;
+  }
+  .csv-btn-cancel,
+  .csv-btn-import {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 [data-theme="dark"] .csv-modal-footer {
   border-top-color: #3b2e45;
 }

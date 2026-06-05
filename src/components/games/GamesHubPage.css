@@ -194,3 +194,7 @@
   background: #2b1f38;
   border-color: #5a2d7a;
 }
+
+/* --- DARK MODE FIXES --- */
+[data-theme="dark"] .ghub-card-best { background: #241a2e; }
+[data-theme="dark"] .ghub-card-tag { background: rgba(139,92,246,0.15); color: #a78bfa; }

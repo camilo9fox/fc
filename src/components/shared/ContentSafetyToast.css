@@ -156,3 +156,12 @@
     padding: 0 14px 14px 14px;
   }
 }
+
+/* --- DARK MODE --- */
+[data-theme="dark"] .cst-overlay { background: rgba(0,0,0,0.55); }
+[data-theme="dark"] .cst-toast { background: #1b1322; border-left-color: #e53e3e; box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06); }
+[data-theme="dark"] .cst-toast-title { color: #f0e6f5; }
+[data-theme="dark"] .cst-toast-close { color: #7e6890; }
+[data-theme="dark"] .cst-toast-close:hover { color: #e8ddef; background: #2b1f38; }
+[data-theme="dark"] .cst-category-badge { background: rgba(229,62,62,0.2); color: #fca5a5; }
+[data-theme="dark"] .cst-message { color: #cbaedf; }

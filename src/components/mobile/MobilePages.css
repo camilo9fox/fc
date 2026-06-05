@@ -1102,10 +1102,10 @@
   color: #f0e8ff;
 }
 [data-theme="dark"] .mb-stat-card-label {
-  color: #9080a2;
+  color: #b8a8c8;
 }
 [data-theme="dark"] .mb-stat-card-helper {
-  color: #7a6884;
+  color: #a090b0;
 }
 [data-theme="dark"] .mb-stat-card::after {
   background: radial-gradient(
@@ -1659,3 +1659,20 @@
   font-size: 0.75rem;
   color: rgba(26, 19, 37, 0.35);
 }
+
+/* --- DARK MODE FIXES (mobile landing mbl-* pages) --- */
+[data-theme="dark"] .mbl-page { background: #150f1c; }
+[data-theme="dark"] .mbl-hero h1 { color: #f0e6f5; }
+[data-theme="dark"] .mbl-hero p { color: #cbaedf; }
+[data-theme="dark"] .mbl-tool { background: #1b1322; border-color: #302838; }
+[data-theme="dark"] .mbl-tool h3 { color: #e8ddef; }
+[data-theme="dark"] .mbl-tool p { color: #9d89ae; }
+[data-theme="dark"] .mbl-dual-card { background: #1b1322; border-color: #302838; }
+[data-theme="dark"] .mbl-dual-card h3 { color: #e8ddef; }
+[data-theme="dark"] .mbl-dual-card p { color: #9d89ae; }
+[data-theme="dark"] .mbl-btn--link { color: #c89de0; }
+[data-theme="dark"] .mbl-cta { background: #1b1322; border-color: #302838; }
+[data-theme="dark"] .mbl-cta .mbl-btn--primary { background: #7e3a95; color: #fff; }
+[data-theme="dark"] .mbl-cta .mbl-btn--primary:hover { background: #9b4db2; }
+[data-theme="dark"] .mbl-section-title { color: #e8ddef; }
+[data-theme="dark"] .mbl-section-sub { color: #9d89ae; }

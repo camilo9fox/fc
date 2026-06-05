@@ -753,3 +753,15 @@
   word-break: break-word;
   font-family: inherit;
 }
+
+/* --- DARK MODE FIXES --- */
+[data-theme="dark"] .sg-btn-secondary { background: #231a2c; border-color: #4e3a5d; color: #cbaedf; }
+[data-theme="dark"] .sg-btn-secondary:hover { background: #2b1f38; }
+[data-theme="dark"] .sg-btn-danger:hover { background: rgba(239,68,68,0.15) !important; }
+[data-theme="dark"] .sg-card-delete:hover { background: rgba(239,68,68,0.12) !important; }
+[data-theme="dark"] .sg-card-category { background: #302838; color: #c89de0; border-color: #4e3a5d; }
+[data-theme="dark"] .sg-error { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.25); }
+[data-theme="dark"] .sg-progress-bar { background: #3b2e45; }
+[data-theme="dark"] .sg-file-preview { background: #1a1223; border-color: #3b2e45; }
+[data-theme="dark"] .sg-file-preview-label { color: #9d89ae; }
+[data-theme="dark"] .sg-file-preview-text { color: #cbaedf; }

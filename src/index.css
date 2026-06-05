@@ -43,9 +43,58 @@ textarea {
   color: #2e2532;
 }
 
-code {
-  font-family:
-    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+::-moz-selection {
+  background: #f7ced8;
+  color: #2e2532;
+}
+
+/* ═══════════════════════════════════════════
+   DARK MODE — GLOBAL OVERRIDES
+   These apply to ALL form elements, buttons,
+   and structural components across every module.
+   ═══════════════════════════════════════════ */
+[data-theme="dark"] body {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(238,66,102,0.07), transparent 28%),
+    radial-gradient(circle at 88% 100%, rgba(99,29,118,0.07), transparent 26%),
+    #140c1a;
+  color: #e8ddef;
+}
+
+[data-theme="dark"] ::selection {
+  background: #631d76;
+  color: #f0e6f5;
+}
+
+[data-theme="dark"] ::-moz-selection {
+  background: #631d76;
+  color: #f0e6f5;
+}
+
+[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]),
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background: #261d31 !important;
+  color: #e8ddef !important;
+  border-color: #4a3558 !important;
+}
+
+[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"])::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #7e6890 !important;
+  opacity: 1;
+}
+
+[data-theme="dark"] label,
+[data-theme="dark"] .field-label,
+[data-theme="dark"] .form-label {
+  color: #cbaedf !important;
+}
+
+[data-theme="dark"] button:not([class*=" "]) {
+  background: #3b2e45;
+  color: #e8ddef;
+  border-color: #4e3a5d;
 }
 
 @media (prefers-reduced-motion: reduce) {

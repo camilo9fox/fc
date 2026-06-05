@@ -1603,3 +1603,53 @@
   border-radius: 4px;
   margin: 0 2px;
 }
+
+/* --- DARK MODE FIXES (forms, draft, buttons, alerts) --- */
+[data-theme="dark"] .tf-form { background: #1e1526; }
+[data-theme="dark"] .tf-draft-panel { background: #1a1223; border-color: #302838; }
+[data-theme="dark"] .tf-draft-question { background: #231a2e; border-color: #3b2e45; }
+[data-theme="dark"] .tf-error { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.25); }
+[data-theme="dark"] .tf-usage-box { background: #241a2e; border-color: #3b2e45; color: #cbaedf; }
+[data-theme="dark"] .tf-generating-msg { background: rgba(99,29,118,0.15); color: #d4b8e8; }
+[data-theme="dark"] .tf-btn-secondary { border-color: #4e3a5d; color: #cbaedf; }
+[data-theme="dark"] .tf-btn-secondary:hover:not(:disabled) { background: #2b1f38; border-color: #6b4d80; }
+[data-theme="dark"] .tf-btn-add-question:hover { background: #2b1f38 !important; }
+[data-theme="dark"] .tf-card-delete:hover { background: rgba(239,68,68,0.12) !important; }
+[data-theme="dark"] .tf-card-category { background: #302838; color: #c89de0; border-color: #4e3a5d; }
+[data-theme="dark"] .tf-btn-edit-q:hover { background: #2b1f38 !important; }
+[data-theme="dark"] .tf-toggle-btn { background: #231a2c; border-color: #4e3a5d; }
+[data-theme="dark"] .tf-toggle-btn.tf-toggle-active { background: #631d76; border-color: #631d76; }
+[data-theme="dark"] .tf-remove-btn { color: #ef4444; }
+[data-theme="dark"] .tf-file-preview { background: #1a1223; border-color: #3b2e45; }
+[data-theme="dark"] .tf-file-preview-label { color: #9d89ae; }
+[data-theme="dark"] .tf-file-preview-text { color: #cbaedf; }
+[data-theme="dark"] .tf-btn-study-draft { background: #231a2c; border-color: #4e3a5d; color: #cbaedf; }
+[data-theme="dark"] .tf-btn-study-draft:hover { background: #2b1f38; }
+[data-theme="dark"] .tf-btn-save-question { background: #631d76; }
+[data-theme="dark"] .tf-btn-save-question:hover:not(:disabled) { background: #7e3a95; }
+[data-theme="dark"] .dtf-kbd-hint { color: #7e6890; }
+[data-theme="dark"] .dtf-kbd-hint kbd { color: #b9a6c6; background: #2e223a; border-color: #4e3a5d; }
+
+/* --- RESPONSIVE FIXES --- */
+@media (max-width: 600px) {
+  .tf-form { max-width: 100vw; padding: 14px; }
+  .tf-form-actions, .dtf-answer-row { flex-direction: column; gap: 8px; }
+  .tf-form-actions button, .dtf-answer-row button { width: 100%; }
+  .dtf-overlay { padding: 14px; }
+}
+
+@media (max-width: 500px) {
+  .tf-form { max-width: 100% !important; padding: 16px !important; border-radius: 14px; }
+  .tf-form-actions { flex-direction: column; gap: 8px; }
+  .tf-form-actions button { width: 100% !important; font-size: 0.88rem; }
+  .tf-btn-primary, .tf-btn-secondary, .tf-btn-study { width: 100%; }
+  .tf-card { padding: 14px; }
+  .tf-card-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .tf-card-footer { flex-wrap: wrap; gap: 6px; }
+  .tf-card-footer button { font-size: 0.78rem; padding: 6px 12px; }
+  .tf-detail-panel { padding: 14px; }
+  .dtf-header { padding: 14px; }
+  .dtf-body { padding: 24px 14px; }
+  .dtf-statement-text { font-size: 1.05rem; }
+  .dtf-btn-true, .dtf-btn-false { font-size: 0.88rem; padding: 14px; }
+}

@@ -25,3 +25,6 @@
     transform: translateY(0);
   }
 }
+
+/* --- DARK MODE --- */
+[data-theme="dark"] .offline-banner { background: #1a0a0a; color: #fca5a5; border-color: rgba(239,68,68,0.3); }

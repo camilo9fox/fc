@@ -466,3 +466,26 @@
     font-size: 0.85rem;
   }
 }
+
+/* --- DARK MODE --- */
+[data-theme="dark"] .ss-overlay { background: rgba(0,0,0,0.7); }
+[data-theme="dark"] .ss-counter { color: #cbaedf; }
+[data-theme="dark"] .ss-known-count { color: #22c55e; }
+[data-theme="dark"] .ss-text { color: #e8ddef; }
+[data-theme="dark"] .ss-chip { background: #302838; color: #c89de0; }
+[data-theme="dark"] .ss-hint { color: #9d89ae; }
+[data-theme="dark"] .ss-controls, [data-theme="dark"] .ss-eval-controls, [data-theme="dark"] .ss-footer { background: #1b1322; border-color: #302838; }
+[data-theme="dark"] .ss-nav-btn { color: #cbaedf; }
+[data-theme="dark"] .ss-flip-btn { background: #631d76; color: #fff; }
+[data-theme="dark"] .ss-eval-btn--known { background: #22c55e; color: #fff; }
+[data-theme="dark"] .ss-eval-btn--unknown { background: #ef4444; color: #fff; }
+[data-theme="dark"] .ss-kbd-hint { color: #7e6890; }
+
+/* --- RESPONSIVE FIXES --- */
+@media (max-width: 600px) {
+  .ss-overlay { padding: 10px; }
+  .ss-card { min-height: 220px; }
+  .ss-text { font-size: 0.9rem; }
+  .ss-eval-controls, .ss-controls { flex-direction: column; gap: 8px; }
+  .ss-eval-btn, .ss-flip-btn, .ss-nav-btn { width: 100%; }
+}

@@ -78,3 +78,7 @@
   display: flex;
   flex-direction: column;
 }
+
+/* --- DARK MODE --- */
+[data-theme="dark"] .skeleton-card, [data-theme="dark"] .skeleton-row { background: #1a1223; border-color: #3b2e45; }
+[data-theme="dark"] .skeleton-line, [data-theme="dark"] .skeleton-avatar { background: linear-gradient(90deg, #2e223a 25%, #3b2e45 50%, #2e223a 75%); }
