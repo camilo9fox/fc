@@ -1,8 +1,19 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
+import { isNative } from "../platform";
 
 // Base API configuration
-const API_BASE_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+const getApiBaseUrl = (): string => {
+  if (isNative()) {
+    return (
+      process.env.REACT_APP_API_URL_PROD ||
+      process.env.REACT_APP_API_URL ||
+      "http://localhost:5000/api"
+    );
+  }
+  return process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Extend config to support retry tracking
 interface RetryableRequestConfig extends InternalAxiosRequestConfig {

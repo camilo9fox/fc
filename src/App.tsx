@@ -45,12 +45,23 @@ import MobileProfilePage from "./components/mobile/MobileProfilePage";
 import Terms from "./components/terms/Terms";
 import Policies from "./components/terms/Policies";
 import { useOnboardingIntroGate } from "./hooks/useOnboardingIntroGate";
+import { forceMobileUI } from "./platform";
+import {
+  initializePushNotifications,
+  addPushListeners,
+} from "./services/PushNotifications";
 import "./App.css";
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { user, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      initializePushNotifications().then(() => addPushListeners());
+    }
+  }, [user]);
 
   if (isLoading) {
     return (
@@ -68,11 +79,9 @@ const AppRoutes: React.FC = () => {
   const { user } = useAuth();
 
   const LandingEntry: React.FC = () => {
-    const [isMobileViewport, setIsMobileViewport] = useState(
-      typeof window !== "undefined" ? window.innerWidth <= 900 : false,
-    );
+    const [isMobileViewport, setIsMobileViewport] = useState(forceMobileUI());
     useEffect(() => {
-      const onResize = () => setIsMobileViewport(window.innerWidth <= 900);
+      const onResize = () => setIsMobileViewport(forceMobileUI());
       window.addEventListener("resize", onResize);
       return () => window.removeEventListener("resize", onResize);
     }, []);
@@ -80,13 +89,11 @@ const AppRoutes: React.FC = () => {
   };
 
   const DashboardEntry: React.FC = () => {
-    const [isMobileViewport, setIsMobileViewport] = useState(
-      typeof window !== "undefined" ? window.innerWidth <= 900 : false,
-    );
+    const [isMobileViewport, setIsMobileViewport] = useState(forceMobileUI());
     const { isChecking, shouldShowIntro } = useOnboardingIntroGate();
 
     useEffect(() => {
-      const onResize = () => setIsMobileViewport(window.innerWidth <= 900);
+      const onResize = () => setIsMobileViewport(forceMobileUI());
       window.addEventListener("resize", onResize);
       return () => window.removeEventListener("resize", onResize);
     }, []);
