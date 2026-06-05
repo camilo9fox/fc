@@ -1543,103 +1543,13 @@
   background: #2b1f38;
 }
 
-.qz-file-preview {
-  margin-top: 8px;
-  padding: 10px 12px;
-  background: #f7fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  max-height: 140px;
-  overflow-y: auto;
+/* --- DARK MODE INPUT FIX --- */
+[data-theme="dark"] .qz-field input,
+[data-theme="dark"] .qz-field textarea,
+[data-theme="dark"] .qz-field select {
+  background: #261d31 !important;
+  color: #e8ddef !important;
+  border-color: #4a3558 !important;
 }
-.qz-file-preview-label {
-  margin: 0 0 4px 0;
-  font-size: 11px;
-  font-weight: 600;
-  color: #718096;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-}
-.qz-file-preview-text {
-  margin: 0;
-  font-size: 12px;
-  line-height: 1.5;
-  color: #4a5568;
-  white-space: pre-wrap;
-  word-break: break-word;
-  font-family: inherit;
-}
-
-.dqs-kbd-hint {
-  text-align: center;
-  margin: 10px 0 0 0;
-  font-size: 12px;
-  color: #94a3b8;
-}
-.dqs-kbd-hint kbd {
-  display: inline-block;
-  padding: 1px 6px;
-  font-size: 11px;
-  font-family: inherit;
-  color: #64748b;
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
-  margin: 0 2px;
-}
-
-/* --- DARK MODE FIXES (forms, draft, buttons, alerts) --- */
-[data-theme="dark"] .qz-form { background: #1e1526; }
-[data-theme="dark"] .qz-draft-panel { background: #1a1223; border-color: #302838; }
-[data-theme="dark"] .qz-draft-question { background: #231a2e; border-color: #3b2e45; }
-[data-theme="dark"] .qz-error { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.25); }
-[data-theme="dark"] .qz-usage-box { background: #241a2e; border-color: #3b2e45; color: #cbaedf; }
-[data-theme="dark"] .qz-generating-msg { background: rgba(99,29,118,0.15); color: #d4b8e8; }
-[data-theme="dark"] .qz-btn-secondary { border-color: #4e3a5d; color: #cbaedf; }
-[data-theme="dark"] .qz-btn-secondary:hover:not(:disabled) { background: #2b1f38; border-color: #6b4d80; }
-[data-theme="dark"] .qz-btn-add-question:hover { background: #2b1f38 !important; }
-[data-theme="dark"] .qz-card-delete:hover { background: rgba(239,68,68,0.12) !important; }
-[data-theme="dark"] .qz-card-category { background: #302838; color: #c89de0; border-color: #4e3a5d; }
-[data-theme="dark"] .qz-btn-edit-q:hover { background: #2b1f38 !important; }
-[data-theme="dark"] .qz-toggle-btn { background: #231a2c; border-color: #4e3a5d; }
-[data-theme="dark"] .qz-toggle-btn.qz-toggle-active { background: #631d76; border-color: #631d76; }
-[data-theme="dark"] .qz-remove-btn { color: #ef4444; }
-[data-theme="dark"] .qz-file-preview { background: #1a1223; border-color: #3b2e45; }
-[data-theme="dark"] .qz-file-preview-label { color: #9d89ae; }
-[data-theme="dark"] .qz-file-preview-text { color: #cbaedf; }
-[data-theme="dark"] .qz-btn-study-draft { background: #231a2c; border-color: #4e3a5d; color: #cbaedf; }
-[data-theme="dark"] .qz-btn-study-draft:hover { background: #2b1f38; }
-[data-theme="dark"] .qz-btn-save-question { background: #631d76; }
-[data-theme="dark"] .qz-btn-save-question:hover:not(:disabled) { background: #7e3a95; }
-[data-theme="dark"] .dqs-kbd-hint { color: #7e6890; }
-[data-theme="dark"] .dqs-kbd-hint kbd { color: #b9a6c6; background: #2e223a; border-color: #4e3a5d; }
-
-/* --- RESPONSIVE FIXES --- */
-@media (max-width: 600px) {
-  .qz-form, .dqs-overlay { max-width: 100vw; padding: 14px; }
-  .qz-form-row { flex-direction: column; gap: 8px; }
-  .qz-form-actions, .dqs-answer-row { flex-direction: column; gap: 8px; }
-  .qz-form-actions button, .dqs-answer-row button { width: 100%; }
-  .qz-rating-row { grid-template-columns: repeat(2, 1fr); }
-  .dqs-options { gap: 6px; }
-  .dqs-option { font-size: 0.82rem; padding: 10px 12px; }
-}
-
-@media (max-width: 500px) {
-  .qz-form { max-width: 100% !important; padding: 16px !important; border-radius: 14px; }
-  .qz-form-header { flex-direction: column; gap: 10px; }
-  .qz-field input, .qz-field textarea, .qz-field select { font-size: 16px !important; }
-  .qz-form-actions { flex-direction: column; gap: 8px; }
-  .qz-form-actions button { width: 100% !important; font-size: 0.88rem; }
-  .qz-btn-primary, .qz-btn-secondary, .qz-btn-study { width: 100%; }
-  .qz-card { padding: 14px; }
-  .qz-card-header { flex-direction: column; align-items: flex-start; gap: 8px; }
-  .qz-card-footer { flex-wrap: wrap; gap: 6px; }
-  .qz-card-footer button { font-size: 0.78rem; padding: 6px 12px; }
-  .qz-detail-panel { padding: 14px; }
-  .qz-item { padding: 12px; }
-  .dqs-header { padding: 14px; }
-  .dqs-body { padding: 24px 14px; }
-  .dqs-question-text { font-size: 1.05rem; }
-  .dqs-option { padding: 12px 14px; font-size: 0.88rem; }
-}
+[data-theme="dark"] .qz-field input::placeholder,
+[data-theme="dark"] .qz-field textarea::placeholder { color: #7e6890 !important; }
