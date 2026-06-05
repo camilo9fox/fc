@@ -1024,7 +1024,6 @@
   color: #dbc8e8;
 }
 
-/* --- DARK MODE INPUT FIX --- */
 [data-theme="dark"] .form-row input,
 [data-theme="dark"] .form-row textarea {
   background: #261d31 !important;
@@ -1033,3 +1032,10 @@
 }
 [data-theme="dark"] .form-row input::placeholder,
 [data-theme="dark"] .form-row textarea::placeholder { color: #7e6890 !important; }
+
+@media (max-width: 500px) {
+  .flashcards-section { padding: 14px; }
+  .form-row { flex-direction: column; }
+  .form-row button { width: 100%; }
+  .flashcards-save-button, .primary-button { width: 100%; }
+}
