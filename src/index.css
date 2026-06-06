@@ -5,17 +5,12 @@
 body {
   margin: 0;
   font-family: "Manrope", "Segoe UI", Tahoma, sans-serif;
-  background:
-    radial-gradient(
+  background: radial-gradient(
       circle at 12% 0%,
       rgba(238, 66, 102, 0.09),
       transparent 28%
     ),
-    radial-gradient(
-      circle at 88% 100%,
-      rgba(99, 29, 118, 0.1),
-      transparent 26%
-    ),
+    radial-gradient(circle at 88% 100%, rgba(99, 29, 118, 0.1), transparent 26%),
     #f6eef8;
   color: #2e2532;
   -webkit-font-smoothing: antialiased;
@@ -54,9 +49,16 @@ textarea {
    and structural components across every module.
    ═══════════════════════════════════════════ */
 [data-theme="dark"] body {
-  background:
-    radial-gradient(circle at 12% 0%, rgba(238,66,102,0.07), transparent 28%),
-    radial-gradient(circle at 88% 100%, rgba(99,29,118,0.07), transparent 26%),
+  background: radial-gradient(
+      circle at 12% 0%,
+      rgba(238, 66, 102, 0.07),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 88% 100%,
+      rgba(99, 29, 118, 0.07),
+      transparent 26%
+    ),
     #140c1a;
   color: #e8ddef;
 }
@@ -79,7 +81,8 @@ textarea {
   border-color: #4a3558 !important;
 }
 
-[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"])::placeholder,
+[data-theme="dark"]
+  input:not([type="checkbox"]):not([type="radio"])::placeholder,
 [data-theme="dark"] textarea::placeholder {
   color: #7e6890 !important;
   opacity: 1;

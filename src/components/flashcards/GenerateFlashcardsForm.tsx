@@ -238,7 +238,10 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
             <button
               type="button"
               className="qz-remove-btn"
-              onClick={() => { setFile(null); setFilePreview(""); }}
+              onClick={() => {
+                setFile(null);
+                setFilePreview("");
+              }}
               disabled={isBusy}
             >
               Quitar
@@ -249,7 +252,9 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
 
       {filePreview && !text && (
         <div className="qz-file-preview">
-          <p className="qz-file-preview-label">Vista previa del texto extraido:</p>
+          <p className="qz-file-preview-label">
+            Vista previa del texto extraido:
+          </p>
           <pre className="qz-file-preview-text">
             {filePreview.slice(0, 300)}
             {filePreview.length > 300 ? "..." : ""}
