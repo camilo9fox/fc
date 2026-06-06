@@ -295,7 +295,7 @@ const ProfilePage: React.FC = () => {
       <section className="prf-section">
         <h3 className="prf-section-title">Soporte</h3>
         <div className="prf-cards">
-          <button className="prf-card" onClick={() => navigate("/soporte")}>
+          <button className="prf-card" onClick={() => navigate("/support")}>
             <div className="prf-card-icon prf-icon-support">
               <svg
                 width="26"

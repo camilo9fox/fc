@@ -1,44 +1,54 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { ThemeProvider } from './contexts/ThemeContext';
-import { ConfirmDialogProvider } from './contexts/ConfirmDialogContext';
-import ErrorBoundary from './components/shared/ErrorBoundary';
-import Login from './components/auth/Login';
-import Signup from './components/auth/Signup';
-import FlashcardsPage from './components/flashcards/FlashcardsPage';
-import CategoriesPage from './components/categories/CategoriesPage';
-import QuizzesPage from './components/quizzes/QuizzesPage';
-import TrueFalsePage from './components/truefalse/TrueFalsePage';
-import StudyGuidesPage from './components/studyguides/StudyGuidesPage';
-import DashboardPage from './components/dashboard/DashboardPage';
-import HistorialPage from './components/historial/HistorialPage';
-import LibraryPage from './components/library/LibraryPage';
-import ProfilePage from './components/profile/ProfilePage';
-import GamesHubPage from './components/games/GamesHubPage';
-import SurvivalModePage from './components/games/SurvivalModePage';
-import MemoryModePage from './components/games/MemoryModePage';
-import ContrarrelojModePage from './components/games/ContrarrelojModePage';
-import EscrituraModePage from './components/games/EscrituraModePage';
-import SpacedRepetitionPage from './components/flashcards/SpacedRepetitionPage';
-import ExamSimulationsPage from './components/examsim/ExamSimulationsPage';
-import NotFoundPage from './components/shared/NotFoundPage';
-import LandingPage from './components/landing/LandingPage';
-import MobileLandingPage from './components/mobile/MobileLandingPage';
-import DashboardLayout from './components/layout/DashboardLayout';
-import OfflineBanner from './components/shared/OfflineBanner';
-import PwaInstallPrompt from './components/shared/PwaInstallPrompt';
-import IntroModulePage from './components/intro/IntroModulePage';
-import FaqPage from './components/faq/FaqPage';
-import MobileHomePage from './components/mobile/MobileHomePage';
-import MobileCreatePage from './components/mobile/MobileCreatePage';
-import MobileLibraryPage from './components/mobile/MobileLibraryPage';
-import MobileProfilePage from './components/mobile/MobileProfilePage';
-import { useOnboardingIntroGate } from './hooks/useOnboardingIntroGate';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { ConfirmDialogProvider } from "./contexts/ConfirmDialogContext";
+import ErrorBoundary from "./components/shared/ErrorBoundary";
+import Login from "./components/auth/Login";
+import Signup from "./components/auth/Signup";
+import Terms from "./components/terms/Terms";
+import Policies from "./components/terms/Policies";
+import SupportTicket from "./components/ticket/SupportTicket";
+import FlashcardsPage from "./components/flashcards/FlashcardsPage";
+import CategoriesPage from "./components/categories/CategoriesPage";
+import QuizzesPage from "./components/quizzes/QuizzesPage";
+import TrueFalsePage from "./components/truefalse/TrueFalsePage";
+import StudyGuidesPage from "./components/studyguides/StudyGuidesPage";
+import DashboardPage from "./components/dashboard/DashboardPage";
+import HistorialPage from "./components/historial/HistorialPage";
+import LibraryPage from "./components/library/LibraryPage";
+import ProfilePage from "./components/profile/ProfilePage";
+import GamesHubPage from "./components/games/GamesHubPage";
+import SurvivalModePage from "./components/games/SurvivalModePage";
+import MemoryModePage from "./components/games/MemoryModePage";
+import ContrarrelojModePage from "./components/games/ContrarrelojModePage";
+import EscrituraModePage from "./components/games/EscrituraModePage";
+import SpacedRepetitionPage from "./components/flashcards/SpacedRepetitionPage";
+import ExamSimulationsPage from "./components/examsim/ExamSimulationsPage";
+import NotFoundPage from "./components/shared/NotFoundPage";
+import LandingPage from "./components/landing/LandingPage";
+import MobileLandingPage from "./components/mobile/MobileLandingPage";
+import DashboardLayout from "./components/layout/DashboardLayout";
+import OfflineBanner from "./components/shared/OfflineBanner";
+import PwaInstallPrompt from "./components/shared/PwaInstallPrompt";
+import IntroModulePage from "./components/intro/IntroModulePage";
+import FaqPage from "./components/faq/FaqPage";
+import MobileHomePage from "./components/mobile/MobileHomePage";
+import MobileCreatePage from "./components/mobile/MobileCreatePage";
+import MobileLibraryPage from "./components/mobile/MobileLibraryPage";
+import MobileProfilePage from "./components/mobile/MobileProfilePage";
+import { useOnboardingIntroGate } from "./hooks/useOnboardingIntroGate";
+import "./App.css";
 
 // Protected Route component
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
@@ -59,26 +69,26 @@ const AppRoutes: React.FC = () => {
 
   const LandingEntry: React.FC = () => {
     const [isMobileViewport, setIsMobileViewport] = useState(
-      typeof window !== 'undefined' ? window.innerWidth <= 900 : false,
+      typeof window !== "undefined" ? window.innerWidth <= 900 : false,
     );
     useEffect(() => {
       const onResize = () => setIsMobileViewport(window.innerWidth <= 900);
-      window.addEventListener('resize', onResize);
-      return () => window.removeEventListener('resize', onResize);
+      window.addEventListener("resize", onResize);
+      return () => window.removeEventListener("resize", onResize);
     }, []);
     return isMobileViewport ? <MobileLandingPage /> : <LandingPage />;
   };
 
   const DashboardEntry: React.FC = () => {
     const [isMobileViewport, setIsMobileViewport] = useState(
-      typeof window !== 'undefined' ? window.innerWidth <= 900 : false,
+      typeof window !== "undefined" ? window.innerWidth <= 900 : false,
     );
     const { isChecking, shouldShowIntro } = useOnboardingIntroGate();
 
     useEffect(() => {
       const onResize = () => setIsMobileViewport(window.innerWidth <= 900);
-      window.addEventListener('resize', onResize);
-      return () => window.removeEventListener('resize', onResize);
+      window.addEventListener("resize", onResize);
+      return () => window.removeEventListener("resize", onResize);
     }, []);
 
     if (isChecking) {
@@ -91,7 +101,7 @@ const AppRoutes: React.FC = () => {
     }
 
     if (shouldShowIntro) {
-      return <Navigate to={isMobileViewport ? '/m/intro' : '/intro'} replace />;
+      return <Navigate to={isMobileViewport ? "/m/intro" : "/intro"} replace />;
     }
 
     return (
@@ -138,12 +148,24 @@ const AppRoutes: React.FC = () => {
         path="/signup"
         element={user ? <Navigate to="/dashboard" /> : <Signup />}
       />
+      <Route path="/terms" element={<Terms />} />
+      <Route path="/policies" element={<Policies />} />
       <Route
         path="/flashcards"
         element={
           <ProtectedRoute>
             <DashboardLayout>
               <FlashcardsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/support"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <SupportTicket />
             </DashboardLayout>
           </ProtectedRoute>
         }
