@@ -79,3 +79,13 @@ body {
     transform: rotate(360deg);
   }
 }
+
+/* ─── Dark mode ────────────────────────────────────────────────────────────── */
+[data-theme="dark"] .app-loading-screen {
+  background:
+    radial-gradient(circle at 85% 10%, rgba(238,66,102,0.1), transparent 36%),
+    radial-gradient(circle at 10% 90%, rgba(99,29,118,0.1), transparent 42%),
+    #140c1a;
+  color: #c9add8;
+}
+[data-theme="dark"] .app-loading-spinner { border-color: #3b2e45; border-top-color: #631d76; }

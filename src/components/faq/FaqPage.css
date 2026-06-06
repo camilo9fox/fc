@@ -318,3 +318,9 @@
     padding: 0 0.9rem 0.8rem;
   }
 }
+
+[data-theme="dark"] .faq-search-icon { color: #c89de0; }
+[data-theme="dark"] .faq-category-title { color: #c89de0; }
+[data-theme="dark"] .faq-category-icon { color: #c89de0; }
+[data-theme="dark"] .faq-item-chevron { color: #b29bc0; }
+[data-theme="dark"] .faq-item--open .faq-item-chevron { color: #c89de0; }

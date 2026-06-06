@@ -279,12 +279,20 @@
 }
 
 /* --- DARK MODE --- */
-[data-theme="dark"] .gqw-widget { background: #1b1322; border-color: #302838; }
-[data-theme="dark"] .gqw-panel { background: #1b1322; border-color: #302838; }
-[data-theme="dark"] .gqw-job { background: #1a1223; border-color: #3b2e45; }
-[data-theme="dark"] .gqw-job-label { color: #cbaedf; }
-[data-theme="dark"] .gqw-toast { background: #1b1322; border-color: #302838; color: #e8ddef; }
-[data-theme="dark"] .gqw-toast--error { border-left-color: #ef4444; }
-[data-theme="dark"] .gqw-toast--success { border-left-color: #22c55e; }
-[data-theme="dark"] .gqw-toggle { background: #231a2c; }
-[data-theme="dark"] .gqw-toggle:hover { background: #2b1f38; }
+[data-theme="dark"] .gq-panel { background: #1b1322; border-color: #302838; }
+[data-theme="dark"] .gq-panel-header { color: #e8ddef; }
+[data-theme="dark"] .gq-panel-header:hover { background: rgba(255,255,255,0.04); }
+[data-theme="dark"] .gq-panel-body { border-top-color: #302838; }
+[data-theme="dark"] .gq-panel-hint { color: #9b8aab; }
+[data-theme="dark"] .gq-job-row { border-top-color: rgba(255,255,255,0.05); }
+[data-theme="dark"] .gq-job-clickable:hover { background: rgba(255,255,255,0.04); }
+[data-theme="dark"] .gq-job-label { color: #cbaedf; }
+[data-theme="dark"] .gq-job-stage { color: #9b8aab; }
+[data-theme="dark"] .gq-job-failed .gq-job-stage { color: #f87171; }
+[data-theme="dark"] .gq-job-remove { border-color: rgba(255,255,255,0.14); color: #9b8aab; }
+[data-theme="dark"] .gq-job-remove:hover { color: #f87171; border-color: #f87171; background: rgba(248,113,113,0.08); }
+[data-theme="dark"] .gq-progress-bar { background: rgba(255,255,255,0.1); }
+[data-theme="dark"] .gq-toast-success { background: #1e7d5a; color: #fff; }
+[data-theme="dark"] .gq-toast-error { background: #c0392b; color: #fff; }
+[data-theme="dark"] .gq-toast-close { color: rgba(255,255,255,0.75); }
+[data-theme="dark"] .gq-toast-close:hover { color: #fff; }

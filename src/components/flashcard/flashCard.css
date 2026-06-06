@@ -209,3 +209,14 @@
   font-size: 1.2rem;
   color: #666;
 }
+
+/* Dark mode */
+[data-theme="dark"] .upload-container textarea,
+[data-theme="dark"] .upload-container input[type="file"] { background: #231a2c; border-color: #3b2e45; color: #e8ddef; }
+[data-theme="dark"] .field-label { color: #cbaedf; }
+[data-theme="dark"] .file-name { color: #9b8aab; }
+[data-theme="dark"] .flash-card { background-color: #1b1322; }
+[data-theme="dark"] .flash-card-content { color: #e8ddef; }
+[data-theme="dark"] .upload-container p { color: #9b8aab; }
+[data-theme="dark"] .error-message { color: #fca5a5; background-color: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3); }
+[data-theme="dark"] .loading { color: #9b8aab; }

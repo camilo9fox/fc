@@ -284,6 +284,19 @@
   }
 }
 
+[data-theme="dark"] .csv-modal-overlay { background: rgba(12,4,18,0.7); }
+[data-theme="dark"] .csv-modal { background: radial-gradient(circle at 90% 0%, rgba(238,66,102,0.14), transparent 30%), radial-gradient(circle at 0% 100%, rgba(99,29,118,0.18), transparent 34%), #1f1726; border-color: #3b2e45; }
+[data-theme="dark"] .csv-header h3 { color: #f0e6f5; }
+[data-theme="dark"] .csv-header p { color: #b29bc0; }
+[data-theme="dark"] .csv-drop-zone { background: #1a1223; border-color: #3b2e45; }
+[data-theme="dark"] .csv-drop-zone:hover { border-color: #631d76; }
+[data-theme="dark"] .csv-drop-zone p { color: #b29bc0; }
+[data-theme="dark"] .csv-file-name { color: #e8ddef; }
+[data-theme="dark"] .csv-preview { background: #1a1223; border-color: #3b2e45; }
+[data-theme="dark"] .csv-preview h4 { color: #e8ddef; }
+[data-theme="dark"] .csv-preview table th { color: #c89de0; border-bottom-color: #3b2e45; }
+[data-theme="dark"] .csv-preview table td { color: #b29bc0; border-bottom-color: #302838; }
+[data-theme="dark"] .csv-error { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.25); color: #fca5a5; }
 [data-theme="dark"] .csv-modal-footer {
   border-top-color: #3b2e45;
 }

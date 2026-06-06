@@ -80,5 +80,9 @@
 }
 
 /* --- DARK MODE --- */
+[data-theme="dark"] .skeleton { background: linear-gradient(90deg, #2e223a 25%, #3b2e45 50%, #2e223a 75%); background-size: 800px 100%; }
+[data-theme="dark"] .skeleton-theme-card { background: #1a1223; border-color: #3b2e45; }
+[data-theme="dark"] .skeleton-stat-card { background: #1a1223; border-color: #3b2e45; }
+[data-theme="dark"] .skeleton-card-row { border-bottom-color: #302838; }
 [data-theme="dark"] .skeleton-card, [data-theme="dark"] .skeleton-row { background: #1a1223; border-color: #3b2e45; }
 [data-theme="dark"] .skeleton-line, [data-theme="dark"] .skeleton-avatar { background: linear-gradient(90deg, #2e223a 25%, #3b2e45 50%, #2e223a 75%); }

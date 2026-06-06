@@ -466,3 +466,13 @@
     font-size: 0.85rem;
   }
 }
+
+/* --- DARK MODE --- */
+[data-theme="dark"] .ss-overlay { background: linear-gradient(135deg, #0a081a 0%, #1e1a3a 55%, #121030 100%); }
+[data-theme="dark"] .ss-face--front { background: linear-gradient(160deg, #1e1a2e 0%, #1a1e3a 100%); box-shadow: 0 30px 70px rgba(0,0,0,0.8), 0 0 60px rgba(99,102,241,0.15); color: #e8ddef; }
+[data-theme="dark"] .ss-face--back { background: linear-gradient(160deg, #312e81 0%, #4c1d95 100%); }
+[data-theme="dark"] .ss-tag--q { background: #312e81; color: #a5b4fc; }
+[data-theme="dark"] .ss-chip { background: #2e1a4a; color: #c4b5fd; }
+[data-theme="dark"] .ss-hint { color: #7e6890; }
+[data-theme="dark"] .ss-opt { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); }
+[data-theme="dark"] .ss-opt--correct { background: rgba(52,211,153,0.18); color: #6ee7b7; }

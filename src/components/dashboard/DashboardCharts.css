@@ -76,6 +76,13 @@
   margin: 0;
 }
 
+/* ─── Dark mode ────────────────────────────────────────────────────────────── */
+[data-theme="dark"] .dbc-card { background: #1b1322; border-color: #3b2e45; }
+[data-theme="dark"] .dbc-card-title { color: #e8ddef; }
+[data-theme="dark"] .dbc-loading { color: #9b8aab; }
+[data-theme="dark"] .dbc-spinner { border-color: #3b2e45; border-top-color: #6366f1; }
+[data-theme="dark"] .dbc-empty { color: #7a6b82; }
+
 /* ─── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .dbc-grid {

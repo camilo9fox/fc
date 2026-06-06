@@ -90,3 +90,12 @@
 .nf-btn-secondary:hover {
   border-color: #631d76;
 }
+
+/* --- DARK MODE --- */
+[data-theme="dark"] .nf-page { background: #140c1a; }
+[data-theme="dark"] .nf-card { background: #1b1322; border-color: #3b2e45; }
+[data-theme="dark"] .nf-title { color: #f0e6f5; }
+[data-theme="dark"] .nf-sub { color: #b29bc0; }
+[data-theme="dark"] .nf-path { background: #2b1f38; color: #c48ee0; }
+[data-theme="dark"] .nf-btn-secondary { background: #1b1322; border-color: #3b2e45; color: #c48ee0; }
+[data-theme="dark"] .nf-btn-secondary:hover { border-color: #8b44aa; }

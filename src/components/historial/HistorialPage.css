@@ -371,3 +371,23 @@
 [data-theme="dark"] .hp-empty {
   color: #9b8aab;
 }
+[data-theme="dark"] .hp-page { color: #e8ddef; }
+[data-theme="dark"] .hp-header h1 { color: #f0e6f5; }
+[data-theme="dark"] .hp-header p { color: #b29bc0; }
+[data-theme="dark"] .hp-filters { background: #1b1322; border-color: #3b2e45; }
+[data-theme="dark"] .hp-filters select { background: #231a2c; border-color: #3b2e45; color: #e8ddef; }
+[data-theme="dark"] .hp-table-wrap { background: #1b1322; border-color: #3b2e45; }
+[data-theme="dark"] .hp-table thead { background: #231a2c; }
+[data-theme="dark"] .hp-table th { color: #b29bc0; border-bottom-color: #3b2e45; }
+[data-theme="dark"] .hp-row { border-bottom-color: #2b1f38; }
+[data-theme="dark"] .hp-row:hover { background: #2b1f38; }
+[data-theme="dark"] .hp-cell { color: #c9add8; }
+[data-theme="dark"] .hp-cell--date { color: #9b8aab; }
+[data-theme="dark"] .hp-cell--type { color: #b29bc0; }
+[data-theme="dark"] .hp-cell--score { color: #e8ddef; }
+[data-theme="dark"] .hp-pagination button { background: #1b1322; border-color: #3b2e45; color: #c48ee0; }
+[data-theme="dark"] .hp-pagination button:hover:not(:disabled) { background: #2b1f38; }
+[data-theme="dark"] .hp-path { background: #2b1f38; color: #c48ee0; }
+[data-theme="dark"] .hp-summary { background: #1b1322; border-color: #3b2e45; }
+[data-theme="dark"] .hp-summary-label { color: #b29bc0; }
+[data-theme="dark"] .hp-summary-value { color: #f0e6f5; }
