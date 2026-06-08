@@ -182,7 +182,9 @@ const LandingPage: React.FC = () => {
       {/* STATS BAR */}
       <div className="lp-statsbar" ref={statsRef.ref}>
         <div
-          className={`lp-statsbar-inner${statsRef.visible ? " lp-anim-fadein" : ""}`}
+          className={`lp-statsbar-inner${
+            statsRef.visible ? " lp-anim-fadein" : ""
+          }`}
         >
           <div className="lp-stat">
             <span className="lp-stat-num">
@@ -213,7 +215,9 @@ const LandingPage: React.FC = () => {
       {/* ALL TOOLS */}
       <section className="lp-tools" ref={toolsRef.ref}>
         <div
-          className={`lp-section-head${toolsRef.visible ? " lp-anim-fadein" : ""}`}
+          className={`lp-section-head${
+            toolsRef.visible ? " lp-anim-fadein" : ""
+          }`}
         >
           <p className="lp-kicker">Todo en un solo lugar</p>
           <h2>
@@ -228,7 +232,9 @@ const LandingPage: React.FC = () => {
         </div>
 
         <div
-          className={`lp-tools-grid${toolsRef.visible ? " lp-anim-fadein lp-anim-delay-1" : ""}`}
+          className={`lp-tools-grid${
+            toolsRef.visible ? " lp-anim-fadein lp-anim-delay-1" : ""
+          }`}
         >
           <div className="lp-tool lp-tool--featured">
             <div className="lp-tool-icon lp-tool-icon--purple">
@@ -425,7 +431,9 @@ const LandingPage: React.FC = () => {
       {/* HOW IT WORKS */}
       <section className="lp-how" ref={howRef.ref}>
         <div
-          className={`lp-section-head${howRef.visible ? " lp-anim-fadein" : ""}`}
+          className={`lp-section-head${
+            howRef.visible ? " lp-anim-fadein" : ""
+          }`}
         >
           <p className="lp-kicker lp-kicker--light">¿Cómo funciona?</p>
           <h2 className="lp-how-h2">
@@ -438,7 +446,9 @@ const LandingPage: React.FC = () => {
         </div>
 
         <div
-          className={`lp-steps${howRef.visible ? " lp-anim-fadein lp-anim-delay-1" : ""}`}
+          className={`lp-steps${
+            howRef.visible ? " lp-anim-fadein lp-anim-delay-1" : ""
+          }`}
         >
           <div className="lp-step">
             <div className="lp-step-num">01</div>
@@ -521,7 +531,9 @@ const LandingPage: React.FC = () => {
       {/* WHY FLASHY */}
       <section className="lp-features" ref={featuresRef.ref}>
         <div
-          className={`lp-section-head${featuresRef.visible ? " lp-anim-fadein" : ""}`}
+          className={`lp-section-head${
+            featuresRef.visible ? " lp-anim-fadein" : ""
+          }`}
         >
           <p className="lp-kicker">¿Por qué Flashy?</p>
           <h2>Diseñado para resultados reales</h2>
@@ -532,7 +544,9 @@ const LandingPage: React.FC = () => {
         </div>
 
         <div
-          className={`lp-features-grid${featuresRef.visible ? " lp-anim-fadein lp-anim-delay-1" : ""}`}
+          className={`lp-features-grid${
+            featuresRef.visible ? " lp-anim-fadein lp-anim-delay-1" : ""
+          }`}
         >
           <div className="lp-feat">
             <div className="lp-feat-icon">
@@ -696,20 +710,8 @@ const LandingPage: React.FC = () => {
       <footer className="lp-footer">
         <div className="lp-footer-inner">
           <div className="lp-brand lp-brand--small">
-            <div className="lp-brand-icon lp-brand-icon--sm">
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-              </svg>
-            </div>
+            <Logo />
+
             <span className="lp-brand-name">Flashy</span>
           </div>
           <p className="lp-footer-copy">
@@ -718,6 +720,14 @@ const LandingPage: React.FC = () => {
           <div className="lp-footer-links">
             <Link to="/login">Iniciar sesión</Link>
             <Link to="/signup">Registrarse</Link>
+            <a
+              href="https://www.buymeacoffee.com/flashy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="lp-bmc-link"
+            >
+              ☕ Apoyar
+            </a>
           </div>
         </div>
       </footer>

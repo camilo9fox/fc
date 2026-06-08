@@ -740,6 +740,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </svg>
           </button>
         </div>
+
+        <a
+          href="https://www.buymeacoffee.com/flashy"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ds-bmc-link"
+        >
+          ☕ Apoyar el proyecto
+        </a>
       </aside>
 
       {/* ── Main ── */}

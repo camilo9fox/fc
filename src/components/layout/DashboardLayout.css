@@ -858,3 +858,30 @@ body.has-offline-banner .ds-topbar {
     display: none;
   }
 }
+
+.ds-bmc-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 0 12px 10px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  background: #FFDD00;
+  color: #000;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.15s;
+}
+.ds-bmc-link:hover {
+  background: #f5d000;
+  transform: translateY(-1px);
+}
+[data-theme="dark"] .ds-bmc-link {
+  background: #FFDD00;
+  color: #000;
+}
+[data-theme="dark"] .ds-bmc-link:hover {
+  background: #f5d000;
+}

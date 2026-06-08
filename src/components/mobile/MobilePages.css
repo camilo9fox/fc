@@ -1695,3 +1695,32 @@
 [data-theme="dark"] .mb-quickstart-card { box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); }
 [data-theme="dark"] .mb-onboarding-steps { box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); }
 [data-theme="dark"] .mb-progress-banner { box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); }
+
+.mb-bmc-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #FFDD00;
+  color: #000;
+  font-weight: 700;
+  transition: background 0.15s;
+}
+.mb-bmc-link:hover {
+  background: #f5d000;
+}
+.mb-bmc-icon {
+  font-size: 1.1rem;
+}
+.mb-bmc-label {
+  flex: 1;
+  font-size: 0.9rem;
+}
+[data-theme="dark"] .mb-bmc-link {
+  background: #FFDD00;
+  color: #000;
+}
+[data-theme="dark"] .mb-bmc-link:hover {
+  background: #f5d000;
+}

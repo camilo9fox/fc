@@ -44,6 +44,22 @@ const MobileProfilePage: React.FC = () => {
         </div>
       </MobileSection>
 
+      <MobileSection title="Apoyar">
+        <div className="mb-list">
+          <a
+            href="https://www.buymeacoffee.com/flashy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mb-bmc-link"
+            style={{ textDecoration: "none" }}
+          >
+            <span className="mb-bmc-icon">☕</span>
+            <span className="mb-bmc-label">Buy Me a Coffee</span>
+            <span className="mb-list-chevron">›</span>
+          </a>
+        </div>
+      </MobileSection>
+
       <button
         className="mb-logout-btn"
         onClick={() => {

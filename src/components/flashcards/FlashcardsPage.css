@@ -757,6 +757,9 @@
 .fc-row.open .fc-row-toggle {
   background: #f8fafc;
 }
+[data-theme="dark"] .fc-row.open .fc-row-toggle {
+  background: none;
+}
 
 .fc-row-chevron {
   font-size: 0.65rem;
@@ -795,6 +798,17 @@
   background: #f8fafc;
   border-top: 1px solid #f1f5f9;
   animation: fcFadeIn 0.15s ease;
+}
+
+[data-theme="dark"] .fc-row-answer {
+  padding: 10px 16px 12px 38px;
+  background: none;
+  border-top: none;
+  animation: fcFadeIn 0.15s ease;
+}
+
+[data-theme="dark"] .fc-row-answer p {
+  color: white;
 }
 
 @keyframes fcFadeIn {
