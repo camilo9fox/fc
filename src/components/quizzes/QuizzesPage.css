@@ -647,9 +647,18 @@
 }
 .qz-mode-btn:hover {
   border-color: #631d76;
-  color: #e2e8f0;
+  color: black;
 }
 .qz-mode-btn.active {
+  border-color: #631d76;
+  background: #631d76;
+  color: #fff;
+}
+[data-theme="dark"] .qz-mode-btn:hover {
+  border-color: #631d76;
+  color: #e2e8f0;
+}
+[data-theme="dark"] .qz-mode-btn.active {
   border-color: #631d76;
   background: #631d76;
   color: #fff;
@@ -752,7 +761,6 @@
 .qz-draft-actions {
   display: flex;
   gap: 10px;
-  flex-shrink: 0;
   flex-wrap: wrap;
 }
 .qz-draft-questions {

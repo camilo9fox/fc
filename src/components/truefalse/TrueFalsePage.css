@@ -646,9 +646,18 @@
 }
 .tf-mode-btn:hover {
   border-color: #631d76;
-  color: #e2e8f0;
+  color: black;
 }
 .tf-mode-btn.active {
+  border-color: #631d76;
+  background: #631d76;
+  color: #fff;
+}
+[data-theme="dark"] .tf-mode-btn:hover {
+  border-color: #631d76;
+  color: #e2e8f0;
+}
+[data-theme="dark"] .tf-mode-btn.active {
   border-color: #631d76;
   background: #631d76;
   color: #fff;
@@ -743,7 +752,6 @@
 .tf-draft-actions {
   display: flex;
   gap: 10px;
-  flex-shrink: 0;
   flex-wrap: wrap;
 }
 .tf-draft-questions {
