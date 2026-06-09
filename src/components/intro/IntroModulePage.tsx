@@ -644,6 +644,8 @@ const IntroModulePage: React.FC = () => {
   const completeOnboarding = async (path: string) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
+    markIntroSeenForUser(user?.id);
+    navigate(path);
     try {
       await persistProfile({
         introSeen: true,
@@ -652,16 +654,15 @@ const IntroModulePage: React.FC = () => {
       });
     } catch {
       // Keep the onboarding flow usable even if profile persistence fails.
-    } finally {
-      markIntroSeenForUser(user?.id);
-      setIsSubmitting(false);
-      navigate(path);
     }
+    setIsSubmitting(false);
   };
 
   const skipOnboarding = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
+    markIntroSeenForUser(user?.id);
+    navigate("/dashboard");
     try {
       await persistProfile({
         introSeen: true,
@@ -670,11 +671,8 @@ const IntroModulePage: React.FC = () => {
       });
     } catch {
       // Keep the onboarding flow usable even if profile persistence fails.
-    } finally {
-      markIntroSeenForUser(user?.id);
-      setIsSubmitting(false);
-      navigate("/dashboard");
     }
+    setIsSubmitting(false);
   };
 
   return (
