@@ -885,3 +885,11 @@ body.has-offline-banner .ds-topbar {
 [data-theme="dark"] .ds-bmc-link:hover {
   background: #f5d000;
 }
+
+button.ds-nav-item {
+  background: transparent;
+  border: none;
+  width: 100%;
+  font-family: inherit;
+  text-align: inherit;
+}
