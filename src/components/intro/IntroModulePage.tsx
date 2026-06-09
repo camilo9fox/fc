@@ -647,8 +647,9 @@ const IntroModulePage: React.FC = () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     markIntroSeenForUser(user?.id);
+    const isMobile = window.location.pathname.startsWith("/m/");
     navigate(path);
-    setTimeout(() => startTour(window.location.pathname.startsWith("/m/")), 800);
+    setTimeout(() => startTour(isMobile), 800);
     try {
       await persistProfile({
         introSeen: true,
@@ -665,8 +666,9 @@ const IntroModulePage: React.FC = () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     markIntroSeenForUser(user?.id);
+    const isMobile = window.location.pathname.startsWith("/m/");
     navigate("/dashboard");
-    setTimeout(() => startTour(window.location.pathname.startsWith("/m/")), 800);
+    setTimeout(() => startTour(isMobile), 800);
     try {
       await persistProfile({
         introSeen: true,
