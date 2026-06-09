@@ -11,11 +11,11 @@ export const TOUR_STEPS: TourStep[] = [
   { targetId: "nav-flashcards", title: "Flashcards con IA", description: "Sube un PDF, pega texto o escribe. La IA genera tarjetas pregunta-respuesta en segundos." },
   { targetId: "nav-quizzes", title: "Cuestionarios", description: "Genera preguntas de opción múltiple desde tu material. Cada pregunta incluye 4 alternativas y explicación." },
   { targetId: "nav-truefalse", title: "Verdadero o Falso", description: "Afirmaciones que ponen a prueba tu comprensión. La IA explica cada respuesta." },
-  { targetId: "nav-studyguides", title: "Guías de Estudio", description: "Consolida temas en una guía estructurada con resumen, conceptos y preguntas de repaso." },
-  { targetId: "nav-examsim", title: "Simulaciones de Examen", description: "Combina V/F, opción múltiple y desarrollo en formato cronometrado. La IA califica tus respuestas." },
+  { targetId: "nav-study-guides", title: "Guías de Estudio", description: "Consolida temas en una guía estructurada con resumen, conceptos y preguntas de repaso." },
+  { targetId: "nav-exam-simulations", title: "Simulaciones de Examen", description: "Combina V/F, opción múltiple y desarrollo en formato cronometrado. La IA califica tus respuestas." },
   { targetId: "nav-repaso", title: "Repaso Espaciado SM-2", description: "El algoritmo programa tus repasos justo antes de que olvides. Califica cada tarjeta y optimiza tu memoria." },
   { targetId: "nav-games", title: "Aprende jugando", description: "Modo Supervivencia, Memoria, Contrarreloj y Escritura. Refuerza lo aprendido mientras te diviertes." },
-  { targetId: "nav-library", title: "Explora la Biblioteca", description: "Descubre temas públicos creados por la comunidad. Copia cualquier tema a tu biblioteca personal." },
+  { targetId: "nav-biblioteca", title: "Explora la Biblioteca", description: "Descubre temas públicos creados por la comunidad. Copia cualquier tema a tu biblioteca personal." },
 ];
 
 interface ProductTourContextValue {
