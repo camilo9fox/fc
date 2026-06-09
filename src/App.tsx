@@ -9,6 +9,8 @@ import {
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ConfirmDialogProvider } from "./contexts/ConfirmDialogContext";
+import { ProductTourProvider } from "./contexts/ProductTourContext";
+import ProductTour from "./components/shared/ProductTour";
 import ErrorBoundary from "./components/shared/ErrorBoundary";
 import ContentSafetyToast from "./components/shared/ContentSafetyToast";
 import Login from "./components/auth/Login";
@@ -36,7 +38,6 @@ import DashboardLayout from "./components/layout/DashboardLayout";
 import OfflineBanner from "./components/shared/OfflineBanner";
 import PwaInstallPrompt from "./components/shared/PwaInstallPrompt";
 import IntroModulePage from "./components/intro/IntroModulePage";
-import GuidedTourPage from "./components/intro/GuidedTourPage";
 import FaqPage from "./components/faq/FaqPage";
 import SupportTicket from "./components/ticket/SupportTicket";
 import MobileHomePage from "./components/mobile/MobileHomePage";
@@ -239,26 +240,6 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route
-        path="/tour"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <GuidedTourPage />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/m/tour"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <GuidedTourPage />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
         path="/m/home"
         element={
           <ProtectedRoute>
@@ -428,15 +409,18 @@ function App() {
         <AuthProvider>
           <Router>
             <ConfirmDialogProvider>
-              <OfflineBanner />
-              <PwaInstallPrompt />
-              <ContentSafetyToast />
-              <div className="App">
-                <a href="#main-content" className="app-skip-link">
-                  Saltar al contenido principal
-                </a>
-                <AppRoutes />
-              </div>
+              <ProductTourProvider>
+                <OfflineBanner />
+                <PwaInstallPrompt />
+                <ContentSafetyToast />
+                <ProductTour />
+                <div className="App">
+                  <a href="#main-content" className="app-skip-link">
+                    Saltar al contenido principal
+                  </a>
+                  <AppRoutes />
+                </div>
+              </ProductTourProvider>
             </ConfirmDialogProvider>
           </Router>
         </AuthProvider>

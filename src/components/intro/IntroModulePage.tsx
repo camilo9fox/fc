@@ -645,6 +645,7 @@ const IntroModulePage: React.FC = () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     markIntroSeenForUser(user?.id);
+    localStorage.setItem("Flashy:auto-start-tour", "1");
     navigate(path);
     try {
       await persistProfile({
@@ -1206,7 +1207,7 @@ const IntroModulePage: React.FC = () => {
             <div className="intro-final-actions">
               <button
                 className="intro-btn intro-btn-ghost"
-                onClick={() => void completeOnboarding("/tour")}
+                onClick={() => void completeOnboarding("/dashboard")}
                 disabled={isSubmitting}
               >
                 Ir al inicio

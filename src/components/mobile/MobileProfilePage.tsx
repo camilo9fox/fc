@@ -1,12 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useProductTour } from "../../contexts/ProductTourContext";
 import { MobileHero, MobileProfileShortcut, MobileSection } from "./MobileUi";
 import "./MobilePages.css";
 
 const MobileProfilePage: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { startTour } = useProductTour();
 
   const initials = user?.email ? user.email.slice(0, 2).toUpperCase() : "US";
 
@@ -35,7 +37,18 @@ const MobileProfilePage: React.FC = () => {
             label="Historial de actividad"
           />
           <MobileProfileShortcut to="/m/home" label="Panel de progreso" />
-          <MobileProfileShortcut to="/m/tour" label="Tutorial guiado" />
+          <button
+            className="mb-list-item"
+            onClick={startTour}
+            style={{ width: "100%", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}
+          >
+            <span className="mb-list-item-left">
+              <span className="mb-list-item-title">Tutorial guiado</span>
+            </span>
+            <span className="mb-list-item-right">
+              <span className="mb-list-chevron">›</span>
+            </span>
+          </button>
         </div>
       </MobileSection>
 

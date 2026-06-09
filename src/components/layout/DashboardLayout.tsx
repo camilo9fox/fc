@@ -5,6 +5,7 @@ import { useTheme } from "../../contexts/ThemeContext";
 import { flashCardsApi } from "../../api/flashcards";
 import { GenerationQueueProvider } from "../../contexts/GenerationQueueContext";
 import { GenerationQueueWidget } from "../shared/GenerationQueueWidget";
+import { useProductTour } from "../../contexts/ProductTourContext";
 import { AiUsagePulseBar } from "../shared/AiUsagePulseBar";
 import "./DashboardLayout.css";
 import Logo from "../logo/Logo";
@@ -16,9 +17,10 @@ interface DashboardLayoutProps {
 interface NavItem {
   id: string;
   label: string;
-  path: string;
+  path?: string;
   exact?: boolean;
   disabled?: boolean;
+  action?: boolean;
   icon: React.ReactNode;
 }
 
@@ -311,7 +313,7 @@ const navSections: NavSection[] = [
       {
         id: "tutorial",
         label: "Tutorial guiado",
-        path: "/tour",
+        action: true,
         icon: (
           <svg
             width="17" height="17" viewBox="0 0 24 24" fill="none"
@@ -400,14 +402,6 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
     title: "Guía de la app",
     subtitle: "Conoce cómo funciona Flashy y cómo aprovechar tus créditos",
   },
-  "/tour": {
-    title: "Tutorial guiado",
-    subtitle: "Aprende a usar Flashy paso a paso",
-  },
-  "/m/tour": {
-    title: "Tutorial guiado",
-    subtitle: "Aprende a usar Flashy paso a paso",
-  },
   "/m/intro": {
     title: "Guía de la app",
     subtitle: "Conoce cómo funciona Flashy y cómo aprovechar tus créditos",
@@ -441,6 +435,7 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { startTour } = useProductTour();
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -452,6 +447,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   useEffect(() => {
     setSidebarOpen(false);
   }, [location.pathname]);
+
+  // Auto-start product tour after onboarding
+  useEffect(() => {
+    const key = "Flashy:auto-start-tour";
+    if (localStorage.getItem(key) === "1") {
+      localStorage.removeItem(key);
+      // Small delay so the dashboard renders first
+      const timer = setTimeout(() => startTour(), 600);
+      return () => clearTimeout(timer);
+    }
+  }, [startTour]);
 
   useEffect(() => {
     const onResize = () => setIsMobileViewport(window.innerWidth <= 900);
@@ -745,14 +751,25 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     <span className="ds-nav-label">{item.label}</span>
                     <span className="ds-coming-badge">Pronto</span>
                   </div>
+                ) : item.action ? (
+                  <button
+                    key={item.id}
+                    id={`nav-${item.id}`}
+                    className="ds-nav-item"
+                    onClick={() => { startTour(); setSidebarOpen(false); }}
+                  >
+                    <span className="ds-nav-icon">{item.icon}</span>
+                    <span className="ds-nav-label">{item.label}</span>
+                  </button>
                 ) : (
                   <Link
                     key={item.id}
-                    to={item.path}
-                    className={`ds-nav-item ${isActive(item.path, item.exact) ? "active" : ""}`}
-                    aria-current={
-                      isActive(item.path, item.exact) ? "page" : undefined
-                    }
+                    id={`nav-${item.id}`}
+                      to={item.path || "/"}
+                      className={`ds-nav-item ${isActive(item.path || "", item.exact) ? "active" : ""}`}
+                      aria-current={
+                        isActive(item.path || "", item.exact) ? "page" : undefined
+                      }
                     onClick={() => setSidebarOpen(false)}
                   >
                     <span className="ds-nav-icon">{item.icon}</span>
@@ -762,7 +779,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                         {dueCount > 99 ? "99+" : dueCount}
                       </span>
                     )}
-                    {isActive(item.path, item.exact) && (
+                    {isActive(item.path || "", item.exact) && (
                       <span className="ds-active-dot" />
                     )}
                   </Link>
