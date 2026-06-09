@@ -159,11 +159,27 @@
 [data-theme="dark"] .pt-btn-prev:hover { background: #3b2e45; }
 
 /* ── Responsive ── */
+.pt-tooltip-mobile {
+  position: fixed;
+  top: auto !important;
+  bottom: 100px;
+  left: 5vw !important;
+  right: 5vw !important;
+  max-width: 90vw;
+  padding: 18px 20px;
+  animation: ptSlideUp 0.3s ease;
+}
+
+@keyframes ptSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 700px) {
   .pt-tooltip {
     max-width: 90vw;
     top: auto !important;
-    bottom: 24px;
+    bottom: 100px;
     left: 5vw !important;
     right: 5vw !important;
     padding: 18px 20px;

@@ -21,13 +21,6 @@ const ProductTour: React.FC = () => {
   const step = steps[currentStep];
   const isLast = currentStep >= steps.length - 1;
 
-  // Navigate to path when step changes (for mobile tour)
-  useEffect(() => {
-    if (!isRunning || !step?.path) return;
-    // Small delay so React processes state before navigating
-    window.location.href = step.path;
-  }, [isRunning, currentStep, step?.path]);
-
   useEffect(() => {
     if (!isRunning) return;
 
@@ -72,6 +65,39 @@ const ProductTour: React.FC = () => {
 
   const progress = `${currentStep + 1} / ${steps.length}`;
 
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 700;
+
+  const tooltip = (
+    <div className={`pt-tooltip ${isMobile ? "pt-tooltip-mobile" : `pt-tooltip-${tooltipSide}`}`}
+      style={!isMobile && targetRect ? (
+        tooltipSide === "right"
+          ? { top: Math.max(16, targetRect.top - 30), left: targetRect.right + 24 }
+          : { top: Math.max(16, targetRect.top - 30), right: window.innerWidth - targetRect.left + 24 }
+      ) : undefined}
+    >
+      <button className="pt-close-btn" onClick={skipTour} aria-label="Cerrar tour">
+        <X size={16} />
+      </button>
+      <div className="pt-step-progress">{progress}</div>
+      <h3 className="pt-step-title">{step.title}</h3>
+      <p className="pt-step-desc">{step.description}</p>
+      <div className="pt-step-actions">
+        <button className="pt-btn-skip" onClick={skipTour}>Omitir</button>
+        <div className="pt-nav-btns">
+          {currentStep > 0 && (
+            <button className="pt-btn-prev" onClick={prevStep}>
+              <ChevronLeft size={16} />
+            </button>
+          )}
+          <button className="pt-btn-next" onClick={nextStep}>
+            <span>{isLast ? "¡Listo!" : "Siguiente"}</span>
+            {!isLast && <ChevronRight size={16} />}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   return createPortal(
     <div className="pt-overlay">
       <svg className="pt-spotlight-svg" viewBox={`0 0 ${window.innerWidth} ${window.innerHeight}`} preserveAspectRatio="none">
@@ -105,58 +131,7 @@ const ProductTour: React.FC = () => {
           />
         )}
       </svg>
-
-      {targetRect && (
-        <div
-          className={`pt-tooltip pt-tooltip-${tooltipSide}`}
-          style={
-            tooltipSide === "right"
-              ? { top: Math.max(16, targetRect.top - 30), left: targetRect.right + 24 }
-              : { top: Math.max(16, targetRect.top - 30), right: window.innerWidth - targetRect.left + 24 }
-          }
-        >
-          <button className="pt-close-btn" onClick={skipTour} aria-label="Cerrar tour">
-            <X size={16} />
-          </button>
-          <div className="pt-step-progress">{progress}</div>
-          <h3 className="pt-step-title">{step.title}</h3>
-          <p className="pt-step-desc">{step.description}</p>
-          <div className="pt-step-actions">
-            <button className="pt-btn-skip" onClick={skipTour}>
-              Omitir
-            </button>
-            <div className="pt-nav-btns">
-              {currentStep > 0 && (
-                <button className="pt-btn-prev" onClick={prevStep}>
-                  <ChevronLeft size={16} />
-                </button>
-              )}
-              <button className="pt-btn-next" onClick={nextStep}>
-                <span>{isLast ? "¡Listo!" : "Siguiente"}</span>
-                {!isLast && <ChevronRight size={16} />}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {!targetRect && (
-        <div className="pt-tooltip pt-tooltip-center">
-          <button className="pt-close-btn" onClick={skipTour} aria-label="Cerrar tour">
-            <X size={16} />
-          </button>
-          <div className="pt-step-progress">{progress}</div>
-          <h3 className="pt-step-title">{step.title}</h3>
-          <p className="pt-step-desc">{step.description}</p>
-          <div className="pt-step-actions">
-            <button className="pt-btn-skip" onClick={skipTour}>Omitir</button>
-            <button className="pt-btn-next" onClick={nextStep}>
-              <span>{isLast ? "¡Listo!" : "Siguiente"}</span>
-              {!isLast && <ChevronRight size={16} />}
-            </button>
-          </div>
-        </div>
-      )}
+      {tooltip}
     </div>,
     document.body,
   );

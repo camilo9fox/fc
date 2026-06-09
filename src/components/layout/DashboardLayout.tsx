@@ -493,7 +493,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     : "US";
 
   const isMobileTabActive = (
-    tab: "home" | "create" | "library" | "games" | "profile",
+    tab: "home" | "create" | "library" | "profile",
   ) => {
     const path = location.pathname;
     if (tab === "home") {
@@ -518,9 +518,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     if (tab === "library") {
       return path === "/m/library" || path === "/biblioteca";
     }
-    if (tab === "games") {
-      return path.startsWith("/games");
-    }
     return path === "/m/profile" || path === "/profile";
   };
 
@@ -528,11 +525,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     ? "Crear"
     : isMobileTabActive("library")
       ? "Biblioteca"
-      : isMobileTabActive("games")
-        ? "Juegos"
-        : isMobileTabActive("profile")
-          ? "Perfil"
-          : "Inicio";
+      : isMobileTabActive("profile")
+        ? "Perfil"
+        : "Inicio";
 
   const mobileCurrentCrumb =
     location.pathname === "/m/home"
@@ -541,11 +536,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         ? "Crear"
         : location.pathname === "/m/library"
           ? "Biblioteca"
-          : location.pathname.startsWith("/games")
-            ? "Juegos"
-            : location.pathname === "/m/profile"
-              ? "Perfil"
-              : pageInfo.title;
+          : location.pathname === "/m/profile"
+            ? "Perfil"
+            : pageInfo.title;
 
   const showMobileCurrentCrumb = mobileCurrentCrumb !== mobileRootCrumb;
 
@@ -648,20 +641,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               </svg>
             </span>
             <span className="mb-bottom-label">Biblioteca</span>
-          </Link>
-          <Link
-            to="/games"
-            id="nav-mobile-games"
-            className={`mb-bottom-item ${isMobileTabActive("games") ? "active" : ""}`}
-            aria-current={isMobileTabActive("games") ? "page" : undefined}
-          >
-            <span className="mb-bottom-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M15 4.5 8.5 9l6.5 4.5M8.5 9v11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M15 15.5 8.5 11l6.5-4.5M8.5 11v6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </span>
-            <span className="mb-bottom-label">Juegos</span>
           </Link>
           <Link
             to="/m/profile"
