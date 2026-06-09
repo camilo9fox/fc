@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
 import { ChevronRight, ChevronLeft, X } from "lucide-react";
 import { useProductTour } from "../../contexts/ProductTourContext";
 import "./ProductTour.css";
@@ -17,9 +18,16 @@ const ProductTour: React.FC = () => {
   const { isRunning, currentStep, steps, nextStep, prevStep, skipTour } = useProductTour();
   const [targetRect, setTargetRect] = useState<Rect | null>(null);
   const [tooltipSide, setTooltipSide] = useState<"right" | "bottom" | "left">("right");
+  const navigate = useNavigate();
 
   const step = steps[currentStep];
   const isLast = currentStep >= steps.length - 1;
+
+  // Navigate to step path (mobile tour: moves between tabs)
+  useEffect(() => {
+    if (!isRunning || !step?.path) return;
+    navigate(step.path);
+  }, [isRunning, currentStep, step?.path, navigate]);
 
   useEffect(() => {
     if (!isRunning) return;

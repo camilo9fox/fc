@@ -4,6 +4,7 @@ export interface TourStep {
   targetId: string;
   title: string;
   description: string;
+  path?: string;
 }
 
 export const TOUR_STEPS_DESKTOP: TourStep[] = [
@@ -19,10 +20,10 @@ export const TOUR_STEPS_DESKTOP: TourStep[] = [
 ];
 
 export const TOUR_STEPS_MOBILE: TourStep[] = [
-  { targetId: "nav-mobile-home", title: "Panel de progreso", description: "Aquí ves tu actividad diaria, tarjetas pendientes y acceso rápido a tus recursos. Es tu punto de partida cada día." },
-  { targetId: "nav-mobile-create", title: "Crea contenido", description: "Elige qué quieres crear: flashcards, cuestionarios, guías o simulaciones. Todo desde un solo lugar." },
-  { targetId: "nav-mobile-library", title: "Tu biblioteca", description: "Gestiona tus recursos privados o explora temas públicos de la comunidad. Copia lo que te sirva." },
-  { targetId: "nav-mobile-profile", title: "Tu perfil", description: "Edita tu cuenta, revisa tu historial, repite el tutorial o cierra sesión." },
+  { targetId: "nav-mobile-home", title: "Panel de progreso", description: "Aquí ves tu actividad diaria, tarjetas pendientes y acceso rápido a tus recursos.", path: "/m/home" },
+  { targetId: "nav-mobile-create", title: "Crea contenido", description: "Elige qué quieres crear: flashcards, cuestionarios, guías o simulaciones. Todo desde un solo lugar.", path: "/m/create" },
+  { targetId: "nav-mobile-library", title: "Tu biblioteca", description: "Gestiona tus recursos privados o explora temas públicos de la comunidad.", path: "/m/library" },
+  { targetId: "nav-mobile-profile", title: "Tu perfil", description: "Edita tu cuenta, revisa tu historial, repite el tutorial o cierra sesión.", path: "/m/profile" },
 ];
 
 interface ProductTourContextValue {
