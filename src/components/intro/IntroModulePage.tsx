@@ -36,6 +36,7 @@ import {
 import { useAuth } from "../../contexts/AuthContext";
 import { authApi, OnboardingProfile } from "../../api";
 import { markIntroSeenForUser } from "../../hooks/useOnboardingIntroGate";
+import { useProductTour } from "../../contexts/ProductTourContext";
 import "./IntroModulePage.css";
 
 type IntroModuleInfo = {
@@ -389,6 +390,7 @@ const toDaysUntil = (examDate?: string | null) => {
 const IntroModulePage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { startTour } = useProductTour();
   const [stepIndex, setStepIndex] = useState(0);
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [dailyTime, setDailyTime] = useState<"10-15" | "20-30" | "45+">(
@@ -645,8 +647,9 @@ const IntroModulePage: React.FC = () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     markIntroSeenForUser(user?.id);
-    localStorage.setItem("Flashy:auto-start-tour", "1");
     navigate(path);
+    // Start the product tour after the dashboard renders
+    setTimeout(() => startTour(), 800);
     try {
       await persistProfile({
         introSeen: true,

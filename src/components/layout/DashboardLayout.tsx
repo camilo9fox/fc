@@ -448,20 +448,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     setSidebarOpen(false);
   }, [location.pathname]);
 
-  const tourAutoStarted = useRef(false);
-
-  // Auto-start product tour after onboarding
-  useEffect(() => {
-    if (tourAutoStarted.current) return;
-    const key = "Flashy:auto-start-tour";
-    if (localStorage.getItem(key) === "1") {
-      localStorage.removeItem(key);
-      tourAutoStarted.current = true;
-      const timer = setTimeout(() => startTour(), 600);
-      return () => clearTimeout(timer);
-    }
-  }, [startTour]);
-
   useEffect(() => {
     const onResize = () => setIsMobileViewport(window.innerWidth <= 900);
     window.addEventListener("resize", onResize);
