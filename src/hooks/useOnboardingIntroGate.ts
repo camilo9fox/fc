@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { authApi } from "../api/auth";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -70,9 +70,11 @@ export const useOnboardingIntroGate = () => {
     setIntroSeen(true);
   }, [user?.id]);
 
-  const shouldShowIntro = useMemo(() => {
-    return Boolean(user?.id && !introSeen);
-  }, [introSeen, user?.id]);
+  // Check localStorage directly so external updates (e.g. from IntroModulePage)
+  // are picked up on the next render without needing a state change.
+  const shouldShowIntro = Boolean(
+    user?.id && !introSeen && !hasIntroBeenSeenForUser(user.id),
+  );
 
   return {
     isChecking,
