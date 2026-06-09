@@ -91,7 +91,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         metadata,
       });
       // In production, email verification is required — don't auto-login
-      if ((response as any).requiresVerification) return;
+      if ((response as any).requiresVerification) return response;
       setUser(response.user);
       setToken(response.token);
       localStorage.setItem("authToken", response.token);
