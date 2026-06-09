@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowRight, Lock, Mail, UserRound, Sparkles } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowRight, CheckCircle2, Lock, Mail, UserRound, Sparkles } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
+import { authApi } from "../../api/auth";
 import "./Auth.css";
 
 const Signup: React.FC = () => {
@@ -13,7 +14,11 @@ const Signup: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resentMessage, setResentMessage] = useState("");
   const { signup } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +49,10 @@ const Signup: React.FC = () => {
       const metadata = {
         ...(fullName ? { full_name: fullName } : {}),
       };
-      await signup(email, password, metadata);
+      const result = await signup(email, password, metadata);
+      if (result && (result as any).requiresVerification) {
+        setVerificationSent(true);
+      }
     } catch (err: any) {
       const status = err.response?.status;
       if (status === 401 || status === 409) {
@@ -60,6 +68,92 @@ const Signup: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  const handleResend = async () => {
+    setResending(true);
+    setResentMessage("");
+    try {
+      await authApi.resendVerification(email);
+      setResentMessage("Email reenviado. Revisa tu bandeja de entrada.");
+    } catch {
+      setResentMessage("No se pudo reenviar. Intenta de nuevo en unos segundos.");
+    } finally {
+      setResending(false);
+    }
+  };
+
+  if (verificationSent) {
+    return (
+      <div className="auth-shell">
+        <div className="auth-backdrop" />
+        <div className="auth-layout auth-layout-signup">
+          <aside className="auth-showcase" aria-hidden="true">
+            <div className="auth-showcase-badge">
+              <Sparkles size={14} />
+              <span>Flashy</span>
+            </div>
+            <h1 className="auth-showcase-title">Un paso más</h1>
+            <p className="auth-showcase-text">
+              Verificar tu email nos ayuda a mantener tu cuenta segura y proteger tu
+              contenido de estudio.
+            </p>
+            <div className="auth-showcase-pills">
+              <span>Cuenta protegida</span>
+              <span>Recupera tu acceso</span>
+              <span>Sin verificaciones extra</span>
+            </div>
+          </aside>
+
+          <section className="auth-card" aria-labelledby="auth-verify-title">
+            <div className="auth-card-head">
+              <p className="auth-kicker">Verificación</p>
+              <h2 id="auth-verify-title">Verifica tu email</h2>
+              <p className="auth-subtitle">
+                Te enviamos un enlace de verificación.
+              </p>
+            </div>
+
+            <div style={{ textAlign: "center", padding: "12px 0" }}>
+              <span style={{ fontSize: "3rem" }}>📧</span>
+            </div>
+
+            <p style={{ textAlign: "center", color: "var(--auth-muted)", fontSize: "0.9rem", lineHeight: 1.6 }}>
+              Enviamos un enlace de verificación a{" "}
+              <strong style={{ color: "var(--auth-text)" }}>{email}</strong>.
+              {" "}Revisa tu bandeja de entrada y la carpeta de spam.
+            </p>
+
+            {resentMessage && (
+              <p
+                style={{
+                  textAlign: "center",
+                  fontSize: "0.82rem",
+                  color: "var(--auth-accent)",
+                }}
+              >
+                {resentMessage}
+              </p>
+            )}
+
+            <button
+              className="auth-submit"
+              onClick={handleResend}
+              disabled={resending}
+              style={{ marginTop: 4 }}
+            >
+              <span>{resending ? "Reenviando..." : "Reenviar email"}</span>
+            </button>
+
+            <p className="auth-footer-text">
+              <CheckCircle2 size={14} style={{ verticalAlign: "middle", marginRight: 4 }} />
+              ¿Ya verificaste?{" "}
+              <Link to="/login">Inicia sesión</Link>
+            </p>
+          </section>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="auth-shell">

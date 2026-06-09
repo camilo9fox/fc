@@ -18,7 +18,7 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, metadata?: any) => Promise<void>;
+  signup: (email: string, password: string, metadata?: any) => Promise<any>;
   logout: () => Promise<void>;
   isLoading: boolean;
 }
@@ -90,6 +90,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         password,
         metadata,
       });
+      // In production, email verification is required — don't auto-login
+      if ((response as any).requiresVerification) return;
       setUser(response.user);
       setToken(response.token);
       localStorage.setItem("authToken", response.token);

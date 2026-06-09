@@ -1208,7 +1208,7 @@ const IntroModulePage: React.FC = () => {
             <div className="intro-final-actions">
               <button
                 className="intro-btn intro-btn-ghost"
-                onClick={() => void completeOnboarding("/dashboard")}
+                onClick={() => void completeOnboarding("/tour")}
                 disabled={isSubmitting}
               >
                 Ir al inicio

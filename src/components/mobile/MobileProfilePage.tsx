@@ -35,6 +35,7 @@ const MobileProfilePage: React.FC = () => {
             label="Historial de actividad"
           />
           <MobileProfileShortcut to="/m/home" label="Panel de progreso" />
+          <MobileProfileShortcut to="/m/tour" label="Tutorial guiado" />
         </div>
       </MobileSection>
 

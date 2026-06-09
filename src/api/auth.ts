@@ -59,6 +59,13 @@ export const authApi = {
   },
 
   /**
+   * Resend email verification link
+   */
+  resendVerification: async (email: string): Promise<void> => {
+    await apiClient.post("/auth/resend-verification", { email });
+  },
+
+  /**
    * Sign in an existing user
    */
   signin: async (data: LoginRequest): Promise<AuthResponse> => {

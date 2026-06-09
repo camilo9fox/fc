@@ -305,6 +305,58 @@ const navSections: NavSection[] = [
       },
     ],
   },
+  {
+    label: "Soporte",
+    items: [
+      {
+        id: "tutorial",
+        label: "Tutorial guiado",
+        path: "/tour",
+        icon: (
+          <svg
+            width="17" height="17" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        ),
+      },
+      {
+        id: "faq",
+        label: "Preguntas frecuentes",
+        path: "/faq",
+        exact: true,
+        icon: (
+          <svg
+            width="17" height="17" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        ),
+      },
+      {
+        id: "ticket",
+        label: "Soporte",
+        path: "/soporte",
+        exact: true,
+        icon: (
+          <svg
+            width="17" height="17" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+          >
+            <path d="M22 10V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8" />
+            <path d="M22 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
+            <path d="M8 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
+          </svg>
+        ),
+      },
+    ],
+  },
 ];
 
 const pageTitles: Record<string, { title: string; subtitle: string }> = {
@@ -347,6 +399,14 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
   "/intro": {
     title: "Guía de la app",
     subtitle: "Conoce cómo funciona Flashy y cómo aprovechar tus créditos",
+  },
+  "/tour": {
+    title: "Tutorial guiado",
+    subtitle: "Aprende a usar Flashy paso a paso",
+  },
+  "/m/tour": {
+    title: "Tutorial guiado",
+    subtitle: "Aprende a usar Flashy paso a paso",
   },
   "/m/intro": {
     title: "Guía de la app",
