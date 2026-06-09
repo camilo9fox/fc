@@ -39,7 +39,7 @@ const MobileProfilePage: React.FC = () => {
           <MobileProfileShortcut to="/m/home" label="Panel de progreso" />
           <button
             className="mb-list-item"
-            onClick={startTour}
+            onClick={() => startTour(true)}
             style={{ width: "100%", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}
           >
             <span className="mb-list-item-left">

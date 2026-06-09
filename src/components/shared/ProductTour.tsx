@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { ChevronRight, ChevronLeft, X } from "lucide-react";
-import { useProductTour, TOUR_STEPS } from "../../contexts/ProductTourContext";
+import { useProductTour } from "../../contexts/ProductTourContext";
 import "./ProductTour.css";
 
 interface Rect {
@@ -14,12 +14,19 @@ interface Rect {
 }
 
 const ProductTour: React.FC = () => {
-  const { isRunning, currentStep, nextStep, prevStep, skipTour } = useProductTour();
+  const { isRunning, currentStep, steps, nextStep, prevStep, skipTour } = useProductTour();
   const [targetRect, setTargetRect] = useState<Rect | null>(null);
   const [tooltipSide, setTooltipSide] = useState<"right" | "bottom" | "left">("right");
 
-  const step = TOUR_STEPS[currentStep];
-  const isLast = currentStep >= TOUR_STEPS.length - 1;
+  const step = steps[currentStep];
+  const isLast = currentStep >= steps.length - 1;
+
+  // Navigate to path when step changes (for mobile tour)
+  useEffect(() => {
+    if (!isRunning || !step?.path) return;
+    // Small delay so React processes state before navigating
+    window.location.href = step.path;
+  }, [isRunning, currentStep, step?.path]);
 
   useEffect(() => {
     if (!isRunning) return;
@@ -33,7 +40,6 @@ const ProductTour: React.FC = () => {
       const r = el.getBoundingClientRect();
       setTargetRect({ top: r.top, left: r.left, width: r.width, height: r.height, right: r.right, bottom: r.bottom });
 
-      // Decide tooltip side: if element is in right half, show tooltip on left
       const viewWidth = window.innerWidth;
       if (r.right > viewWidth * 0.55 && viewWidth > 700) {
         setTooltipSide("left");
@@ -54,7 +60,6 @@ const ProductTour: React.FC = () => {
     };
   }, [isRunning, currentStep, step.targetId]);
 
-  // Scroll target into view
   useEffect(() => {
     if (!isRunning) return;
     const el = document.getElementById(step.targetId);
@@ -65,11 +70,10 @@ const ProductTour: React.FC = () => {
 
   if (!isRunning) return null;
 
-  const progress = `${currentStep + 1} / ${TOUR_STEPS.length}`;
+  const progress = `${currentStep + 1} / ${steps.length}`;
 
   return createPortal(
     <div className="pt-overlay">
-      {/* Dark background with spotlight cutout */}
       <svg className="pt-spotlight-svg" viewBox={`0 0 ${window.innerWidth} ${window.innerHeight}`} preserveAspectRatio="none">
         <defs>
           <mask id="pt-mask">
@@ -102,7 +106,6 @@ const ProductTour: React.FC = () => {
         )}
       </svg>
 
-      {/* Tooltip */}
       {targetRect && (
         <div
           className={`pt-tooltip pt-tooltip-${tooltipSide}`}
@@ -137,7 +140,6 @@ const ProductTour: React.FC = () => {
         </div>
       )}
 
-      {/* Mobile fallback: show card centered if no target found */}
       {!targetRect && (
         <div className="pt-tooltip pt-tooltip-center">
           <button className="pt-close-btn" onClick={skipTour} aria-label="Cerrar tour">

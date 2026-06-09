@@ -648,8 +648,7 @@ const IntroModulePage: React.FC = () => {
     setIsSubmitting(true);
     markIntroSeenForUser(user?.id);
     navigate(path);
-    // Start the product tour after the dashboard renders
-    setTimeout(() => startTour(), 800);
+    setTimeout(() => startTour(window.location.pathname.startsWith("/m/")), 800);
     try {
       await persistProfile({
         introSeen: true,
@@ -667,7 +666,7 @@ const IntroModulePage: React.FC = () => {
     setIsSubmitting(true);
     markIntroSeenForUser(user?.id);
     navigate("/dashboard");
-    setTimeout(() => startTour(), 800);
+    setTimeout(() => startTour(window.location.pathname.startsWith("/m/")), 800);
     try {
       await persistProfile({
         introSeen: true,
