@@ -667,6 +667,7 @@ const IntroModulePage: React.FC = () => {
     setIsSubmitting(true);
     markIntroSeenForUser(user?.id);
     navigate("/dashboard");
+    setTimeout(() => startTour(), 800);
     try {
       await persistProfile({
         introSeen: true,
