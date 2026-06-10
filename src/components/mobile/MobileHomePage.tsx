@@ -40,6 +40,13 @@ const quickStartItems = [
     bg: "linear-gradient(135deg, #dc2626, #f87171)",
     path: "/exam-simulations",
   },
+  {
+    title: "Juegos",
+    desc: "Aprende jugando",
+    icon: "🎮",
+    bg: "linear-gradient(135deg, #7c3aed, #c084fc)",
+    path: "/games",
+  },
 ];
 
 const resourceList = [
@@ -77,6 +84,13 @@ const resourceList = [
     iconBg: "linear-gradient(135deg, #dc2626, #f87171)",
     path: "/exam-simulations",
     key: "exams" as const,
+  },
+  {
+    label: "Juegos",
+    icon: "🎮",
+    iconBg: "linear-gradient(135deg, #7c3aed, #c084fc)",
+    path: "/games",
+    key: "guides" as const,
   },
 ];
 
@@ -317,6 +331,9 @@ const MobileHomePage: React.FC = () => {
         </button>
         <button className="mb-chip" onClick={() => navigate("/m/create")}>
           <span className="mb-chip-icon">✨</span> Crear nuevo
+        </button>
+        <button className="mb-chip" onClick={() => navigate("/games")}>
+          <span className="mb-chip-icon">🎮</span> Jugar
         </button>
       </div>
 
