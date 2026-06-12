@@ -43,7 +43,10 @@ const formatCountdown = (totalSeconds: number) => {
   const clamped = Math.max(0, totalSeconds);
   const minutes = Math.floor(clamped / 60);
   const seconds = clamped % 60;
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
+    2,
+    "0",
+  )}`;
 };
 
 const getQuestionKey = (
@@ -494,7 +497,9 @@ const ExamSimulationsPage: React.FC = () => {
                   <div className="es-choice-row">
                     <button
                       type="button"
-                      className={`es-choice-btn ${selected === true ? "is-active" : ""}`}
+                      className={`es-choice-btn ${
+                        selected === true ? "is-active" : ""
+                      }`}
                       disabled={Boolean(result) || isExpired}
                       onClick={() =>
                         setTfAnswers((prev) => ({
@@ -507,7 +512,9 @@ const ExamSimulationsPage: React.FC = () => {
                     </button>
                     <button
                       type="button"
-                      className={`es-choice-btn ${selected === false ? "is-active" : ""}`}
+                      className={`es-choice-btn ${
+                        selected === false ? "is-active" : ""
+                      }`}
                       disabled={Boolean(result) || isExpired}
                       onClick={() =>
                         setTfAnswers((prev) => ({
@@ -521,11 +528,15 @@ const ExamSimulationsPage: React.FC = () => {
                   </div>
                   {tfFeedback && (
                     <p
-                      className={`es-feedback ${tfFeedback.correct ? "is-ok" : "is-bad"}`}
+                      className={`es-feedback ${
+                        tfFeedback.correct ? "is-ok" : "is-bad"
+                      }`}
                     >
                       {tfFeedback.correct
                         ? "Correcta"
-                        : `Incorrecta. Respuesta esperada: ${tfFeedback.expected ? "Verdadero" : "Falso"}`}
+                        : `Incorrecta. Respuesta esperada: ${
+                            tfFeedback.expected ? "Verdadero" : "Falso"
+                          }`}
                     </p>
                   )}
                 </article>
@@ -554,7 +565,9 @@ const ExamSimulationsPage: React.FC = () => {
                       <button
                         key={`${questionKey}-${optionIndex}`}
                         type="button"
-                        className={`es-choice-btn ${selected === option ? "is-active" : ""}`}
+                        className={`es-choice-btn ${
+                          selected === option ? "is-active" : ""
+                        }`}
                         disabled={Boolean(result) || isExpired}
                         onClick={() =>
                           setMcAnswers((prev) => ({
@@ -569,7 +582,9 @@ const ExamSimulationsPage: React.FC = () => {
                   </div>
                   {mcFeedback && (
                     <p
-                      className={`es-feedback ${mcFeedback.correct ? "is-ok" : "is-bad"}`}
+                      className={`es-feedback ${
+                        mcFeedback.correct ? "is-ok" : "is-bad"
+                      }`}
                     >
                       {mcFeedback.correct
                         ? "Correcta"
@@ -605,10 +620,10 @@ const ExamSimulationsPage: React.FC = () => {
               const missingConcepts: string[] = Array.isArray(
                 devFeedback?.missingConcepts,
               )
-                ? devFeedback!.missingConcepts!.filter(Boolean) as string[]
+                ? (devFeedback!.missingConcepts!.filter(Boolean) as string[])
                 : [];
               const strengths: string[] = Array.isArray(devFeedback?.strengths)
-                ? devFeedback!.strengths!.filter(Boolean) as string[]
+                ? (devFeedback!.strengths!.filter(Boolean) as string[])
                 : [];
 
               return (
@@ -728,10 +743,10 @@ const ExamSimulationsPage: React.FC = () => {
             {submitting
               ? "Enviando..."
               : isDraftRunner
-                ? "Guarda para enviar"
-                : result
-                  ? "Simulacion enviada"
-                  : "Enviar simulacion"}
+              ? "Guarda para enviar"
+              : result
+              ? "Simulacion enviada"
+              : "Enviar simulacion"}
           </button>
         </div>
       </div>
@@ -957,7 +972,8 @@ const ExamSimulationsPage: React.FC = () => {
                 type="button"
                 className="es-btn-text"
                 onClick={() => {
-                  setFile(null); setFilePreview("");
+                  setFile(null);
+                  setFilePreview("");
                   if (fileInputRef.current) fileInputRef.current.value = "";
                 }}
               >
@@ -974,7 +990,8 @@ const ExamSimulationsPage: React.FC = () => {
                 setFile(selected);
                 if (selected) {
                   const reader = new FileReader();
-                  reader.onload = () => setFilePreview(String(reader.result ?? ""));
+                  reader.onload = () =>
+                    setFilePreview(String(reader.result ?? ""));
                   reader.readAsText(selected);
                 } else {
                   setFilePreview("");
@@ -983,7 +1000,7 @@ const ExamSimulationsPage: React.FC = () => {
             />
           </div>
 
-          {filePreview && !supportText && (
+          {/* {filePreview && !supportText && (
             <div className="es-file-preview">
               <p className="es-file-preview-label">Vista previa del texto extraido:</p>
               <pre className="es-file-preview-text">
@@ -991,7 +1008,7 @@ const ExamSimulationsPage: React.FC = () => {
                 {filePreview.length > 300 ? "..." : ""}
               </pre>
             </div>
-          )}
+          )} */}
 
           {queued && (
             <p className="es-queued-msg">

@@ -150,7 +150,8 @@ const GenerateStudyGuideForm: React.FC<GenerateStudyGuideFormProps> = ({
               type="button"
               className="sg-remove-btn"
               onClick={() => {
-                setFile(null); setFilePreview("");
+                setFile(null);
+                setFilePreview("");
                 if (fileInputRef.current) fileInputRef.current.value = "";
               }}
             >
@@ -167,7 +168,7 @@ const GenerateStudyGuideForm: React.FC<GenerateStudyGuideFormProps> = ({
         />
       </div>
 
-      {filePreview && !text && (
+      {/* {filePreview && !text && (
         <div className="sg-file-preview">
           <p className="sg-file-preview-label">Vista previa del texto extraido:</p>
           <pre className="sg-file-preview-text">
@@ -175,7 +176,7 @@ const GenerateStudyGuideForm: React.FC<GenerateStudyGuideFormProps> = ({
             {filePreview.length > 300 ? "..." : ""}
           </pre>
         </div>
-      )}
+      )} */}
 
       {error && <p className="sg-error">{error}</p>}
 

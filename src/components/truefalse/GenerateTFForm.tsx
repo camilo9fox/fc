@@ -227,7 +227,8 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({ onCancel }) => {
               type="button"
               className="tf-remove-btn"
               onClick={() => {
-                setFile(null); setFilePreview("");
+                setFile(null);
+                setFilePreview("");
                 if (fileInputRef.current) fileInputRef.current.value = "";
               }}
             >
@@ -244,7 +245,7 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({ onCancel }) => {
         />
       </div>
 
-      {filePreview && !text && (
+      {/* {filePreview && !text && (
         <div className="tf-file-preview">
           <p className="tf-file-preview-label">Vista previa del texto extraido:</p>
           <pre className="tf-file-preview-text">
@@ -252,7 +253,7 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({ onCancel }) => {
             {filePreview.length > 300 ? "..." : ""}
           </pre>
         </div>
-      )}
+      )} */}
 
       {error && <p className="tf-error">{error}</p>}
 

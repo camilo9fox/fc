@@ -227,7 +227,8 @@ const GenerateQuizForm: React.FC<GenerateQuizFormProps> = ({ onCancel }) => {
               type="button"
               className="qz-remove-btn"
               onClick={() => {
-                setFile(null); setFilePreview("");
+                setFile(null);
+                setFilePreview("");
                 if (fileInputRef.current) fileInputRef.current.value = "";
               }}
             >
@@ -244,7 +245,7 @@ const GenerateQuizForm: React.FC<GenerateQuizFormProps> = ({ onCancel }) => {
         />
       </div>
 
-      {filePreview && !text && (
+      {/* {filePreview && !text && (
         <div className="qz-file-preview">
           <p className="qz-file-preview-label">Vista previa del texto extraido:</p>
           <pre className="qz-file-preview-text">
@@ -252,7 +253,7 @@ const GenerateQuizForm: React.FC<GenerateQuizFormProps> = ({ onCancel }) => {
             {filePreview.length > 300 ? "..." : ""}
           </pre>
         </div>
-      )}
+      )} */}
 
       {error && <p className="qz-error">{error}</p>}
 

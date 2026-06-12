@@ -250,7 +250,7 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
         </div>
       </div>
 
-      {filePreview && !text && (
+      {/* {filePreview && !text && (
         <div className="qz-file-preview">
           <p className="qz-file-preview-label">
             Vista previa del texto extraido:
@@ -260,7 +260,7 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
             {filePreview.length > 300 ? "..." : ""}
           </pre>
         </div>
-      )}
+      )} */}
 
       {error && <p className="qz-error">{error}</p>}
 
