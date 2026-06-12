@@ -987,6 +987,12 @@ const ExamSimulationsPage: React.FC = () => {
               style={{ display: "none" }}
               onChange={(event) => {
                 const selected = event.target.files?.[0] ?? null;
+                if (selected && selected.size > 50 * 1024 * 1024) {
+                  setError("El archivo es demasiado grande. Máximo: 50MB.");
+                  setFile(null);
+                  setFilePreview("");
+                  return;
+                }
                 setFile(selected);
                 if (selected) {
                   const reader = new FileReader();
