@@ -25,6 +25,7 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
   onCancel,
 }) => {
   const [text, setText] = useState("");
+  const [title, setTitle] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string>("");
   const [quantity, setQuantity] = useState(3);
@@ -85,6 +86,11 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
       return;
     }
 
+    if (!title.trim()) {
+      setError("Debes ingresar un título para este set de flashcards.");
+      return;
+    }
+
     if (
       usage?.enabled &&
       Number.isFinite(usage.creditsRemaining) &&
@@ -98,6 +104,7 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
 
     const capturedFile = file;
     const capturedText = text;
+    const capturedTitle = title.trim();
     const capturedQuantity = quantity;
     const capturedCategoryId = selectedCategoryId;
     const categoryLabel =
@@ -105,13 +112,14 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
 
     const result = enqueue({
       moduleType: "flashcards",
-      label: `Flashcards${categoryLabel ? ` · ${categoryLabel}` : ""}`,
+      label: `"${capturedTitle}"${categoryLabel ? ` · ${categoryLabel}` : ""}`,
       startFn: async () => {
         const job = await flashCardsApi.startGenerateFlashCardsJob(
           capturedFile || undefined,
           capturedText || undefined,
           capturedQuantity,
           capturedCategoryId || undefined,
+          capturedTitle,
         );
         return job.id;
       },
@@ -169,6 +177,19 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
           ) : (
             <span>Créditos IA no disponibles por ahora.</span>
           )}
+        </div>
+
+        <div className="qz-field">
+          <label htmlFor="generateTitle">Título del set</label>
+          <input
+            id="generateTitle"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Ej: Biología celular - Unidad 1"
+            disabled={isBusy}
+            maxLength={255}
+          />
         </div>
 
         <div className="qz-field">
