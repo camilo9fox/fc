@@ -32,6 +32,7 @@ import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
 type DraftFlashcard = {
   question: string;
   answer: string;
+  source?: "ai" | "manual";
 };
 
 interface DraftSet {
@@ -90,6 +91,7 @@ const FlashcardsPage: React.FC = () => {
         cards: pending.flashcards.map((c: any) => ({
           question: c.question,
           answer: c.answer,
+          source: c.source || "ai",
         })),
       });
     }
@@ -127,6 +129,7 @@ const FlashcardsPage: React.FC = () => {
           answer: c.answer,
           categoryId: draftSet.categoryId,
           title: draftSet.title,
+          source: c.source || "manual",
         })),
         draftSet.title,
         draftSet.categoryId,

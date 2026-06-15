@@ -5,6 +5,7 @@ import { useCategories } from "../../hooks/useCategories";
 interface FlashcardDraft {
   question: string;
   answer: string;
+  source: "manual";
 }
 
 interface CreateFlashcardFormProps {
@@ -16,7 +17,7 @@ interface CreateFlashcardFormProps {
   onCancel: () => void;
 }
 
-const EMPTY_CARD: FlashcardDraft = { question: "", answer: "" };
+const EMPTY_CARD: FlashcardDraft = { question: "", answer: "", source: "manual" };
 
 const CreateFlashcardForm: React.FC<CreateFlashcardFormProps> = ({
   onDrafted,
@@ -78,6 +79,7 @@ const CreateFlashcardForm: React.FC<CreateFlashcardFormProps> = ({
     const validCards = cards.map((c) => ({
       question: c.question.trim(),
       answer: c.answer.trim(),
+      source: "manual" as const,
     }));
 
     setSaving(true);

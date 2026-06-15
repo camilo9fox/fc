@@ -39,6 +39,7 @@ export interface CreateManualFlashCardRequest {
   answer: string;
   categoryId: string;
   title: string;
+  source?: "ai" | "manual";
 }
 
 export interface FlashCardSet {
