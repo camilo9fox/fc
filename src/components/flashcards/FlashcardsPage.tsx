@@ -84,7 +84,14 @@ const FlashcardsPage: React.FC = () => {
   useEffect(() => {
     const pending = claimResult("flashcards");
     if (pending?.flashcards?.length) {
-      handleAddGenerated(pending.flashcards);
+      setDraftSet({
+        title: pending.title || "Set generado por IA",
+        categoryId: pending.categoryId || "",
+        cards: pending.flashcards.map((c: any) => ({
+          question: c.question,
+          answer: c.answer,
+        })),
+      });
     }
   }, [pendingResults]);
 
@@ -134,10 +141,6 @@ const FlashcardsPage: React.FC = () => {
     } finally {
       setSaving(false);
     }
-  };
-
-  const handleAddGenerated = (cards: FlashCard[]) => {
-    setSavedFlashcards((prev) => [...cards, ...prev]);
   };
 
   const handleDrafted = (draft: {
@@ -360,10 +363,7 @@ ${rows}
           />
         ) : (
           <GenerateFlashcardsForm
-            onGenerated={(cards) => {
-              handleAddGenerated(cards as any);
-              setShowCreate(false);
-            }}
+            onGenerated={() => {}}
             onCancel={() => setShowCreate(false)}
           />
         )}

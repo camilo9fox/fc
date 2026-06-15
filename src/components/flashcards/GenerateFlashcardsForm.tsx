@@ -130,6 +130,8 @@ const GenerateFlashcardsForm: React.FC<GenerateFlashcardsFormProps> = ({
           progress: job.progress,
           result: job.result
             ? {
+                title: capturedTitle,
+                categoryId: capturedCategoryId || "",
                 flashcards: (job.result.flashcards || []).map((card) => ({
                   ...card,
                   source: "ai" as const,
