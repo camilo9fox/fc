@@ -92,14 +92,34 @@ const CategoryPreviewModal: React.FC<Props> = ({
                       muestra de {preview.flashcards.length}
                     </span>
                   </h3>
-                  <ul className="cpv-list">
-                    {preview.flashcards.map((fc) => (
-                      <li key={fc.id} className="cpv-flashcard-item">
-                        <span className="cpv-q-icon">P</span>
-                        <span className="cpv-q-text">{fc.question}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  {(() => {
+                    const grouped: Record<string, typeof preview.flashcards> = {};
+                    preview.flashcards.forEach((fc) => {
+                      const key = fc.set?.title || "Sin set";
+                      if (!grouped[key]) grouped[key] = [];
+                      grouped[key].push(fc);
+                    });
+                    return Object.entries(grouped).map(([setTitle, cards]) => (
+                      <div key={setTitle} className="cpv-set-group">
+                        {setTitle !== "Sin set" && (
+                          <div className="cpv-set-header">
+                            <span className="cpv-set-name">{setTitle}</span>
+                            <span className="cpv-set-count">
+                              {cards.length} tarjeta{cards.length !== 1 ? "s" : ""}
+                            </span>
+                          </div>
+                        )}
+                        <ul className="cpv-list">
+                          {cards.map((fc) => (
+                            <li key={fc.id} className="cpv-flashcard-item">
+                              <span className="cpv-q-icon">P</span>
+                              <span className="cpv-q-text">{fc.question}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ));
+                  })()}
                 </section>
               )}
 

@@ -372,3 +372,23 @@
   .cpv-footer { grid-template-columns: 1fr; }
   .cpv-cancel-btn, .cpv-import-btn { width: 100%; justify-content: center; }
 }
+
+/* ── Set group (flashcards) ────────────────────────────────── */
+.cpv-set-group { margin-bottom: 0.75rem; }
+.cpv-set-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  background: #f3ecf7;
+  border-left: 3px solid #631d76;
+  border-radius: 6px 6px 0 0;
+  margin-bottom: 0.25rem;
+}
+.cpv-set-name { font-size: 0.8rem; font-weight: 600; color: #631d76; }
+.cpv-set-count { font-size: 0.7rem; color: #8460a0; }
+.cpv-set-group .cpv-list { margin-top: 0; }
+
+[data-theme="dark"] .cpv-set-header { background: #231a2c; border-left-color: #8b2fc9; }
+[data-theme="dark"] .cpv-set-name { color: #cbaedf; }
+[data-theme="dark"] .cpv-set-count { color: #8460a0; }

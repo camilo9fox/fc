@@ -16,7 +16,12 @@ export interface CategoryPreview {
   id: string;
   title: string;
   description?: string;
-  flashcards: { id: string; question: string }[];
+  flashcards: {
+    id: string;
+    question: string;
+    answer?: string;
+    set?: { id: string; title: string } | null;
+  }[];
   quizzes: { id: string; title: string; description?: string }[];
   trueFalseSets: { id: string; title: string; description?: string }[];
   studyGuides?: { id: string; title: string }[];
