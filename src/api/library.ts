@@ -6,7 +6,6 @@ export interface PublicCategory {
   description?: string;
   userId: string;
   createdAt: string;
-  updatedAt?: string;
   flashcardCount: number;
   quizCount: number;
   trueFalseCount: number;
