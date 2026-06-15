@@ -10,6 +10,7 @@ export interface PublicCategory {
   quizCount: number;
   trueFalseCount: number;
   studyGuideCount?: number;
+  alreadyImported?: boolean;
 }
 
 export interface CategoryPreview {

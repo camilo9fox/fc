@@ -266,10 +266,11 @@ export const LibraryPage: React.FC = () => {
               const result = forkResults[cat.id];
               const isForking = forkingId === cat.id;
               const wasImported = result && !result.isError;
+              const alreadyDone = wasImported || cat.alreadyImported;
               return (
                 <div
                   key={cat.id}
-                  className={`lib-card${wasImported ? " lib-card--imported" : ""}`}
+                  className={`lib-card${alreadyDone ? " lib-card--imported" : ""}`}
                   onClick={() => setPreviewId(cat.id)}
                   style={{ cursor: "pointer" }}
                 >
@@ -340,19 +341,19 @@ export const LibraryPage: React.FC = () => {
 
                   <div className="lib-card-footer">
                     <button
-                      className={`lib-import-btn${wasImported ? " lib-import-btn--done" : ""}`}
+                      className={`lib-import-btn${alreadyDone ? " lib-import-btn--done" : ""}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleFork(cat.id);
                       }}
-                      disabled={isForking || wasImported}
+                      disabled={isForking || alreadyDone}
                     >
                       {isForking ? (
                         <>
                           <span className="lib-btn-spinner" />
                           Importando…
                         </>
-                      ) : wasImported ? (
+                      ) : alreadyDone ? (
                         <>✓ Importado</>
                       ) : (
                         <>
