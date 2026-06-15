@@ -36,9 +36,7 @@ export const LibraryPage: React.FC = () => {
   >({});
 
   const [previewId, setPreviewId] = useState<string | null>(null);
-  const previewCategory = previewId
-    ? (categories.find((c) => c.id === previewId) ?? null)
-    : null;
+  const previewCategory = categories.find((c) => c.id === previewId);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -424,6 +422,7 @@ export const LibraryPage: React.FC = () => {
           }}
           isImporting={forkingId === previewId}
           alreadyImported={
+            previewCategory?.alreadyImported ||
             !!(forkResults[previewId] && !forkResults[previewId].isError)
           }
         />
