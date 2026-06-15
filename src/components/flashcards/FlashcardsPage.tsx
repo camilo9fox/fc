@@ -69,11 +69,11 @@ const FlashcardsPage: React.FC = () => {
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const groupedFlashcards = useMemo(() => {
-    const grouped: { [key: string]: any[] } = { "Sin categoría": [] };
+    const grouped: { [key: string]: any[] } = {};
     savedFlashcards.forEach((card) => {
-      const categoryTitle = card.category?.title || "Sin categoría";
-      if (!grouped[categoryTitle]) grouped[categoryTitle] = [];
-      grouped[categoryTitle].push(card);
+      const groupKey = card.set?.title || card.category?.title || "Sin set";
+      if (!grouped[groupKey]) grouped[groupKey] = [];
+      grouped[groupKey].push(card);
     });
     return grouped;
   }, [savedFlashcards]);
@@ -595,18 +595,18 @@ ${rows}
               Estudiar todas →
             </button>
           </div>
-          {Object.entries(groupedFlashcards).map(([categoryTitle, cards]) => {
+          {Object.entries(groupedFlashcards).map(([groupKey, cards]) => {
             const catId = (cards[0] as FlashCard)?.category?.id;
             return cards.length > 0 ? (
               <CategoryAccordion
-                key={categoryTitle}
-                title={categoryTitle}
+                key={groupKey}
+                title={groupKey}
                 cards={cards}
                 categoryId={catId}
                 onStudy={() =>
                   handleStartStudy(
                     cards as FlashCard[],
-                    `Categoría: ${categoryTitle}`,
+                    `Set: ${groupKey}`,
                   )
                 }
                 onDelete={handleDeleteSavedCard}

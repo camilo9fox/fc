@@ -11,6 +11,10 @@ export interface FlashCard {
     title: string;
     description?: string;
   };
+  set?: {
+    id: string;
+    title: string;
+  } | null;
   created_at: string;
   updated_at: string;
 }
