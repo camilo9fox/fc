@@ -80,6 +80,7 @@ const CsvImportModal: React.FC<Props> = ({
   const [defaultCategoryId, setDefaultCategoryId] = useState<string>(
     categories[0]?.id || "",
   );
+  const [csvTitle, setCsvTitle] = useState("");
   const [parseError, setParseError] = useState<string | null>(null);
   const [importing, setImporting] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
@@ -117,7 +118,7 @@ const CsvImportModal: React.FC<Props> = ({
   };
 
   const handleImport = async () => {
-    if (rows.length === 0 || !defaultCategoryId) return;
+    if (rows.length === 0 || !defaultCategoryId || !csvTitle.trim()) return;
     setImporting(true);
     setImportError(null);
     try {
@@ -132,9 +133,14 @@ const CsvImportModal: React.FC<Props> = ({
           question: r.question,
           answer: r.answer,
           categoryId: matchedCat?.id || defaultCategoryId,
+          title: csvTitle.trim(),
         };
       });
-      await flashCardsApi.createManualFlashCards(flashcards);
+      await flashCardsApi.createManualFlashCards(
+        flashcards,
+        csvTitle.trim(),
+        defaultCategoryId,
+      );
       onImported();
       onClose();
     } catch (err: any) {
@@ -216,6 +222,21 @@ const CsvImportModal: React.FC<Props> = ({
                 </select>
               </div>
 
+              <div className="csv-category-row">
+                <label className="csv-label" htmlFor="csv-title">
+                  Título del set
+                </label>
+                <input
+                  id="csv-title"
+                  type="text"
+                  className="csv-select"
+                  value={csvTitle}
+                  onChange={(e) => setCsvTitle(e.target.value)}
+                  placeholder="Ej: Vocabulario - Capítulo 1"
+                  maxLength={255}
+                />
+              </div>
+
               <div className="csv-preview">
                 <table className="csv-table">
                   <thead>
@@ -262,7 +283,7 @@ const CsvImportModal: React.FC<Props> = ({
           <button
             className="csv-btn-import"
             onClick={handleImport}
-            disabled={rows.length === 0 || !defaultCategoryId || importing}
+            disabled={rows.length === 0 || !defaultCategoryId || !csvTitle.trim() || importing}
           >
             {importing ? (
               "Importando…"

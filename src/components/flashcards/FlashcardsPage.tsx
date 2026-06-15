@@ -32,14 +32,13 @@ import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
 type DraftFlashcard = {
   question: string;
   answer: string;
-  source: "ai" | "manual";
-  categoryId?: string;
-  category?: {
-    id: string;
-    title: string;
-    description?: string;
-  };
 };
+
+interface DraftSet {
+  title: string;
+  categoryId: string;
+  cards: DraftFlashcard[];
+}
 
 const escapeHtml = (str: string) =>
   str
@@ -52,7 +51,7 @@ const FlashcardsPage: React.FC = () => {
   const { token } = useAuth();
   const { categories, loading: catsLoading } = useCategories();
   const hasCategories = catsLoading || categories.length > 0;
-  const [draftFlashcards, setDraftFlashcards] = useState<DraftFlashcard[]>([]);
+  const [draftSet, setDraftSet] = useState<DraftSet | null>(null);
   const [savedFlashcards, setSavedFlashcards] = useState<FlashCard[]>([]);
   const [studyCards, setStudyCards] = useState<FlashCard[]>([]);
   const [studyMode, setStudyMode] = useState(false);
@@ -110,30 +109,26 @@ const FlashcardsPage: React.FC = () => {
   }, [token]);
 
   const handleSaveDrafts = async () => {
-    if (!draftFlashcards.length) return;
-    const withoutCategory = draftFlashcards.filter((c) => !c.categoryId);
-    if (withoutCategory.length > 0) {
-      setError(
-        "Todas las flashcards deben tener una categoría antes de guardar.",
-      );
-      return;
-    }
+    if (!draftSet) return;
+
     setSaving(true);
     setError(null);
     try {
-      const result = await flashCardsApi.saveFlashCards(
-        draftFlashcards as Array<{
-          question: string;
-          answer: string;
-          source?: "ai" | "manual";
-          categoryId: string;
-        }>,
+      const set = await flashCardsApi.createManualFlashCards(
+        draftSet.cards.map((c) => ({
+          question: c.question,
+          answer: c.answer,
+          categoryId: draftSet.categoryId,
+          title: draftSet.title,
+        })),
+        draftSet.title,
+        draftSet.categoryId,
       );
-      setSavedFlashcards((prev) => [...result.flashcards, ...prev]);
-      setDraftFlashcards([]);
+      setSavedFlashcards((prev) => [...set.cards, ...prev]);
+      setDraftSet(null);
     } catch (err: any) {
       setError(
-        err?.response?.data?.message ||
+        err?.response?.data?.error ||
           "No se pudieron guardar las flashcards.",
       );
     } finally {
@@ -141,16 +136,25 @@ const FlashcardsPage: React.FC = () => {
     }
   };
 
-  const handleAddGenerated = (cards: DraftFlashcard[]) => {
-    setDraftFlashcards((prev) => [...cards, ...prev]);
+  const handleAddGenerated = (cards: FlashCard[]) => {
+    setSavedFlashcards((prev) => [...cards, ...prev]);
   };
 
-  const handleAddManual = (card: DraftFlashcard) => {
-    setDraftFlashcards((prev) => [card, ...prev]);
+  const handleDrafted = (draft: {
+    title: string;
+    categoryId: string;
+    cards: { question: string; answer: string }[];
+  }) => {
+    setDraftSet(draft);
+    setShowCreate(false);
   };
 
-  const handleRemoveDraft = (index: number) => {
-    setDraftFlashcards((prev) => prev.filter((_, i) => i !== index));
+  const handleRemoveDraftCard = (index: number) => {
+    setDraftSet((prev) =>
+      prev
+        ? { ...prev, cards: prev.cards.filter((_, i) => i !== index) }
+        : null,
+    );
   };
 
   const handleStartStudy = (cards: FlashCard[], title: string) => {
@@ -349,16 +353,15 @@ ${rows}
 
         {createMode === "manual" ? (
           <CreateFlashcardForm
-            onCreated={(card) => {
-              handleAddManual(card);
-              setShowCreate(false);
+            onDrafted={(draft) => {
+              handleDrafted(draft);
             }}
             onCancel={() => setShowCreate(false)}
           />
         ) : (
           <GenerateFlashcardsForm
             onGenerated={(cards) => {
-              handleAddGenerated(cards);
+              handleAddGenerated(cards as any);
               setShowCreate(false);
             }}
             onCancel={() => setShowCreate(false)}
@@ -379,9 +382,9 @@ ${rows}
             <h1 className="qz-page-title">Flashcards</h1>
             <p className="qz-page-sub">Crea y estudia tus tarjetas de repaso</p>
           </div>
-        </div>
-        <div
-          style={{
+          </div>
+          <div
+            style={{
             display: "flex",
             gap: "0.5rem",
             flexWrap: "wrap",
@@ -480,46 +483,50 @@ ${rows}
       )}
 
       {/* Sección borrador */}
-      {draftFlashcards.length > 0 && (
+      {draftSet && (
         <section className="qz-draft-panel">
           <div className="qz-draft-header">
             <div>
               <p className="qz-draft-eyebrow">
                 ⚠️ Borrador pendiente — sin guardar
               </p>
-              <h2 className="qz-draft-title">Borrador</h2>
+              <h2 className="qz-draft-title">{draftSet.title}</h2>
               <span className="qz-draft-badge">
-                {draftFlashcards.length} flashcard
-                {draftFlashcards.length !== 1 ? "s" : ""}
+                {draftSet.cards.length} flashcard
+                {draftSet.cards.length !== 1 ? "s" : ""}
               </span>
             </div>
             <div className="qz-draft-actions">
               <button
                 className="qz-btn-secondary"
-                onClick={() => setDraftFlashcards([])}
+                onClick={() => setDraftSet(null)}
               >
                 Descartar
               </button>
               <button
                 className="qz-btn-primary"
                 onClick={handleSaveDrafts}
-                disabled={saving || draftFlashcards.length === 0}
+                disabled={saving || draftSet.cards.length === 0}
               >
-                {saving ? "Guardando..." : "Guardar flashcards"}
+                {saving ? "Guardando..." : "Guardar set"}
               </button>
               <button
                 className="qz-btn-study"
                 onClick={() =>
                   handleStartStudy(
-                    draftFlashcards.map(
+                    draftSet.cards.map(
                       (card) =>
                         ({
-                          ...card,
+                          question: card.question,
+                          answer: card.answer,
+                          source: "manual",
                           id: `${card.question}-${card.answer}`,
-                          category: card.category,
+                          category_id: draftSet.categoryId,
+                          created_at: "",
+                          updated_at: "",
                         }) as FlashCard,
                     ),
-                    "Estudio de borrador",
+                    draftSet.title,
                   )
                 }
               >
@@ -527,18 +534,20 @@ ${rows}
               </button>
             </div>
           </div>
-          <div
-            className="fc-accordion-body"
-            style={{ borderTop: "1px solid #e2e8f0" }}
-          >
-            {draftFlashcards.map((card, index) => (
-              <CardRow
-                key={`${card.question}-${index}`}
-                question={card.question}
-                answer={card.answer}
-                source={card.source}
-                onDelete={() => handleRemoveDraft(index)}
-              />
+          <div className="qz-draft-questions">
+            {draftSet.cards.map((card, i) => (
+              <div key={i} className="qz-draft-question">
+                <span className="qz-draft-q-text">
+                  {i + 1}. {card.question}
+                </span>
+                <button
+                  className="qz-draft-q-remove"
+                  onClick={() => handleRemoveDraftCard(i)}
+                  aria-label="Eliminar flashcard"
+                >
+                  <X size={14} />
+                </button>
+              </div>
             ))}
           </div>
         </section>
@@ -555,7 +564,7 @@ ${rows}
             </div>
           ))}
         </div>
-      ) : savedFlashcards.length === 0 && draftFlashcards.length === 0 ? (
+      ) : savedFlashcards.length === 0 && !draftSet ? (
         <div className="qz-empty">
           <div className="qz-empty-icon">
             <Layers size={48} />

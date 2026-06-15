@@ -34,6 +34,32 @@ export interface CreateManualFlashCardRequest {
   question: string;
   answer: string;
   categoryId: string;
+  title: string;
+}
+
+export interface FlashCardSet {
+  id: string;
+  title: string;
+  description?: string | null;
+  userId: string;
+  categoryId: string;
+  category?: {
+    id: string;
+    title: string;
+    description?: string;
+  };
+  cards: FlashCard[];
+  isPublic?: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FlashCardSetsResponse {
+  sets: FlashCardSet[];
+  pagination: {
+    limit: number;
+    offset: number;
+  };
 }
 
 export interface FlashCardsResponse {
@@ -199,25 +225,29 @@ export const flashCardsApi = {
   },
 
   /**
-   * Create a manual flashcard
+   * Create a manual flashcard (creates a set with 1 card)
    */
   createManualFlashCard: async (
     data: CreateManualFlashCardRequest,
-  ): Promise<FlashCard> => {
+  ): Promise<FlashCardSet> => {
     const response = await apiClient.post("/flashcards/create-flashcard", data);
     return response.data;
   },
 
   /**
-   * Create multiple manual flashcards
+   * Create multiple manual flashcards (creates a set)
    */
   createManualFlashCards: async (
     flashcards: CreateManualFlashCardRequest[],
-  ): Promise<FlashCard[]> => {
+    title: string,
+    categoryId: string,
+  ): Promise<FlashCardSet> => {
     const response = await apiClient.post("/flashcards/create-flashcards", {
       flashcards,
+      title,
+      categoryId,
     });
-    return response.data.flashcards;
+    return response.data;
   },
 
   saveFlashCards: async (
@@ -227,8 +257,12 @@ export const flashCardsApi = {
       source?: "ai" | "manual";
       categoryId: string;
     }>,
-  ): Promise<{ flashcards: FlashCard[]; message: string }> => {
-    const response = await apiClient.post("/flashcards/save", { flashcards });
+    title: string,
+  ): Promise<FlashCardSet> => {
+    const response = await apiClient.post("/flashcards/save", {
+      flashcards,
+      title,
+    });
     return response.data;
   },
 
