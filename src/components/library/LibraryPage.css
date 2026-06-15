@@ -471,6 +471,10 @@
   background: linear-gradient(135deg, #1a7a4a, #34d399);
 }
 
+.lib-import-btn--update {
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+}
+
 .lib-btn-spinner {
   width: 13px;
   height: 13px;
@@ -706,6 +710,7 @@
 [data-theme="dark"] .lib-card-footer { border-top-color: #2e1e40; }
 [data-theme="dark"] .lib-import-btn { background: linear-gradient(135deg, #631d76, #8b2fc9); }
 [data-theme="dark"] .lib-import-btn--done { background: linear-gradient(135deg, #1a7a4a, #34d399); }
+[data-theme="dark"] .lib-import-btn--update { background: linear-gradient(135deg, #1e40af, #3b82f6); }
 [data-theme="dark"] .lib-skeleton { background: linear-gradient(90deg, #1e1528 25%, #2b1f38 50%, #1e1528 75%); }
 [data-theme="dark"] .lib-empty-illo { background: #2b1f38; }
 [data-theme="dark"] .lib-empty-title { color: #f0e6f5; }

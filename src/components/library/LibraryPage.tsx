@@ -339,18 +339,20 @@ export const LibraryPage: React.FC = () => {
 
                   <div className="lib-card-footer">
                     <button
-                      className={`lib-import-btn${alreadyDone ? " lib-import-btn--done" : ""}`}
+                      className={`lib-import-btn${alreadyDone && !cat.hasUpdates ? " lib-import-btn--done" : ""}${cat.hasUpdates ? " lib-import-btn--update" : ""}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleFork(cat.id);
                       }}
-                      disabled={isForking || alreadyDone}
+                      disabled={isForking}
                     >
                       {isForking ? (
                         <>
                           <span className="lib-btn-spinner" />
                           Importando…
                         </>
+                      ) : cat.hasUpdates ? (
+                        <>📥 Actualizar</>
                       ) : alreadyDone ? (
                         <>✓ Importado</>
                       ) : (
