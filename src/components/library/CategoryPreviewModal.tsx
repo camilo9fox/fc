@@ -9,6 +9,7 @@ interface Props {
   onImport: () => void;
   isImporting: boolean;
   alreadyImported: boolean;
+  isOwner: boolean;
 }
 
 const CategoryPreviewModal: React.FC<Props> = ({
@@ -18,6 +19,7 @@ const CategoryPreviewModal: React.FC<Props> = ({
   onImport,
   isImporting,
   alreadyImported,
+  isOwner,
 }) => {
   const [preview, setPreview] = useState<CategoryPreview | null>(null);
   const [loading, setLoading] = useState(true);
@@ -114,6 +116,7 @@ const CategoryPreviewModal: React.FC<Props> = ({
                             <li key={fc.id} className="cpv-flashcard-item">
                               <span className="cpv-q-icon">P</span>
                               <span className="cpv-q-text">{fc.question}</span>
+                              {fc.isNew && <span className="cpv-new-badge">🆕</span>}
                             </li>
                           ))}
                         </ul>
@@ -140,7 +143,10 @@ const CategoryPreviewModal: React.FC<Props> = ({
                         key={q.id}
                         className="cpv-content-item cpv-content-item--quiz"
                       >
-                        <span className="cpv-content-name">{q.title}</span>
+                        <span className="cpv-content-name">
+                          {q.title}
+                          {q.isNew && <span className="cpv-new-badge">🆕</span>}
+                        </span>
                         {q.description && (
                           <span className="cpv-content-desc">
                             {q.description}
@@ -169,7 +175,10 @@ const CategoryPreviewModal: React.FC<Props> = ({
                         key={t.id}
                         className="cpv-content-item cpv-content-item--tf"
                       >
-                        <span className="cpv-content-name">{t.title}</span>
+                        <span className="cpv-content-name">
+                          {t.title}
+                          {t.isNew && <span className="cpv-new-badge">🆕</span>}
+                        </span>
                         {t.description && (
                           <span className="cpv-content-desc">
                             {t.description}
@@ -198,7 +207,10 @@ const CategoryPreviewModal: React.FC<Props> = ({
                         key={g.id}
                         className="cpv-content-item cpv-content-item--guide"
                       >
-                        <span className="cpv-content-name">{g.title}</span>
+                        <span className="cpv-content-name">
+                          {g.title}
+                          {g.isNew && <span className="cpv-new-badge">🆕</span>}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -220,11 +232,13 @@ const CategoryPreviewModal: React.FC<Props> = ({
             Cerrar
           </button>
           <button
-            className={`cpv-import-btn ${alreadyImported ? "cpv-import-btn--done" : ""}`}
+            className={`cpv-import-btn ${isOwner ? "cpv-import-btn--owner" : alreadyImported ? "cpv-import-btn--done" : ""}`}
             onClick={onImport}
-            disabled={isImporting || alreadyImported}
+            disabled={isImporting || alreadyImported || isOwner}
           >
-            {isImporting ? (
+            {isOwner ? (
+              "🔒 Tema propio"
+            ) : isImporting ? (
               <>
                 <span className="cpv-btn-spinner" />
                 Importando…

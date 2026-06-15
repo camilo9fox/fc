@@ -12,21 +12,24 @@ export interface PublicCategory {
   studyGuideCount?: number;
   alreadyImported?: boolean;
   hasUpdates?: boolean;
+  isOwner?: boolean;
 }
 
 export interface CategoryPreview {
   id: string;
   title: string;
   description?: string;
+  isForked?: boolean;
   flashcards: {
     id: string;
     question: string;
     answer?: string;
     set?: { id: string; title: string } | null;
+    isNew?: boolean;
   }[];
-  quizzes: { id: string; title: string; description?: string }[];
-  trueFalseSets: { id: string; title: string; description?: string }[];
-  studyGuides?: { id: string; title: string }[];
+  quizzes: { id: string; title: string; description?: string; isNew?: boolean }[];
+  trueFalseSets: { id: string; title: string; description?: string; isNew?: boolean }[];
+  studyGuides?: { id: string; title: string; isNew?: boolean }[];
 }
 
 export interface ForkResult {

@@ -338,6 +338,11 @@ export const LibraryPage: React.FC = () => {
                   </div>
 
                   <div className="lib-card-footer">
+                    {cat.isOwner ? (
+                      <button className="lib-import-btn lib-import-btn--owner" disabled>
+                        🔒 Tema propio
+                      </button>
+                    ) : (
                     <button
                       className={`lib-import-btn${alreadyDone && !cat.hasUpdates ? " lib-import-btn--done" : ""}${cat.hasUpdates ? " lib-import-btn--update" : ""}`}
                       onClick={(e) => {
@@ -375,6 +380,7 @@ export const LibraryPage: React.FC = () => {
                         </>
                       )}
                     </button>
+                    )}
                   </div>
                 </div>
               );
@@ -424,9 +430,12 @@ export const LibraryPage: React.FC = () => {
           }}
           isImporting={forkingId === previewId}
           alreadyImported={
-            previewCategory?.alreadyImported ||
-            !!(forkResults[previewId] && !forkResults[previewId].isError)
+            previewCategory?.isOwner
+              ? true
+              : previewCategory?.alreadyImported ||
+                !!(forkResults[previewId] && !forkResults[previewId].isError)
           }
+          isOwner={previewCategory?.isOwner || false}
         />
       )}
     </>
