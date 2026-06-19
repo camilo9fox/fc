@@ -1,0 +1,90 @@
+/* ── Verification success ────────────────────────────────── */
+.auth-layout-verify {
+  max-width: 960px;
+}
+
+.verify-success-icon-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0 8px;
+}
+
+.verify-success-ring {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: vs-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.verify-success-check {
+  color: #059669;
+  stroke-width: 2;
+}
+
+@keyframes vs-pop {
+  from {
+    transform: scale(0.3);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.verify-success-features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 0 24px;
+}
+
+.verify-success-feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #4a3d52;
+  padding: 10px 14px;
+  background: #f8f4fb;
+  border-radius: 10px;
+  border: 1px solid #eadef5;
+}
+
+.verify-success-feature svg {
+  color: #631d76;
+  flex-shrink: 0;
+}
+
+.verify-success-btn {
+  width: 100%;
+  justify-content: center;
+  gap: 8px;
+  font-size: 1rem;
+  padding: 14px;
+  margin-top: 4px;
+}
+
+/* Dark mode */
+[data-theme="dark"] .verify-success-ring {
+  background: linear-gradient(135deg, #0a2a1e, #0f3a2a);
+}
+[data-theme="dark"] .verify-success-check {
+  color: #34d399;
+}
+[data-theme="dark"] .verify-success-feature {
+  background: #1e1626;
+  border-color: #3a2a4a;
+  color: #cbaedf;
+}
+[data-theme="dark"] .verify-success-feature svg {
+  color: #a855f7;
+}
+
+@media (max-width: 680px) {
+  .auth-layout-verify {
+    grid-template-columns: 1fr;
+  }
+}

@@ -16,6 +16,7 @@ import ErrorBoundary from "./components/shared/ErrorBoundary";
 import ContentSafetyToast from "./components/shared/ContentSafetyToast";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
+import VerificationSuccess from "./components/auth/VerificationSuccess";
 import FlashcardsPage from "./components/flashcards/FlashcardsPage";
 import CategoriesPage from "./components/categories/CategoriesPage";
 import QuizzesPage from "./components/quizzes/QuizzesPage";
@@ -160,6 +161,7 @@ const AppRoutes: React.FC = () => {
       />
       <Route path="/terms" element={<Terms />} />
       <Route path="/policies" element={<Policies />} />
+      <Route path="/verification-success" element={<VerificationSuccess />} />
       <Route
         path="/flashcards"
         element={
