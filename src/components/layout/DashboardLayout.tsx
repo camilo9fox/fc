@@ -316,8 +316,14 @@ const navSections: NavSection[] = [
         action: true,
         icon: (
           <svg
-            width="17" height="17" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
             <circle cx="12" cy="12" r="10" />
             <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
@@ -332,8 +338,14 @@ const navSections: NavSection[] = [
         exact: true,
         icon: (
           <svg
-            width="17" height="17" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
             <circle cx="12" cy="12" r="10" />
             <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
@@ -344,12 +356,18 @@ const navSections: NavSection[] = [
       {
         id: "ticket",
         label: "Soporte",
-        path: "/soporte",
+        path: "/support",
         exact: true,
         icon: (
           <svg
-            width="17" height="17" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
             <path d="M22 10V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8" />
             <path d="M22 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
@@ -524,21 +542,21 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const mobileRootCrumb = isMobileTabActive("create")
     ? "Crear"
     : isMobileTabActive("library")
-      ? "Biblioteca"
-      : isMobileTabActive("profile")
-        ? "Perfil"
-        : "Inicio";
+    ? "Biblioteca"
+    : isMobileTabActive("profile")
+    ? "Perfil"
+    : "Inicio";
 
   const mobileCurrentCrumb =
     location.pathname === "/m/home"
       ? "Inicio"
       : location.pathname === "/m/create"
-        ? "Crear"
-        : location.pathname === "/m/library"
-          ? "Biblioteca"
-          : location.pathname === "/m/profile"
-            ? "Perfil"
-            : pageInfo.title;
+      ? "Crear"
+      : location.pathname === "/m/library"
+      ? "Biblioteca"
+      : location.pathname === "/m/profile"
+      ? "Perfil"
+      : pageInfo.title;
 
   const showMobileCurrentCrumb = mobileCurrentCrumb !== mobileRootCrumb;
 
@@ -605,7 +623,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           <Link
             to="/m/home"
             id="nav-mobile-home"
-            className={`mb-bottom-item ${isMobileTabActive("home") ? "active" : ""}`}
+            className={`mb-bottom-item ${
+              isMobileTabActive("home") ? "active" : ""
+            }`}
             aria-current={isMobileTabActive("home") ? "page" : undefined}
           >
             <span className="mb-bottom-icon" aria-hidden="true">
@@ -618,7 +638,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           <Link
             to="/m/create"
             id="nav-mobile-create"
-            className={`mb-bottom-item mb-bottom-item-create ${isMobileTabActive("create") ? "active" : ""}`}
+            className={`mb-bottom-item mb-bottom-item-create ${
+              isMobileTabActive("create") ? "active" : ""
+            }`}
             aria-current={isMobileTabActive("create") ? "page" : undefined}
           >
             <span className="mb-bottom-icon" aria-hidden="true">
@@ -631,7 +653,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           <Link
             to="/m/library"
             id="nav-mobile-library"
-            className={`mb-bottom-item ${isMobileTabActive("library") ? "active" : ""}`}
+            className={`mb-bottom-item ${
+              isMobileTabActive("library") ? "active" : ""
+            }`}
             aria-current={isMobileTabActive("library") ? "page" : undefined}
           >
             <span className="mb-bottom-icon" aria-hidden="true">
@@ -645,7 +669,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           <Link
             to="/m/profile"
             id="nav-mobile-profile"
-            className={`mb-bottom-item ${isMobileTabActive("profile") ? "active" : ""}`}
+            className={`mb-bottom-item ${
+              isMobileTabActive("profile") ? "active" : ""
+            }`}
             aria-current={isMobileTabActive("profile") ? "page" : undefined}
           >
             <span className="mb-bottom-icon" aria-hidden="true">
@@ -711,7 +737,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           {/* Home — always at top */}
           <Link
             to="/dashboard"
-            className={`ds-nav-item ds-nav-home ${isActive("/dashboard", true) ? "active" : ""}`}
+            className={`ds-nav-item ds-nav-home ${
+              isActive("/dashboard", true) ? "active" : ""
+            }`}
             aria-current={isActive("/dashboard", true) ? "page" : undefined}
             onClick={() => setSidebarOpen(false)}
           >
@@ -749,7 +777,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     key={item.id}
                     id={`nav-${item.id}`}
                     className="ds-nav-item"
-                    onClick={() => { startTour(isMobileViewport); setSidebarOpen(false); }}
+                    onClick={() => {
+                      startTour(isMobileViewport);
+                      setSidebarOpen(false);
+                    }}
                   >
                     <span className="ds-nav-icon">{item.icon}</span>
                     <span className="ds-nav-label">{item.label}</span>
@@ -758,11 +789,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   <Link
                     key={item.id}
                     id={`nav-${item.id}`}
-                      to={item.path || "/"}
-                      className={`ds-nav-item ${isActive(item.path || "", item.exact) ? "active" : ""}`}
-                      aria-current={
-                        isActive(item.path || "", item.exact) ? "page" : undefined
-                      }
+                    to={item.path || "/"}
+                    className={`ds-nav-item ${
+                      isActive(item.path || "", item.exact) ? "active" : ""
+                    }`}
+                    aria-current={
+                      isActive(item.path || "", item.exact) ? "page" : undefined
+                    }
                     onClick={() => setSidebarOpen(false)}
                   >
                     <span className="ds-nav-icon">{item.icon}</span>
