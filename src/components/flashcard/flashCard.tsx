@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import "./flashCard.css";
 import { useFlashCard } from "../../hooks/useFlashCard";
 import { useAuth } from "../../contexts/AuthContext";
+import { ALLOWED_UPLOAD_FORMATS } from "../../constants";
 
 const FlashCard: React.FC = () => {
   const {
@@ -67,7 +68,7 @@ const FlashCard: React.FC = () => {
           <input
             type="file"
             id="flashcardFile"
-            accept=".txt,.pdf"
+            accept={ALLOWED_UPLOAD_FORMATS}
             onChange={onFileChange}
             disabled={isLoading}
           />
