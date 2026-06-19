@@ -514,7 +514,7 @@
 
 /* ── Tiles ────────────────────────────────────────────────────────────────── */
 .mem-tile {
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 0.75;
   perspective: 800px;
   background: transparent;
   border: none;
