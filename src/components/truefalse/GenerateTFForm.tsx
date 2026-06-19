@@ -50,6 +50,13 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({ onCancel }) => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0] ?? null;
+    if (selected) {
+      const ext = selected.name.split(".").pop()?.toLowerCase();
+      if (ext !== "pdf" && ext !== "txt") {
+        setError("Tipo de archivo no permitido. Solo se aceptan PDF y TXT.");
+        return;
+      }
+    }
     if (selected && selected.size > 50 * 1024 * 1024) {
       setError("El archivo es demasiado grande. Máximo: 50MB.");
       setFile(null);
