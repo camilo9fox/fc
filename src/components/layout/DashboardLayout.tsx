@@ -400,11 +400,11 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
   },
   "/intro": {
     title: "Guía de la app",
-    subtitle: "Conoce cómo funciona Flashy y cómo aprovechar tus créditos",
+    subtitle: "Conoce cómo funciona FlashyLab y cómo aprovechar tus créditos",
   },
   "/m/intro": {
     title: "Guía de la app",
-    subtitle: "Conoce cómo funciona Flashy y cómo aprovechar tus créditos",
+    subtitle: "Conoce cómo funciona FlashyLab y cómo aprovechar tus créditos",
   },
   "/biblioteca": {
     title: "Biblioteca pública",
@@ -473,7 +473,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
   const pageInfo = pageTitles[location.pathname] || {
     title: "Dashboard",
-    subtitle: "Flashy",
+    subtitle: "FlashyLab",
   };
 
   const isActive = (path: string, exact?: boolean) => {
@@ -703,7 +703,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </svg>
           </div> */}
           <Logo />
-          <span className="ds-brand-name">Flashy</span>
+          <span className="ds-brand-name">FlashyLab</span>
         </div>
 
         {/* Nav */}
@@ -812,7 +812,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </div>
 
         <a
-          href="https://www.buymeacoffee.com/flashy"
+          href="https://www.ko-fi.com/flashylab"
           target="_blank"
           rel="noopener noreferrer"
           className="ds-bmc-link"

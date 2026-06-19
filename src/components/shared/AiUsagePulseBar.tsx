@@ -224,7 +224,7 @@ export const AiUsagePulseBar: React.FC = () => {
             <div className="ai-credits-row ai-credits-row-muted">
               <span className="ai-credits-row-inline">
                 <TimerReset size={13} />
-                Reset diario
+                Reset semanal
               </span>
               <strong>
                 {model.periodResetLabel} ({model.periodEndLabel})

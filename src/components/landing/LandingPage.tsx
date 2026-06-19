@@ -79,7 +79,7 @@ const LandingPage: React.FC = () => {
               </svg> */}
             <Logo />
 
-            <span className="lp-brand-name">Flashy</span>
+            <span className="lp-brand-name">FlashyLab</span>
           </div>
           <div className="lp-nav-actions">
             {user ? (
@@ -120,7 +120,7 @@ const LandingPage: React.FC = () => {
             </h1>
 
             <p className="lp-hero-sub">
-              Crea con IA o a mano — tú decides. Flashy te deja generar
+              Crea con IA o a mano — tú decides. FlashyLab te deja generar
               flashcards, cuestionarios, guías de estudio y simulacros de examen
               desde cualquier PDF o texto, o construirlos desde cero sin
               depender de la IA.
@@ -535,7 +535,7 @@ const LandingPage: React.FC = () => {
             featuresRef.visible ? " lp-anim-fadein" : ""
           }`}
         >
-          <p className="lp-kicker">¿Por qué Flashy?</p>
+          <p className="lp-kicker">¿Por qué FlashyLab?</p>
           <h2>Diseñado para resultados reales</h2>
           <p>
             No solo genera tarjetas — construye un sistema de aprendizaje
@@ -712,16 +712,16 @@ const LandingPage: React.FC = () => {
           <div className="lp-brand lp-brand--small">
             <Logo />
 
-            <span className="lp-brand-name">Flashy</span>
+            <span className="lp-brand-name">FlashyLab</span>
           </div>
           <p className="lp-footer-copy">
-            © 2026 Flashy · Aprende más inteligente con IA
+            © 2026 FlashyLab · Aprende más inteligente con IA
           </p>
           <div className="lp-footer-links">
             <Link to="/login">Iniciar sesión</Link>
             <Link to="/signup">Registrarse</Link>
             <a
-              href="https://www.buymeacoffee.com/flashy"
+              href="https://www.ko-fi.com/flashylab"
               target="_blank"
               rel="noopener noreferrer"
               className="lp-bmc-link"

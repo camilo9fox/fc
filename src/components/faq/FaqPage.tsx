@@ -33,19 +33,19 @@ const FAQ_CATEGORIES: FaqCategory[] = [
     icon: <HelpCircle size={15} />,
     entries: [
       {
-        question: "¿Qué es Flashy?",
+        question: "¿Qué es FlashyLab?",
         answer:
-          "Flashy es una plataforma de estudio inteligente que usa inteligencia artificial para generar flashcards, cuestionarios, guías de estudio y más a partir de tus propios materiales.",
+          "FlashyLab es una plataforma de estudio inteligente que usa inteligencia artificial para generar flashcards, cuestionarios, guías de estudio y más a partir de tus propios materiales.",
       },
       {
         question: "¿Es gratuito?",
         answer:
-          "Puedes usar Flashy de forma gratuita con un plan de créditos mensuales. Las funciones de generación IA consumen créditos; las funciones básicas como repasar tarjetas creadas manualmente no los consumen.",
+          "Puedes usar FlashyLab de forma gratuita con 30 créditos semanales. Las funciones de generación IA consumen créditos; las funciones básicas como repasar tarjetas creadas manualmente no los consumen.",
       },
       {
         question: "¿En qué dispositivos funciona?",
         answer:
-          "Flashy funciona en cualquier navegador moderno. También puedes instalarlo como aplicación en tu móvil (PWA) desde el botón que aparece en la barra inferior.",
+          "FlashyLab funciona en cualquier navegador moderno. También puedes instalarlo como aplicación en tu móvil (PWA) desde el botón que aparece en la barra inferior.",
       },
       {
         question: "¿Mis datos están seguros?",
@@ -77,7 +77,7 @@ const FAQ_CATEGORIES: FaqCategory[] = [
       {
         question: "¿Qué es el repaso espaciado?",
         answer:
-          "El repaso espaciado es una técnica que programa tus repasos justo antes de que olvides un concepto. Flashy lo aplica automáticamente en la sección de Flashcards para maximizar la retención a largo plazo.",
+          "El repaso espaciado es una técnica que programa tus repasos justo antes de que olvides un concepto. FlashyLab lo aplica automáticamente en la sección de Flashcards para maximizar la retención a largo plazo.",
       },
       {
         question: "¿Puedo crear contenido manualmente sin IA?",
@@ -99,17 +99,17 @@ const FAQ_CATEGORIES: FaqCategory[] = [
       {
         question: "¿Cómo obtengo más créditos?",
         answer:
-          "Los créditos se recargan cada mes según tu plan. Puedes ver tu saldo y uso histórico en la sección de Perfil.",
+          "Los créditos se recargan cada semana. Puedes ver tu saldo y uso en la barra superior de la aplicación.",
       },
       {
         question: "¿Qué pasa si me quedo sin créditos?",
         answer:
-          "Podrás seguir usando Flashy para repasar contenido existente, jugar los modos de juego y crear tarjetas manualmente. Solo las funciones de generación IA quedarán en pausa hasta la recarga mensual.",
+          "Podrás seguir usando FlashyLab para repasar contenido existente, jugar los modos de juego y crear tarjetas manualmente. Solo las funciones de generación IA quedarán en pausa hasta la recarga semanal.",
       },
       {
         question: "¿Cuántos créditos consume cada función?",
         answer:
-          "El coste varía según la función: generar flashcards cuesta entre 5 y 15 créditos, los cuestionarios entre 8 y 20, y las guías de estudio entre 10 y 30 dependiendo de la longitud del material.",
+          "Flashcards, cuestionarios y verdadero/falso cuestan 1 crédito cada uno. Guías de estudio y simulaciones de examen cuestan 2 créditos.",
       },
     ],
   },
@@ -134,7 +134,7 @@ const FAQ_CATEGORIES: FaqCategory[] = [
           "En la sección de Perfil encontrarás la opción de eliminar cuenta. Esta acción es irreversible y borrará todo tu contenido y créditos acumulados.",
       },
       {
-        question: "¿Puedo usar Flashy sin conexión?",
+        question: "¿Puedo usar FlashyLab sin conexión?",
         answer:
           "Al instalarlo como PWA tendrás acceso básico al contenido ya cargado. Las funciones de generación IA y sincronización requieren conexión a internet.",
       },
@@ -232,7 +232,7 @@ const FaqPage: React.FC = () => {
         <div>
           <h1 className="faq-title">Preguntas frecuentes</h1>
           <p className="faq-subtitle">
-            Todo lo que necesitas saber sobre Flashy.
+            Todo lo que necesitas saber sobre FlashyLab.
           </p>
         </div>
       </header>

@@ -61,7 +61,7 @@ const MobileProfilePage: React.FC = () => {
       <MobileSection title="Apoyar">
         <div className="mb-list">
           <a
-            href="https://www.buymeacoffee.com/flashy"
+            href="https://www.ko-fi.com/flashylab"
             target="_blank"
             rel="noopener noreferrer"
             className="mb-bmc-link"

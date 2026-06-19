@@ -19,6 +19,7 @@ import CreateQuizForm from "./CreateQuizForm";
 import "./QuizzesPage.css";
 import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
 import { useConfirmDialog } from "../../contexts/ConfirmDialogContext";
+import { useBackButton } from "../../services/BackButtonContext";
 
 const QuizzesPage: React.FC = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
@@ -46,6 +47,31 @@ const QuizzesPage: React.FC = () => {
   const { confirm } = useConfirmDialog();
 
   const { claimResult, pendingResults } = useGenerationQueue();
+  const { setHandler } = useBackButton();
+
+  useEffect(() => {
+    setHandler(() => {
+      if (studyQuiz) {
+        setStudyQuiz(null);
+        return true;
+      }
+      if (studyingDraft) {
+        setStudyingDraft(false);
+        return true;
+      }
+      if (showCreate) {
+        setShowCreate(false);
+        return true;
+      }
+      if (expandedCard) {
+        setExpandedCard(null);
+        return true;
+      }
+      return false;
+    });
+    return () => setHandler(null);
+  }, [studyQuiz, studyingDraft, showCreate, expandedCard, setHandler]);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const pending = claimResult("quiz");

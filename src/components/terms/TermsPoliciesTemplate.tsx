@@ -82,7 +82,7 @@ const TermsPoliciesTemplate = ({
         </button>
         <div className="tp-topbar-brand">
           <Logo size="extraSmall" />
-          <span>Flashy</span>
+          <span>FlashyLab</span>
         </div>
         <div className="tp-topbar-links">
           <Link to="/terms" className={title.includes("Términos") ? "tp-link-active" : ""}>

@@ -74,7 +74,7 @@ export interface AiQuotaErrorDetails {
   retryAfterSeconds?: number;
   burstWindowResetAt?: string;
   creditsRemaining?: number;
-  dailyLimit?: number;
+  weeklyLimit?: number;
   creditsUsed?: number;
   burstLimit?: number;
   burstUsed?: number;
@@ -117,7 +117,7 @@ export const parseAiQuotaError = (
       : data?.details?.retryAfterSeconds,
     burstWindowResetAt: data?.details?.burstWindowResetAt,
     creditsRemaining: data?.details?.creditsRemaining,
-    dailyLimit: data?.details?.dailyLimit,
+    weeklyLimit: data?.details?.weeklyLimit,
     creditsUsed: data?.details?.creditsUsed,
     burstLimit: data?.details?.burstLimit,
     burstUsed: data?.details?.burstUsed,
@@ -141,7 +141,7 @@ export const formatSeconds = (seconds?: number): string => {
 export const formatAiQuotaMessage = (details: AiQuotaErrorDetails): string => {
   if (details.reason === "daily_limit") {
     const remaining = Math.max(0, Number(details.creditsRemaining || 0));
-    return `Te quedaste sin créditos IA por hoy. Créditos restantes: ${remaining}.`;
+    return `Te quedaste sin créditos IA por esta semana. Créditos restantes: ${remaining}.`;
   }
 
   if (details.reason === "burst_limit") {

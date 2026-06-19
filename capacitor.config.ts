@@ -2,7 +2,7 @@ import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
   appId: "com.flashy.app",
-  appName: "Flashy",
+  appName: "FlashyLab",
   webDir: "build",
   server: {
     // Allow navigation to backend API from native app

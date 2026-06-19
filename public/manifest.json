@@ -1,8 +1,8 @@
 {
   "id": "/",
   "lang": "es-ES",
-  "name": "Flashy",
-  "short_name": "Flashy",
+  "name": "FlashyLab",
+  "short_name": "FlashyLab",
   "description": "Plataforma de estudio con IA: flashcards, cuestionarios, guias y simulaciones.",
   "start_url": "/",
   "scope": "/",

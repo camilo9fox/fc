@@ -1,5 +1,6 @@
 ﻿import React, { useState, useEffect, useCallback } from "react";
 import { libraryApi, PublicCategory } from "../../api/library";
+import { useBackButton } from "../../services/BackButtonContext";
 import CategoryPreviewModal from "./CategoryPreviewModal";
 import "./LibraryPage.css";
 
@@ -37,6 +38,18 @@ export const LibraryPage: React.FC = () => {
 
   const [previewId, setPreviewId] = useState<string | null>(null);
   const previewCategory = categories.find((c) => c.id === previewId);
+  const { setHandler } = useBackButton();
+
+  useEffect(() => {
+    setHandler(() => {
+      if (previewId) {
+        setPreviewId(null);
+        return true;
+      }
+      return false;
+    });
+    return () => setHandler(null);
+  }, [previewId, setHandler]);
 
   const fetchData = useCallback(async () => {
     setLoading(true);

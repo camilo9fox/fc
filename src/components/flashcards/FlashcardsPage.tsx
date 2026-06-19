@@ -28,6 +28,7 @@ import CsvImportModal from "./CsvImportModal";
 import { CardRowSkeleton } from "../shared/Skeleton";
 import "./FlashcardsPage.css";
 import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
+import { useBackButton } from "../../services/BackButtonContext";
 
 type DraftFlashcard = {
   question: string;
@@ -80,6 +81,30 @@ const FlashcardsPage: React.FC = () => {
   }, [savedFlashcards]);
 
   const { claimResult, pendingResults } = useGenerationQueue();
+  const { setHandler } = useBackButton();
+
+  useEffect(() => {
+    setHandler(() => {
+      if (studyMode) {
+        setStudyMode(false);
+        return true;
+      }
+      if (showCreate) {
+        setShowCreate(false);
+        return true;
+      }
+      if (showCsvImport) {
+        setShowCsvImport(false);
+        return true;
+      }
+      if (searchResults !== null) {
+        handleClearSearch();
+        return true;
+      }
+      return false;
+    });
+    return () => setHandler(null);
+  }, [studyMode, showCreate, showCsvImport, searchResults, setHandler]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
@@ -277,7 +302,7 @@ const FlashcardsPage: React.FC = () => {
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
-  <title>Flashcards — Flashy</title>
+  <title>Flashcards — FlashyLab</title>
 <style>
   body { font-family: Georgia, serif; color: #1a1a1a; padding: 32px; max-width: 720px; margin: auto; }
   h1 { font-size: 1.5rem; color: #631D76; border-bottom: 2px solid #631D76; padding-bottom: 8px; margin-bottom: 24px; }
@@ -290,7 +315,7 @@ const FlashcardsPage: React.FC = () => {
 </style>
 </head>
 <body>
-          <h1>📚 Mis Flashcards — Flashy</h1>
+          <h1>📚 Mis Flashcards — FlashyLab</h1>
 ${rows}
 </body>
 </html>`;

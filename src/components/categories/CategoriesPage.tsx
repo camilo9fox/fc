@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { Category } from "../../api/flashcards";
 import { useCategories } from "../../hooks/useCategories";
 import { publishApi } from "../../api/library";
@@ -7,6 +7,7 @@ import ThemeModal from "./ThemeModal";
 import CategoryDetailModal from "./CategoryDetailModal";
 import { ThemeCardSkeleton, SkeletonList } from "../shared/Skeleton";
 import { useConfirmDialog } from "../../contexts/ConfirmDialogContext";
+import { useBackButton } from "../../services/BackButtonContext";
 import "./CategoriesPage.css";
 
 type ModalState =
@@ -35,6 +36,22 @@ const CategoriesPage: React.FC = () => {
   const [detailCat, setDetailCat] = useState<Category | null>(null);
   const [pageError, setPageError] = useState<string | null>(null);
   const { confirm } = useConfirmDialog();
+  const { setHandler } = useBackButton();
+
+  useEffect(() => {
+    setHandler(() => {
+      if (detailCat) {
+        setDetailCat(null);
+        return true;
+      }
+      if (modal) {
+        setModal(null);
+        return true;
+      }
+      return false;
+    });
+    return () => setHandler(null);
+  }, [detailCat, modal, setHandler]);
 
   const openCreate = () => setModal({ mode: "create" });
   const openEdit = (

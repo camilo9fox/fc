@@ -24,6 +24,7 @@ import CreateTFForm from "./CreateTFForm";
 import "./TrueFalsePage.css";
 import { useGenerationQueue } from "../../contexts/GenerationQueueContext";
 import { useConfirmDialog } from "../../contexts/ConfirmDialogContext";
+import { useBackButton } from "../../services/BackButtonContext";
 
 const TrueFalsePage: React.FC = () => {
   const [sets, setSets] = useState<TrueFalseSet[]>([]);
@@ -51,6 +52,31 @@ const TrueFalsePage: React.FC = () => {
   const { confirm } = useConfirmDialog();
 
   const { claimResult, pendingResults } = useGenerationQueue();
+  const { setHandler } = useBackButton();
+
+  useEffect(() => {
+    setHandler(() => {
+      if (studySet) {
+        setStudySet(null);
+        return true;
+      }
+      if (studyingDraft) {
+        setStudyingDraft(false);
+        return true;
+      }
+      if (showCreate) {
+        setShowCreate(false);
+        return true;
+      }
+      if (expandedCard) {
+        setExpandedCard(null);
+        return true;
+      }
+      return false;
+    });
+    return () => setHandler(null);
+  }, [studySet, studyingDraft, showCreate, expandedCard, setHandler]);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const pending = claimResult("truefalse");

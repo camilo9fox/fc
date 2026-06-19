@@ -90,7 +90,7 @@ const Signup: React.FC = () => {
           <aside className="auth-showcase" aria-hidden="true">
             <div className="auth-showcase-badge">
               <Sparkles size={14} />
-              <span>Flashy</span>
+              <span>FlashyLab</span>
             </div>
             <h1 className="auth-showcase-title">Un paso más</h1>
             <p className="auth-showcase-text">
@@ -163,7 +163,7 @@ const Signup: React.FC = () => {
         <aside className="auth-showcase" aria-hidden="true">
           <div className="auth-showcase-badge">
             <Sparkles size={14} />
-            <span>Flashy</span>
+            <span>FlashyLab</span>
           </div>
 
           <h1 className="auth-showcase-title">Crea tu espacio de estudio</h1>

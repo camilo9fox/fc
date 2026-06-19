@@ -53,8 +53,8 @@
   left: 0;
   right: 0;
   z-index: 235;
-  min-height: 46px;
-  padding: calc(8px + env(safe-area-inset-top)) 12px 8px;
+  min-height: 52px;
+  padding: calc(10px + env(safe-area-inset-top)) 12px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -103,9 +103,9 @@ body.has-offline-banner .mb-shell-topbar {
 }
 
 .mb-top-icon-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
   border: 1px solid #dfc9ea;
   background: linear-gradient(150deg, rgba(255, 255, 255, 0.95), #f5edf9);
   color: #5a2a70;
@@ -123,8 +123,8 @@ body.has-offline-banner .mb-shell-topbar {
 }
 
 .mb-top-icon-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 21px;
+  height: 21px;
   stroke: currentColor;
   stroke-width: 1.9;
   stroke-linecap: round;
@@ -133,19 +133,19 @@ body.has-offline-banner .mb-shell-topbar {
 
 .mb-top-credits .ai-credits-trigger {
   min-width: 36px;
-  height: 32px;
+  height: 42px;
   padding: 0 8px;
-  border-radius: 10px;
+  border-radius: 13px;
   gap: 4px;
 }
 
 .mb-shell-content {
-  padding: calc(62px + env(safe-area-inset-top)) 14px
+  padding: calc(72px + env(safe-area-inset-top)) 14px
     calc(88px + env(safe-area-inset-bottom));
 }
 
 body.has-offline-banner .mb-shell-content {
-  padding-top: calc(102px + env(safe-area-inset-top));
+  padding-top: calc(112px + env(safe-area-inset-top));
 }
 
 .mb-bottom-nav {
@@ -893,3 +893,28 @@ button.ds-nav-item {
   font-family: inherit;
   text-align: inherit;
 }
+
+/* ── Back button exit toast ──────────────────────────── */
+.back-exit-toast {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background: #1a1a2e;
+  color: #e8ddef;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  z-index: 10000;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  animation: backToastIn 0.25s ease;
+}
+[data-theme="dark"] .back-exit-toast {
+  background: #e8ddef;
+  color: #1a1a2e;
+}
+@keyframes backToastIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+

@@ -10,6 +10,7 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ConfirmDialogProvider } from "./contexts/ConfirmDialogContext";
 import { ProductTourProvider } from "./contexts/ProductTourContext";
+import { BackButtonProvider } from "./services/BackButtonContext";
 import ProductTour from "./components/shared/ProductTour";
 import ErrorBoundary from "./components/shared/ErrorBoundary";
 import ContentSafetyToast from "./components/shared/ContentSafetyToast";
@@ -110,9 +111,7 @@ const AppRoutes: React.FC = () => {
     }
 
     if (shouldShowIntro) {
-      return (
-        <Navigate to={isMobileViewport ? "/m/intro" : "/intro"} replace />
-      );
+      return <Navigate to={isMobileViewport ? "/m/intro" : "/intro"} replace />;
     }
 
     return (
@@ -388,7 +387,7 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route
-        path="/soporte"
+        path="/support"
         element={
           <ProtectedRoute>
             <DashboardLayout>
@@ -409,18 +408,20 @@ function App() {
         <AuthProvider>
           <Router>
             <ConfirmDialogProvider>
-              <ProductTourProvider>
-                <OfflineBanner />
-                <PwaInstallPrompt />
-                <ContentSafetyToast />
-                <ProductTour />
-                <div className="App">
-                  <a href="#main-content" className="app-skip-link">
-                    Saltar al contenido principal
-                  </a>
-                  <AppRoutes />
-                </div>
-              </ProductTourProvider>
+              <BackButtonProvider>
+                <ProductTourProvider>
+                  <OfflineBanner />
+                  <PwaInstallPrompt />
+                  <ContentSafetyToast />
+                  <ProductTour />
+                  <div className="App">
+                    <a href="#main-content" className="app-skip-link">
+                      Saltar al contenido principal
+                    </a>
+                    <AppRoutes />
+                  </div>
+                </ProductTourProvider>
+              </BackButtonProvider>
             </ConfirmDialogProvider>
           </Router>
         </AuthProvider>

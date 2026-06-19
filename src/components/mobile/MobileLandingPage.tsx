@@ -11,7 +11,7 @@ const MobileLandingPage: React.FC = () => {
         <div className="mbl-brand">
           <Logo />
 
-          <span className="mbl-brand-name">Flashy</span>
+          <span className="mbl-brand-name">FlashyLab</span>
         </div>
       </header>
 
@@ -141,7 +141,7 @@ const MobileLandingPage: React.FC = () => {
 
       {/* Footer */}
       <footer className="mbl-footer">
-        <p>© 2026 Flashy · Aprende más inteligente con IA</p>
+        <p>© 2026 FlashyLab · Aprende más inteligente con IA</p>
       </footer>
     </div>
   );
