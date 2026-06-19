@@ -289,9 +289,9 @@ const Signup: React.FC = () => {
               />
               <span>
                 He leído y acepto los{" "}
-                <Link to="/terms" target="_blank" tabIndex={-1}>Términos y condiciones</Link>{" "}
+                <Link to="/terms" target="_blank" rel="noopener noreferrer" tabIndex={-1}>Términos y condiciones</Link>{" "}
                 y las{" "}
-                <Link to="/policies" target="_blank" tabIndex={-1}>Políticas de privacidad</Link>.
+                <Link to="/policies" target="_blank" rel="noopener noreferrer" tabIndex={-1}>Políticas de privacidad</Link>.
               </span>
             </label>
 

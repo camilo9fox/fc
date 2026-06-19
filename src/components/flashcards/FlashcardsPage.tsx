@@ -328,13 +328,15 @@ ${rows}
       setExportingPdf(false);
       return;
     }
-    win.document.write(html);
-    win.document.close();
-    win.focus();
-    setTimeout(() => {
-      win.print();
-      setExportingPdf(false);
-    }, 400);
+    const blob = new Blob([html], { type: "text/html" });
+    win.location.href = URL.createObjectURL(blob);
+    win.onload = () => {
+      setTimeout(() => {
+        win.print();
+        setExportingPdf(false);
+        URL.revokeObjectURL(win.location.href);
+      }, 400);
+    };
   };
 
   if (studyMode && studyCards.length > 0) {

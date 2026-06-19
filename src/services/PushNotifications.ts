@@ -51,8 +51,13 @@ export async function addPushListeners(): Promise<void> {
       // User tapped notification — navigate to the target
       const data = action.notification.data;
       if (data?.route) {
-        // Use window.location to navigate since Capacitor WebView supports it
-        window.location.href = data.route;
+        const route = data.route as string;
+        const allowed =
+          route.startsWith("/") ||
+          route.startsWith(window.location.origin);
+        if (allowed) {
+          window.location.href = route;
+        }
       }
     },
   );
