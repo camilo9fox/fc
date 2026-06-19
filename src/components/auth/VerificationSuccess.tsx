@@ -1,10 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { CheckCircle, ArrowRight, Sparkles, ShieldCheck, LogIn } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "./VerificationSuccess.css";
 
 const VerificationSuccess: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const hash = new URLSearchParams(window.location.hash.substring(1));
+
+  const isValid =
+    searchParams.get("type") === "signup" ||
+    hash.get("type") === "signup";
+
+  useEffect(() => {
+    if (!isValid) {
+      navigate("/login", { replace: true });
+    }
+  }, [isValid, navigate]);
+
+  if (!isValid) return null;
 
   return (
     <div className="auth-shell">
