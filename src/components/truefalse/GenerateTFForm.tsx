@@ -91,6 +91,15 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({ onCancel }) => {
       );
     }
 
+    if (!quantity) {
+      return setError("Debes especificar la cantidad de enunciados a generar.");
+    }
+    if (quantity < 1 || quantity > MAX_TF_STATEMENTS_GENERATED) {
+      return setError(
+        `La cantidad de enunciados debe estar entre 1 y ${MAX_TF_STATEMENTS_GENERATED}.`,
+      );
+    }
+
     const capturedTitle = title.trim();
     const capturedCategoryId = categoryId;
     const capturedQuantity = quantity;
@@ -197,14 +206,7 @@ const GenerateTFForm: React.FC<GenerateTFFormProps> = ({ onCancel }) => {
             min={1}
             max={MAX_TF_STATEMENTS_GENERATED}
             value={quantity}
-            onChange={(e) =>
-              setQuantity(
-                Math.min(
-                  MAX_TF_STATEMENTS_GENERATED,
-                  Math.max(1, parseInt(e.target.value) || 10),
-                ),
-              )
-            }
+            onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value)))}
           />
         </div>
       </div>

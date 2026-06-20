@@ -227,13 +227,25 @@ const ExamSimulationsPage: React.FC = () => {
       );
     }
 
+    if (!durationMinutes) {
+      return setError("Debes especificar la duración de la simulación.");
+    }
+
+    if (durationMinutes < 10 || durationMinutes > 300) {
+      return setError("La duracion debe estar entre 10 y 300 minutos.");
+    }
+
+    if (!trueFalseCount && !quizCount && !developmentCount) {
+      return setError("Debes especificar al menos una pregunta a generar.");
+    }
+
     const capturedTitle = title.trim();
     const capturedDescription = description.trim();
     const capturedCategoryId = categoryId;
     const capturedDuration = durationMinutes;
-    const capturedTf = trueFalseCount;
-    const capturedQuiz = quizCount;
-    const capturedDev = developmentCount;
+    const capturedTf = trueFalseCount ? trueFalseCount : 0;
+    const capturedQuiz = quizCount ? quizCount : 0;
+    const capturedDev = developmentCount ? developmentCount : 0;
     const capturedFile = file;
     const capturedSupportText = supportText.trim();
 
@@ -875,12 +887,7 @@ const ExamSimulationsPage: React.FC = () => {
                 max={300}
                 value={durationMinutes}
                 onChange={(event) =>
-                  setDurationMinutes(
-                    Math.min(
-                      300,
-                      Math.max(10, parseInt(event.target.value) || 45),
-                    ),
-                  )
+                  setDurationMinutes(parseInt(event.target.value))
                 }
               />
             </label>
@@ -894,10 +901,7 @@ const ExamSimulationsPage: React.FC = () => {
                 value={trueFalseCount}
                 onChange={(event) =>
                   setTrueFalseCount(
-                    Math.min(
-                      MAX_TF,
-                      Math.max(1, parseInt(event.target.value) || 6),
-                    ),
+                    Math.min(MAX_TF, Math.max(1, parseInt(event.target.value))),
                   )
                 }
               />
@@ -914,7 +918,7 @@ const ExamSimulationsPage: React.FC = () => {
                   setQuizCount(
                     Math.min(
                       MAX_QUIZ,
-                      Math.max(1, parseInt(event.target.value) || 5),
+                      Math.max(1, parseInt(event.target.value)),
                     ),
                   )
                 }
@@ -932,7 +936,7 @@ const ExamSimulationsPage: React.FC = () => {
                   setDevelopmentCount(
                     Math.min(
                       MAX_DEV,
-                      Math.max(1, parseInt(event.target.value) || 3),
+                      Math.max(1, parseInt(event.target.value)),
                     ),
                   )
                 }
@@ -990,7 +994,9 @@ const ExamSimulationsPage: React.FC = () => {
                 if (selected) {
                   const ext = selected.name.split(".").pop()?.toLowerCase();
                   if (ext !== "pdf" && ext !== "txt") {
-                    setError("Tipo de archivo no permitido. Solo se aceptan PDF y TXT.");
+                    setError(
+                      "Tipo de archivo no permitido. Solo se aceptan PDF y TXT.",
+                    );
                     return;
                   }
                 }

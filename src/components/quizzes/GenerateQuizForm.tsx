@@ -21,7 +21,7 @@ const GenerateQuizForm: React.FC<GenerateQuizFormProps> = ({ onCancel }) => {
   const { enqueue, isModuleQueued } = useGenerationQueue();
   const [title, setTitle] = useState("");
   const [categoryId, setCategoryId] = useState("");
-  const [quantity, setQuantity] = useState(5);
+  const [quantity, setQuantity] = useState(0);
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string>("");
@@ -90,7 +90,14 @@ const GenerateQuizForm: React.FC<GenerateQuizFormProps> = ({ onCancel }) => {
         "No tienes créditos IA suficientes para generar un quiz.",
       );
     }
-
+    if (!quantity) {
+      return setError("Debes especificar la cantidad de preguntas a generar.");
+    }
+    if (quantity < 1 || quantity > MAX_QUIZ_QUESTIONS_GENERATED) {
+      return setError(
+        `La cantidad de preguntas debe estar entre 1 y ${MAX_QUIZ_QUESTIONS_GENERATED}.`,
+      );
+    }
     const capturedTitle = title.trim();
     const capturedCategoryId = categoryId;
     const capturedQuantity = quantity;
@@ -197,14 +204,7 @@ const GenerateQuizForm: React.FC<GenerateQuizFormProps> = ({ onCancel }) => {
             min={1}
             max={MAX_QUIZ_QUESTIONS_GENERATED}
             value={quantity}
-            onChange={(e) =>
-              setQuantity(
-                Math.min(
-                  MAX_QUIZ_QUESTIONS_GENERATED,
-                  Math.max(1, parseInt(e.target.value) || 5),
-                ),
-              )
-            }
+            onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value)))}
           />
         </div>
       </div>
